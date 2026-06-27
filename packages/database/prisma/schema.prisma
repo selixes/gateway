@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+  CLIENT_VIEWER
+}
+
+enum WorkflowStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
+enum RunStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+  RETRYING
+}
+
+enum EventType {
+  RUN_STARTED
+  NODE_EXECUTED
+  AI_CALLED
+  RETRY_TRIGGERED
+  FAILURE_OCCURRED
+}
+
+enum ReservationStatus {
+  CREATED
+  PRECHARGED
+  RECONCILED
+  REFUND_PENDING
+  REFUNDED
+  DEAD_LETTER
+  EXPIRED
+  CANCELLED
+}
+
+model Organization {
+  id          String     @id @default(uuid())
+  clerkOrgId  String?    @unique
+  name        String
+  plan        String     @default("FREE")
+  stripeCustomerId     String? @unique
+  stripeSubscriptionId String? @unique
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  users       User[]
+  workflows   Workflow[]
+  apiKeys     ApiKey[]
+  auditLogs   AuditLog[]
+
+  @@index([clerkOrgId])
+}
+
+model User {
+  id             String       @id @default(uuid())
+  clerkUserId    String       @unique
+  email          String       @unique
+  role           UserRole     @default(CLIENT_VIEWER)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+  @@index([clerkUserId])
+}
+
+model Workflow {
+  id                 String         @id @default(uuid())
+  organizationId     String
+  name               String
+  provider           String         @default("EXTERNAL")
+  externalWorkflowId String?
+  status             WorkflowStatus @default(INACTIVE)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  organization       Organization   @relation(fields: [organizationId], references: [id])
+  runs               WorkflowRun[]
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model WorkflowRun {
+  id                String           @id @default(uuid())
+  workflowId        String
+  status            RunStatus
+  startedAt         DateTime         @default(now())
+  completedAt       DateTime?
+  duration          Int?             
+  triggerType       String           @default("WEBHOOK")
+  errorMessage      String?
+  sessionId         String?          // UUID to group multiple runs under a single agent session
+  terminationReason String?          // E.g., MAX_COST_EXCEEDED, MAX_CALLS_EXCEEDED, etc.
+  updatedAt         DateTime         @updatedAt
+  workflow          Workflow         @relation(fields: [workflowId], references: [id])
+  traces            AITrace[]
+  events            ExecutionEvent[]
+
+  @@index([workflowId])
+  @@index([status])
+  @@index([startedAt])
+  @@index([sessionId])
+}
+
+model ExecutionEvent {
+  id        String      @id @default(uuid())
+  runId     String
+  type      EventType
+  message   String?
+  metadata  Json?
+  createdAt DateTime    @default(now())
+  run       WorkflowRun @relation(fields: [runId], references: [id])
+
+  @@index([runId])
+  @@index([type])
+}
+
+model AITrace {
+  id                String      @id @default(uuid())
+  runId             String
+  provider          String
+  model             String
+  promptTokens      Int         @default(0)
+  completionTokens  Int         @default(0)
+  latency           Int         
+  estimatedCost     Decimal     @db.Decimal(10, 6)
+  actualCost        Decimal?    @db.Decimal(10, 6)
+  requestId         String?
+  status            String
+  httpStatus        Int?
+  providerRequestId String?
+  promptSnapshot    Json?
+  responseSnapshot  Json?
+  createdAt         DateTime    @default(now())
+  run               WorkflowRun @relation(fields: [runId], references: [id])
+
+  @@index([runId])
+  @@index([provider])
+  @@index([requestId])
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  organizationId String
+  action         String
+  actorId        String
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+model ApiKey {
+  id             String        @id @default(uuid())
+  organizationId String
+  name           String
+  key            String        @unique
+  preview        String        @default("")
+  status         String        @default("ACTIVE") // ACTIVE, REVOKED
+  dailyRpmLimit  Int?          // null = unlimited
+  dailyTpmLimit  Int?          // null = unlimited
+  monthlyUsdCap  Decimal?      @db.Decimal(10, 4) // null = unlimited; 4dp for sub-cent precision
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  usageRecords   UsageRecord[]
+
+  @@index([organizationId])
+  @@index([key])
+}
+
+model UsageRecord {
+  id               String   @id @default(uuid())
+  requestId        String   // gateway-generated UUID, ties to X-Request-Id header
+  apiKeyId         String
+  organizationId   String
+  provider         String   // openai | anthropic | ollama
+  model            String
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+  costUsd          Decimal  @db.Decimal(10, 6)  // 6dp: sub-cent precision for micro-models
+  estimatedCost    Decimal  @default(0) @db.Decimal(10, 6)
+  providerChain    String   // serialized: "openai:timeout,anthropic:200"
+  cacheHit         Boolean  @default(false)
+  isDegraded       Boolean  @default(false)      // true when served by Ollama continuity
+  latencyMs        Int
+  sessionId        String?
+  createdAt        DateTime @default(now())
+  apiKey           ApiKey   @relation(fields: [apiKeyId], references: [id])
+
+  @@index([apiKeyId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([requestId])
+  @@index([sessionId])
+}
+
+model BudgetReservation {
+  id                   String            @id @default(uuid())
+  requestId            String            @unique
+  apiKeyId             String
+  organizationId       String
+  month                String            // YYYY-MM
+  spendKey             String
+  estimatedCostUsd     Decimal           @db.Decimal(10, 6)
+  actualCostUsd        Decimal?          @db.Decimal(10, 6)
+  reconciledDeltaUsd   Decimal?          @db.Decimal(10, 6)
+  status               ReservationStatus @default(CREATED)
+  attempts             Int               @default(0)
+  nextRetryAt          DateTime?
+  lastError            String?
+  prechargedAt         DateTime?
+  reconciledAt         DateTime?
+  refundedAt           DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([status, createdAt])
+  @@index([requestId])
+}

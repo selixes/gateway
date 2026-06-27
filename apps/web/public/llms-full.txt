@@ -1,0 +1,201 @@
+# Selixes — Full Developer & API System Reference
+
+This document provides a comprehensive technical specification of Selixes: the sovereign, neutral AI gateway proxy and cost governance layer. It is formatted specifically for consumption by LLM search agents, crawlers, and developer RAG pipelines.
+
+---
+
+## 1. System Architecture & Dual-Database Engine
+
+Selixes runs as a lightweight HTTP/HTTPS proxy layer directly inside your secure VPC boundary. To guarantee low-latency routing alongside strict budget enforcement, it implements a dual-database pattern:
+
+```
+                  +---------------------------+
+                  |    Client Application     |
+                  +-------------+-------------+
+                                |
+                                | (Standard OpenAI SDK request)
+                                v
+                  +-------------+-------------+
+                  |      Selixes Proxy        | <===> [ Redis Cache ]
+                  |   * Circuit Breaker       |       (Active budget locks,
+                  |   * Concurrency triager   |        concurrency counters)
+                  +-------------+-------------+
+                                |
+             +------------------+------------------+
+             | (Uptime Normal)                     | (Cloud Outage)
+             v                                     v
++------------+------------+            +----------+----------+
+|  Upstream API Provider   |            |  Standby Failover   |
+| (OpenAI, Anthropic, etc) |            | (Gemini, Ollama Edge|
++------------+------------+            +----------+----------+
+             |                                     |
+             +------------------+------------------+
+                                |
+                                v
+                  +-------------+-------------+
+                  | Postgres Telemetry Ingest |
+                  | (Weekly Trace logs)       |
+                  +---------------------------+
+```
+
+### Redis Cache Layer (Budget Enforcement)
+*   **Purpose**: Tracks transient session states, active concurrency tokens, and sliding-window rate limit counters.
+*   **Latency**: Sub-millisecond read/writes.
+*   **Behavior**: When a request with `x-selixes-session-id` arrives, the proxy checks the current session cost increment. If the spending threshold is exceeded, the request is terminated at the edge with HTTP status `429 Too Many Requests`.
+
+### Postgres Analytics Engine (Observability Tracing)
+*   **Purpose**: Acts as the system of record for telemetry data, prompt logs, latency audits, and provider chain paths.
+*   **Log Ingestion**: Buffered asynchronous batches to prevent blocking the completion transit.
+
+---
+
+## 2. API Specification & Custom Headers
+
+Selixes matches the standard OpenAI REST API endpoint coordinate for `v1/chat/completions`. Swap the `baseURL` coordinate in any standard SDK to begin routing.
+
+### Custom Control Headers
+
+Pass these HTTP headers in requests to activate budget gates and fallback routes:
+
+| HTTP Header | Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `x-selixes-session-id` | String | *Required for budgets* | Identifies a multi-step agent run to accumulate and enforce aggregate costs. |
+| `x-selixes-max-session-cost` | Float | `unlimited` | Cumulative session spend cap in USD (e.g. `0.15` blocks further requests once spend reaches $0.15). |
+| `x-selixes-max-concurrent-calls` | Integer | `unlimited` | Maximum allowed concurrent request sockets open under the session. |
+| `x-selixes-timeout` | Integer | `30000` | Sockets timeout threshold in milliseconds. Exceeding this triggers standby failover. |
+| `x-selixes-fallback-route` | String | `gemini` | Explicit route override to swap standby targets (`anthropic` \| `gemini` \| `ollama`). |
+
+---
+
+## 3. JSON Payload Specifications
+
+### 3.1 Successful Completion Response
+
+```json
+// HTTP Response Headers:
+// Status Code: 200 OK
+// x-cache: MISS
+// x-provider-chain: openai:200
+// x-selixes-runtime-mode: redis
+
+{
+  "id": "chatcmpl-982739",
+  "object": "chat.completion",
+  "created": 1780087476,
+  "model": "gpt-4o",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Data extraction completed successfully. No anomalies found."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 128,
+    "completion_tokens": 64,
+    "total_tokens": 192
+  }
+}
+```
+
+### 3.2 Intercepted Runaway Budget Error
+
+```json
+// HTTP Response Headers:
+// Status Code: 429 Too Many Requests
+// Content-Type: application/json
+
+{
+  "statusCode": 429,
+  "error": "runaway_agent_protection",
+  "message": "Runaway Agent Intercepted: Session budget exceeded (MAX_COST_EXCEEDED).",
+  "sessionId": "session_crm_batch_02",
+  "terminationReason": "MAX_COST_EXCEEDED",
+  "requestId": "fe2c2d5f-d148-4a1d-9079-efa5181b4cd2"
+}
+```
+
+---
+
+## 4. Production Docker Compose Setup
+
+Run the entire sovereign stack in production using this single Docker Compose template:
+
+```yaml
+version: '3.8'
+
+services:
+  gateway:
+    image: selixes/gateway:latest
+    container_name: selixes-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://cache:6379/0
+      - DATABASE_URL=postgresql://postgres:securepass@db:5432/selixes_telemetry
+      - GATEWAY_AUTH_KEY=selixes_live_prodkey982
+    depends_on:
+      - cache
+      - db
+    restart: always
+
+  cache:
+    image: redis:7-alpine
+    container_name: selixes-cache
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: always
+
+  db:
+    image: postgres:15-alpine
+    container_name: selixes-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=securepass
+      - POSTGRES_DB=selixes_telemetry
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  redis_data:
+  pg_data:
+```
+
+---
+
+## 5. Offline Continuity Mode (Local Edge Fallback)
+
+To handle complete cloud network blackouts, Selixes routes requests to a local edge node running **Ollama**.
+
+### Local Edge Node Setup
+1. Install Ollama on your local VPS or hardware machine:
+   ```bash
+   curl -fsSL https://ollama.com/install.sh | sh
+   ```
+2. Pull the default Llama-3 model:
+   ```bash
+   ollama pull llama3:8b
+   ```
+3. Configure the Selixes environment to point to the local Ollama instance:
+   ```env
+   LOCAL_OLLAMA_URL=http://localhost:11434
+   ```
+
+### Execution Behavior
+During a cloud outage, the gateway shifts requests to local Ollama execution automatically. This operates at exactly **$0.00** in token costs and keeps processing pipeline operations online within the local environment.
+
+---
+
+## 6. Troubleshooting & Recoveries
+
+### Problem: Budget gate not tripping on consecutive queries
+*   **Cause**: Check if requests are passing the exact same `x-selixes-session-id` header. Redis tracks expenditures aggregated by this identifier. If omitted, costs are calculated per request in isolation.
+
+### Problem: 504 Gateway Timeout during failover transition
+*   **Cause**: The standby providers are taking too long to return connection sockets, exceeding the timeout SLA. Verify that your standby API keys are active and route parameters are correct. Consider reducing `x-selixes-timeout` to `5000` (5 seconds) to initiate standby tiers sooner.

@@ -1,0 +1,143 @@
+# Selixes — Sovereign AI Reliability & Cost Gateway
+
+> [!TIP]
+> See also: [Full Developer & API Reference](/llms-full.txt) for complete schemas, configuration templates, and database tables.
+
+Selixes is a sovereign, neutral AI gateway proxy and cost governance layer designed to sit directly inside secure cloud boundaries (VPC or private metal). It acts as an outage-proof bridge between client applications and upstream LLM API providers, guaranteeing uptime, monitoring concurrency spikes, scrubbing sensitive data, and capping reasoning spend automatically.
+
+---
+
+## Core System Features
+
+*   **Autonomic Outage Rerouting**: Circuit-breakers intercept upstream provider API timeouts and 5xx failures in under 15 milliseconds, dynamically hot-swapping request pipelines to standby backends (e.g., Anthropic Claude, Google Gemini).
+*   **Reasoning Cost governance**: Trips session-based spending gates based on custom headers to block runaway recursive agent loops before they drain cloud budgets.
+*   **PII & Token Sanitization**: Identifies and redacts sensitive data (such as API keys, credit cards, SSNs) at the edge boundary before transmission to public cloud models.
+*   **Zero-Cost Local Continuity**: Boots a local model edge node (running Llama-3 via Ollama) during total cloud network blackouts, preserving functionality at exactly $0.00 in token billing.
+*   **Neutral Sovereign API Layer**: Completely compatible with the standard OpenAI API client. Swap the base URL coordinate in your existing SDK configuration to integrate in 2 lines of code.
+
+---
+
+## Dynamic Routing Lifecycle
+
+```
+[ Application Code ]
+        |
+        | (Standard HTTP completions request)
+        v
+[ Selixes Gateway Proxy ] ===== (Redis Active Session Cost & Concurrency Check)
+        |
+        +-- [ Upstream Outage Detected? ]
+        |             |
+        | (No)        | (Yes, in < 15ms)
+        v             v
+[ OpenAI / Anthropic ]   [ Standby / Edge Ollama Llama3 ]
+        |             |
+        +------+------+
+               |
+               v
+  [ Postgres Telemetry Ingest ]
+  (Weekly Trace logs, token arbitrage margins, and latency hashes)
+```
+
+---
+
+## Technical Integration Examples
+
+### 1. Docker Quickstart Deployment
+
+Launch the sovereign gateway on your local system or private cloud boundary:
+
+```bash
+docker run -d -p 4000:4000 --name selixes-gateway selixes/gateway:latest
+```
+
+Or deploy a multi-container stack via Docker Compose:
+
+```yaml
+version: '3.8'
+services:
+  gateway:
+    image: selixes/gateway:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - REDIS_URL=redis://cache:6379
+      - DATABASE_URL=postgresql://user:pass@db:5432/telemetry
+  cache:
+    image: redis:alpine
+  db:
+    image: postgres:alpine
+```
+
+### 2. Standard 2-Line Node.js SDK Reroute
+
+Use your existing official client libraries. Simply point `baseURL` and `apiKey` to the Selixes gateway proxy:
+
+```typescript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.SELIXES_GATEWAY_KEY, // Gateway Authorization Key
+  baseURL: 'http://localhost:4000/v1'      // Point to local gateway proxy
+});
+```
+
+### 3. Header Specification API Request (curl)
+
+Enforce active session budgets, connection timeouts, and failover overrides directly via standard HTTP headers:
+
+```bash
+curl http://localhost:4000/v1/chat/completions \
+  -H "Authorization: Bearer selixes_live_prodkey982" \
+  -H "Content-Type: application/json" \
+  -H "x-selixes-session-id: agent_workflow_crm_102" \
+  -H "x-selixes-max-session-cost: 0.15" \
+  -H "x-selixes-max-concurrent-calls: 3" \
+  -H "x-selixes-timeout: 5000" \
+  -H "x-selixes-fallback-route: anthropic" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Extract data from user queries."}]
+  }'
+```
+
+---
+
+## Header Specification Reference
+
+| HTTP Header | Type | Description |
+| :--- | :--- | :--- |
+| `x-selixes-session-id` | String | Maps budget checks across multiple consecutive runs in a single agent session. |
+| `x-selixes-max-session-cost` | Float | Maximum dollar spend cap allowed for the session (e.g. `0.20` for $0.20 cap). |
+| `x-selixes-max-concurrent-calls` | Integer | Limits parallel connection streams (e.g. `3` active concurrent calls). |
+| `x-selixes-timeout` | Integer | Upstream socket timeout threshold in milliseconds. Triggers failover if breached. |
+| `x-selixes-fallback-route` | String | Overrides routing policy to force a standby target (`anthropic` \| `gemini` \| `ollama`). |
+
+---
+
+## Licensing & Pricing Matrix
+
+1.  **Community Sovereign Plan** ($0 / forever): Completely self-hosted Docker deploy, zero data leaks, local edge Ollama continuity fallback.
+2.  **Cloud Gateway Plan** (Metered Usage): Fully managed, zero-maintenance global edge hosting,Redis budget locks, real-time cloud telemetry console.
+3.  **Enterprise Shield Plan** (Custom Annual Contract): Dedicated private deployment (single-tenant isolation scoped per contract), isolated Redis routing, custom policy scripts, 24/7 Slack SLA.
+
+---
+
+## Reference Navigation Directory
+
+*   [Quickstart Guide](https://selixes.com/docs/getting-started) — 5-minute setup and Docker integration.
+*   [Core Primitives](https://selixes.com/docs/core-concepts) — Deep dive into failover circuits and trajectory guard mechanics.
+*   [API Schema Specification](https://selixes.com/docs/api-reference) — Complete payload structures, headers, and HTTP error code references.
+*   [System Architecture](https://selixes.com/docs/architecture) — Internal diagrams, telemetries, and Postgres/Redis database models.
+*   [Pricing Portal](https://selixes.com/pricing) — Compare self-hosted versus cloud licenses.
+*   [Contact Page](https://selixes.com/contact) — Schedule a private architectural demo.
+
+---
+
+## Engineering Blog
+
+In-depth technical articles authored by the Selixes team on AI infrastructure engineering:
+
+*   [What Happens When OpenAI Goes Down?](https://selixes.com/blog/openai-outage-failover-guide) — Circuit breaker architecture, standby provider routing, and local edge fallback strategies.
+*   [Runaway LLM Costs: How Recursive Agent Loops Drain Cloud Budgets](https://selixes.com/blog/llm-cost-runaway-prevention) — Session-level spend gates, trajectory guards, and header-driven budget contracts.
+*   [Deploying AI Infrastructure in a Private VPC](https://selixes.com/blog/sovereign-ai-deployment-private-vpc) — Complete sovereignty checklist covering network isolation, local model hosting, gateway proxy audit trails, and compliance mapping (HIPAA, GDPR, SOC 2, FedRAMP).
