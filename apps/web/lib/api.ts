@@ -16,6 +16,8 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   if (!token) {
+    // In development, set NEXT_PUBLIC_DEV_BYPASS_TOKEN in .env.local to use a local bypass.
+    // See .env.example for details. Never set this in production.
     token = process.env.NEXT_PUBLIC_DEV_BYPASS_TOKEN ?? null;
   }
 
