@@ -1,5 +1,5 @@
 {
-  "name": "akra-flowops",
+  "name": "selixes-gateway",
   "private": true,
   "scripts": {
     "build": "turbo run build",

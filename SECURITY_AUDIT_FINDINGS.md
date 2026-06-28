@@ -19,9 +19,9 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [quota.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/quota.guard.ts) — Lua script for RPM/TPM and Monthly Budget
-- [usage-accumulator.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/usage-accumulator.service.ts) — post-response writes
-- [schema.prisma](file:///c:/Users/Admin/Desktop/akra-flowops/packages/database/prisma/schema.prisma) — Database schema
+- [quota.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/quota.guard.ts) — Lua script for RPM/TPM and Monthly Budget
+- [usage-accumulator.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/usage-accumulator.service.ts) — post-response writes
+- [schema.prisma](https://github.com/selixes/gateway/blob/main/packages/database/prisma/schema.prisma) — Database schema
 
 **Evidence:** The monthly budget check has been wrapped in a Lua script `BUDGET_CHECK_LUA` that atomically reads the current spend and checks it against the configured cap on the Redis server before the request is admitted. To handle distributed atomicity gaps and process-crash conditions, the request flow manages a database-backed `BudgetReservation` state machine (`CREATED` -> `PRECHARGED` -> `RECONCILED` / `REFUND_PENDING` -> `REFUNDED` / `DEAD_LETTER`). A background interval cleanup worker periodically checks for expired reservations and refunds estimated costs back to Redis. Both estimated vs. actual costs are saved to the database and displayed on the traces dashboard.
 
@@ -33,8 +33,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Medium
 **Files:**
-- [redis.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/redis/redis.service.ts) — `memStore`, `memHashes`, `memTTLs`
-- [prometheus.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/observability/prometheus.service.ts) — in-memory metric Maps
+- [redis.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/redis/redis.service.ts) — `memStore`, `memHashes`, `memTTLs`
+- [prometheus.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/observability/prometheus.service.ts) — in-memory metric Maps
 
 **Evidence:** NestJS services are singletons by default. The `GatewayService` does NOT store per-request state in instance variables — it uses local variables within method scope, which is correct. Redis keys include API key ID (`quota:rpm:${keyId}`) or session ID (`session:metrics:${sessionId}`), providing tenant isolation at the key level.
 
@@ -46,8 +46,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [quota.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/quota.guard.ts) — Fail-safe checks & tier evaluation
-- [redis.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/redis/redis.service.ts) — `isAvailable()` connection checks and `eval()` fallback
+- [quota.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/quota.guard.ts) — Fail-safe checks & tier evaluation
+- [redis.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/redis/redis.service.ts) — `isAvailable()` connection checks and `eval()` fallback
 
 **Evidence:** The quota guard now differentiates behavior depending on whether it is running on the paid/shared tier or self-hosted/community tier.
 
@@ -59,8 +59,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Low (resolved)
 **Files:**
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — Redis cache lookup
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — Postgres fallback
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — Redis cache lookup
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — Postgres fallback
 
 **Evidence:** API key auth now uses a two-tier lookup: Redis first (with 5-minute TTL cache), Postgres fallback. If both are down, it returns `ServiceUnavailableException` — fail-closed. This is correct.
 
@@ -74,9 +74,9 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [keys.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/keys/keys.service.ts) — Hashing and creation logic
-- [schema.prisma](file:///c:/Users/Admin/Desktop/akra-flowops/packages/database/prisma/schema.prisma) — Database schema definition
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — Key verification lookup
+- [keys.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/keys/keys.service.ts) — Hashing and creation logic
+- [schema.prisma](https://github.com/selixes/gateway/blob/main/packages/database/prisma/schema.prisma) — Database schema definition
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — Key verification lookup
 
 **Exploit Scenario:** If the database was compromised, an attacker could extract all plaintext keys and abuse customer accounts.
 
@@ -88,7 +88,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — `cacheKey` computation
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — `cacheKey` computation
 
 **Exploit Scenario:** An attacker with Redis CLI or sniffing access could read plaintext API keys by enumerating the cache keys.
 
@@ -100,7 +100,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — Key loading log statement
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — Key loading log statement
 
 **Evidence:** Logging a substring of the secret key is a risk for log leakage.
 
@@ -112,7 +112,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [clerk-auth.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/auth/clerk-auth.guard.ts) — Development bypass paths
+- [clerk-auth.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/auth/clerk-auth.guard.ts) — Development bypass paths
 
 **Evidence:** Publicly visible bypass credentials in source code allow complete authentication bypass if the server is deployed in development mode.
 
@@ -124,7 +124,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [gateway.controller.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.controller.ts) — metrics route handler
+- [gateway.controller.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.controller.ts) — metrics route handler
 
 **Evidence:** The metrics endpoint was completely public, exposing detailed usage statistics and system health to unauthorized users.
 
@@ -136,7 +136,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [gateway.controller.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.controller.ts) — replay route handler
+- [gateway.controller.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.controller.ts) — replay route handler
 
 **Evidence:** Anyone could fetch prompt and completion data for any UUID trace without credentials or tenant-scoping checks.
 
@@ -159,8 +159,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [apps/api/.env](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/.env) — Clerk secret key definition
-- [.git/hooks/pre-commit](file:///c:/Users/Admin/Desktop/akra-flowops/.git/hooks/pre-commit) — Pre-commit script
+- [apps/api/.env](https://github.com/selixes/gateway/blob/main/apps/api/.env) — Clerk secret key definition
+- [.git/hooks/pre-commit](https://github.com/selixes/gateway/blob/main/.git/hooks/pre-commit) — Pre-commit script
 
 **Fix:** Removed the real test key from the local `.env` and `.env.example` configurations, substituting it with a placeholder. Initiated a rotation of the Clerk secret key in the dashboard. Created a pre-commit git hook that automatically blocks any staged changes containing `sk_test_` or `sk_live_` secret key patterns.
 
@@ -172,7 +172,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [gateway.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.service.ts) — Session headers parsing
+- [gateway.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.service.ts) — Session headers parsing
 
 **Exploit Scenario:** An attacker could inject path traversal elements (e.g. `../../some-key`) or long strings to corrupt other Redis namespaces.
 
@@ -184,7 +184,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [gateway.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.service.ts) — Cost headers parsing
+- [gateway.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.service.ts) — Cost headers parsing
 
 **Exploit Scenario:** Passing non-numeric, `NaN`, `Infinity`, or negative values for budget caps bypassed comparison logic, allowing unlimited execution.
 
@@ -196,7 +196,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Medium
 **Files:**
-- [gateway.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.service.ts) — Ollama URL evaluation
+- [gateway.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.service.ts) — Ollama URL evaluation
 
 **Exploit Scenario:** A compromised or misconfigured container could use a public address for Ollama, exposing prompt messages to external listeners.
 
@@ -208,7 +208,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Low
 **Files:**
-- [gateway.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.service.ts) — Logger statements
+- [gateway.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.service.ts) — Logger statements
 
 **Exploit Scenario:** Attackers could inject newlines or ANSI sequences into logs via the session ID header.
 
@@ -222,8 +222,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [gateway.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/gateway.service.ts) — Session call counting
-- [quota.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/quota.guard.ts) — Default caps
+- [gateway.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/gateway.service.ts) — Session call counting
+- [quota.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/quota.guard.ts) — Default caps
 
 **Exploit Scenario:** Runaway agents could bypass the trajectory loop breaker by altering error messages or hiding histories, incurring high usage bills.
 
@@ -235,7 +235,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [redis.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/redis/redis.service.ts) — in-memory fallback limits
+- [redis.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/redis/redis.service.ts) — in-memory fallback limits
 
 **Exploit Scenario:** Sustained requests with Redis down caused process-global Maps (`memStore`, `memHashes`) to grow indefinitely, leading to OOM crash.
 
@@ -247,7 +247,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Medium
 **Files:**
-- [quota.guard.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/quota.guard.ts) — Organization-level limits
+- [quota.guard.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/quota.guard.ts) — Organization-level limits
 
 **Exploit Scenario:** SaaS tenants could bypass API key rate limits by creating multiple keys.
 
@@ -261,7 +261,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** 🔴 CRITICAL
 **Files:**
-- [replay.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/observability/replay.service.ts) — Replay Vault key loading
+- [replay.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/observability/replay.service.ts) — Replay Vault key loading
 
 **Exploit Scenario:** Attackers with database access could decrypt sensitive logs using the default fallback key hardcoded in the codebase.
 
@@ -273,7 +273,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Medium
 **Files:**
-- [main.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/main.ts) — Production environment verification
+- [main.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/main.ts) — Production environment verification
 
 **Fix:** Added a startup safety check in the NestJS `bootstrap()` routine. If the node environment is set to `production` and the database URL contains the default development password `akrapassword`, the application throws a fatal error and halts startup.
 
@@ -283,8 +283,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** Medium
 **Files:**
-- [docker-compose.prod.yml](file:///c:/Users/Admin/Desktop/akra-flowops/docker-compose.prod.yml) — Production Docker configurations
-- [redis.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/redis/redis.service.ts) — Redis service configuration
+- [docker-compose.prod.yml](https://github.com/selixes/gateway/blob/main/docker-compose.prod.yml) — Production Docker configurations
+- [redis.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/redis/redis.service.ts) — Redis service configuration
 
 **Fix:** Configured the production Redis service with password protection (`--requirepass ${REDIS_PASSWORD}`). Integrated Redis authentication support in the `RedisService` connection configurations via the `REDIS_PASSWORD` environment variable.
 
@@ -294,7 +294,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ NO ISSUE
 **Severity:** Low (no issue)
 **Files:**
-- [.gitignore](file:///c:/Users/Admin/Desktop/akra-flowops/.gitignore)
+- [.gitignore](https://github.com/selixes/gateway/blob/main/.gitignore)
 
 **Evidence:** `.env` and certificate extensions are correctly ignored.
 
@@ -306,7 +306,7 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED & RISK ACCEPTED
 **Severity:** Low (informational)
 **Files:**
-- [package.json](file:///c:/Users/Admin/Desktop/akra-flowops/package.json)
+- [package.json](https://github.com/selixes/gateway/blob/main/package.json)
 
 **Fix:** Executed `npm audit fix --legacy-peer-deps` to resolve all non-breaking dependency alerts. Vulnerabilities in core libraries like `ws`, `form-data`, `qs`, and `js-cookie` were successfully updated.
 
@@ -323,8 +323,8 @@ This audit originally identified **6 Critical**, **8 High**, **5 Medium**, and *
 **Status:** ✅ FIXED
 **Severity:** High
 **Files:**
-- [stream.pipeline.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/streaming/stream.pipeline.ts) — Streaming PII mask pipeline
-- [replay.service.ts](file:///c:/Users/Admin/Desktop/akra-flowops/apps/api/src/gateway/observability/replay.service.ts) — Replay Vault PII filter
+- [stream.pipeline.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/streaming/stream.pipeline.ts) — Streaming PII mask pipeline
+- [replay.service.ts](https://github.com/selixes/gateway/blob/main/apps/api/src/gateway/observability/replay.service.ts) — Replay Vault PII filter
 
 **Fix:** Built a robust, multi-category PII Detection pipeline. Added detection patterns for Social Security Numbers (SSNs), Passports, IBANs, and Dates of Birth (DOBs). Resolved stream-splitting bypasses by implementing look-ahead buffering of 40 characters in the streaming stage to scan across chunk boundaries. Added auditable telemetry logging of detected PII categories without exposing the sensitive value contents.
 

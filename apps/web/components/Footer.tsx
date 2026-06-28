@@ -90,7 +90,7 @@ export default function Footer() {
               <Link href="/privacy-policy" style={linkStyle}>Privacy Policy</Link>
               <Link href="/terms-of-service" style={linkStyle}>Terms of Service</Link>
               <Link href="/security-registry" style={linkStyle}>Security Registry</Link>
-              <a href="https://github.com/kunal3262k-bit/API-SHIELD" target="_blank" rel="noopener noreferrer" style={linkStyle}>
+              <a href="https://github.com/selixes/gateway" target="_blank" rel="noopener noreferrer" style={linkStyle}>
                 GitHub Repository
               </a>
             </div>
@@ -132,9 +132,8 @@ export default function Footer() {
             ))}
             
             {/* Simple SVG GitHub Link */}
-            {/* TODO: Check if a 'selixes' GitHub organization exists and update this URL to 'https://github.com/selixes/...' if applicable. For now, keeping the personal account repository link live and functional. */}
             <a 
-              href="https://github.com/kunal3262k-bit/API-SHIELD"
+              href="https://github.com/selixes/gateway"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Selixes GitHub Repository"

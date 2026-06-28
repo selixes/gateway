@@ -9,22 +9,22 @@ async function main() {
     console.log("Connected as postgres superuser.");
     
     // Check if DB exists
-    const res = await client.query("SELECT 1 FROM pg_database WHERE datname = 'akra_flowops'");
+    const res = await client.query("SELECT 1 FROM pg_database WHERE datname = 'selixes'");
     if (res.rowCount === 0) {
-      console.log("Creating database akra_flowops...");
-      await client.query("CREATE DATABASE akra_flowops");
+      console.log("Creating database selixes...");
+      await client.query("CREATE DATABASE selixes");
     } else {
-      console.log("Database akra_flowops already exists.");
+      console.log("Database selixes already exists.");
     }
     
-    // Create user akra if not exists
-    const userRes = await client.query("SELECT 1 FROM pg_roles WHERE rolname = 'akra'");
+    // Create user selixes if not exists
+    const userRes = await client.query("SELECT 1 FROM pg_roles WHERE rolname = 'selixes'");
     if (userRes.rowCount === 0) {
-      console.log("Creating user akra...");
-      await client.query("CREATE USER akra WITH PASSWORD 'akrapassword'");
-      await client.query("ALTER USER akra WITH SUPERUSER"); // For dev convenience
+      console.log("Creating user selixes...");
+      await client.query("CREATE USER selixes WITH PASSWORD 'changeme'");
+      await client.query("ALTER USER selixes WITH SUPERUSER"); // For dev convenience
     } else {
-      console.log("User akra already exists.");
+      console.log("User selixes already exists.");
     }
     
     await client.end();

@@ -20,8 +20,8 @@ This guide deploys the full platform on a single Linux VPS (Ubuntu 22.04+).
 ## 1. Clone and Configure
 
 ```bash
-git clone https://github.com/your-org/akra-flowops.git
-cd akra-flowops
+git clone https://github.com/selixes/gateway.git
+cd gateway
 cp .env.production.example .env.production
 ```
 

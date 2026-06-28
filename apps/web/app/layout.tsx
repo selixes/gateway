@@ -103,7 +103,7 @@ const orgSchema = {
   "url": "https://selixes.com",
   "logo": "https://selixes.com/selixes_icon.png",
   "sameAs": [
-    "https://github.com/kunal3262k-bit/API-SHIELD"
+    "https://github.com/selixes/gateway"
   ],
   "contactPoint": {
     "@type": "ContactPoint",

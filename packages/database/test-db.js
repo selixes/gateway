@@ -15,7 +15,7 @@ async function testConnection(url) {
 
 async function main() {
   const urls = [
-    "postgresql://akra:akrapassword@localhost:5432/akra_flowops",
+    "postgresql://selixes:changeme@localhost:5432/selixes",
     "postgresql://postgres:postgres@localhost:5432/postgres",
     "postgresql://postgres:password@localhost:5432/postgres",
     "postgresql://postgres@localhost:5432/postgres",

@@ -22,7 +22,7 @@ describe('HealthController', () => {
     controller = new HealthController(createMockPrisma(false), createMockRedis(true));
     const result = controller.check();
     expect(result.status).toBe('ok');
-    expect(result.service).toBe('akra-flowops-api');
+    expect(result.service).toBe('selixes-gateway-api');
   });
 
   it('should return ok on liveness', () => {

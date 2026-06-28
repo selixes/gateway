@@ -1,5 +1,5 @@
 /**
- * AKRA FlowOps — Demo Seed Script
+ * Selixes Gateway — Demo Seed Script
  * 
  * Creates a realistic demo dataset for testing the observability UI:
  *   1 Organization → 2 Workflows → 5 Runs → Events → AI Traces
@@ -13,7 +13,7 @@ import { PrismaClient, RunStatus, WorkflowStatus, EventType } from '@prisma/clie
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding AKRA FlowOps demo data...');
+  console.log('🌱 Seeding Selixes Gateway demo data...');
 
   // ─── Organization ────────────────────────────────────────────
   const org = await prisma.organization.upsert({

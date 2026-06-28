@@ -27,7 +27,7 @@ const aboutSchema = {
   "logo": "https://selixes.com/selixes_icon.png",
   "description": "Sovereign Outage-Proof AI Reliability Infrastructure Layer. Sitting directly inside secure cloud boundaries, Selixes catches outages dynamically, handles millisecond failovers, isolates active concurrency burst pressures, and caps reasoning spend automatically.",
   "sameAs": [
-    "https://github.com/kunal3262k-bit/API-SHIELD"
+    "https://github.com/selixes/gateway"
   ],
   "contactPoint": {
     "@type": "ContactPoint",

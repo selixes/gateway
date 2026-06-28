@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-18
 **Scope:** General posture improvements for a small, fast-moving codebase preparing for Enterprise customers
-**Companion Document:** [SECURITY_AUDIT_FINDINGS.md](file:///c:/Users/Admin/Desktop/akra-flowops/SECURITY_AUDIT_FINDINGS.md)
+**Companion Document:** [SECURITY_AUDIT_FINDINGS.md](https://github.com/selixes/gateway/blob/main/SECURITY_AUDIT_FINDINGS.md)
 
 ---
 
