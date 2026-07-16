@@ -23,12 +23,17 @@ import { ProviderHealthService } from './observability/provider-health.service';
 import { PrometheusService } from './observability/prometheus.service';
 import { ReplayService } from './observability/replay.service';
 import { GatewayEventBus } from './observability/gateway-event-bus.service';
+import { SemanticCacheService } from './semantic-cache.service';
 
 export interface GatewayOverrides {
   timeoutMs:       number;           // from x-selixes-timeout, default 10_000
   failoverPolicy:  string[];         // from x-selixes-failover-policy, default ['openai','anthropic']
   continuity:      boolean;          // from x-selixes-continuity, default true
   simulateOutage?: 'openai' | 'both' | 'absolute_blackout'; // TEST_MODE only
+  cacheEnabled:    boolean;
+  cacheTtl:        number;
+  semanticCache:   boolean;
+  semanticThreshold: number;
 }
 
 const VALID_PROVIDERS = new Set(['openai', 'anthropic', 'gemini', 'ollama']);
@@ -64,7 +69,17 @@ function parseOverrides(headers: Record<string, any>): GatewayOverrides {
     ? (headers['x-simulate-outage'] as GatewayOverrides['simulateOutage'])
     : undefined;
 
-  return { timeoutMs, failoverPolicy, continuity, simulateOutage };
+  // Parse cache headers
+  const cacheEnabled = getHeader(headers, 'x-selixes-cache-enabled', 'x-apishield-cache-enabled') === 'true';
+  const rawTtl = parseInt(getHeader(headers, 'x-selixes-cache-ttl', 'x-apishield-cache-ttl') ?? '3600', 10);
+  const cacheTtl = Number.isFinite(rawTtl) && rawTtl > 0 ? rawTtl : 3600;
+
+  // Parse semantic cache headers
+  const semanticCache = getHeader(headers, 'x-selixes-semantic-cache', 'x-apishield-semantic-cache') === 'true';
+  const rawThreshold = parseFloat(getHeader(headers, 'x-selixes-semantic-threshold', 'x-apishield-semantic-threshold') ?? '0.95');
+  const semanticThreshold = Number.isFinite(rawThreshold) && rawThreshold >= 0 && rawThreshold <= 1 ? rawThreshold : 0.95;
+
+  return { timeoutMs, failoverPolicy, continuity, simulateOutage, cacheEnabled, cacheTtl, semanticCache, semanticThreshold };
 }
 
 function isPrivateUrl(urlStr: string): boolean {
@@ -96,6 +111,7 @@ export class GatewayService {
     private readonly prometheus: PrometheusService,
     private readonly replay: ReplayService,
     private readonly eventBus: GatewayEventBus,
+    private readonly semanticCache: SemanticCacheService,
   ) {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434/api/chat';
     if (!isPrivateUrl(ollamaUrl)) {
@@ -135,6 +151,90 @@ export class GatewayService {
     const providerChain: string[] = [];
     const overrides = parseOverrides(headers);
     const startTime = Date.now();
+
+    // ── Semantic Caching: Read-Through ───────────────────────────────────────
+    let semanticVector: number[] | null = null;
+    if (overrides.semanticCache && this.semanticCache.isAvailable()) {
+      try {
+        const promptText = (body.messages ?? []).map((m: any) => m.content).join('\n');
+        if (promptText) {
+          semanticVector = await this.semanticCache.generateEmbedding(promptText);
+          const cachedResponse = await this.semanticCache.queryPinecone(semanticVector, overrides.semanticThreshold);
+          
+          if (cachedResponse) {
+            this.logger.log(`[Semantic Cache Hit] Serving response from Pinecone in ${Date.now() - startTime}ms`);
+            
+            this.eventBus.publish({
+              type: 'request.completed',
+              requestId,
+              correlationId: requestId,
+              apiKeyId: apiKey.id,
+              organizationId: apiKey.organizationId,
+              provider: 'semantic-cache',
+              model: cachedResponse.model,
+              latencyMs: Date.now() - startTime,
+              ttftMs: Date.now() - startTime,
+              tokens: { prompt: cachedResponse.usage?.prompt_tokens || 0, completion: cachedResponse.usage?.completion_tokens || 0, total: cachedResponse.usage?.total_tokens || 0 },
+              status: 'success',
+              isStream: false,
+              region: process.env.GATEWAY_REGION || 'us-east-1',
+            });
+
+            return {
+              ...cachedResponse,
+              _meta: { requestId, providerChain: ['semantic-cache:200'] },
+            };
+          }
+        }
+      } catch (err: any) {
+        this.logger.warn(`Semantic Cache read-through failed: ${err.message}`);
+      }
+    }
+
+    // ── Caching: Read-Through ────────────────────────────────────────────────
+    let cacheKey = '';
+    if (overrides.cacheEnabled && this.redis.isAvailable()) {
+      const canonical = JSON.stringify({
+        max_tokens:  body.max_tokens  ?? null,
+        messages:    body.messages    ?? [],
+        model:       body.model       ?? '',
+        temperature: body.temperature ?? null,
+        top_p:       body.top_p       ?? null,
+      });
+      const hash = createHash('sha256').update(canonical).digest('hex');
+      cacheKey = `cache:prompt:${hash}`;
+      
+      const cached = await this.redis.get(cacheKey);
+      if (cached) {
+        try {
+          const parsedCache = JSON.parse(cached);
+          this.logger.log(`[Cache Hit] Serving response from Redis cache in ${Date.now() - startTime}ms`);
+          
+          this.eventBus.publish({
+            type: 'request.completed',
+            requestId,
+            correlationId: requestId,
+            apiKeyId: apiKey.id,
+            organizationId: apiKey.organizationId,
+            provider: 'redis-cache',
+            model: parsedCache.model,
+            latencyMs: Date.now() - startTime,
+            ttftMs: Date.now() - startTime,
+            tokens: { prompt: parsedCache.usage?.prompt_tokens || 0, completion: parsedCache.usage?.completion_tokens || 0, total: parsedCache.usage?.total_tokens || 0 },
+            status: 'success',
+            isStream: false,
+            region: process.env.GATEWAY_REGION || 'us-east-1',
+          });
+
+          return {
+            ...parsedCache,
+            _meta: { requestId, providerChain: ['redis-cache:200'] },
+          };
+        } catch (e: any) {
+          this.logger.warn(`Failed to parse cache payload for key ${cacheKey}`);
+        }
+      }
+    }
 
     const sessionId = getHeader(headers, 'x-selixes-session-id', 'x-apishield-session-id')?.toString() || null;
     if (sessionId && !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
@@ -185,13 +285,37 @@ export class GatewayService {
         await this.redis.expire(redisKey, 86400).catch(() => {}); // 24hr TTL
       }
 
+      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept', 'x-apishield-cognitive-intercept') !== 'false';
+      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold', 'x-apishield-cognitive-intercept-threshold') || '3', 10);
+
+      // Security: Strip any spoofed intercept messages injected by the client
+      if (body.messages) {
+        const originalLength = body.messages.length;
+        body.messages = body.messages.filter((msg: any) => 
+          !(msg.role === 'system' && typeof msg.content === 'string' && msg.content.includes('[SELIXES COGNITIVE INTERCEPT]'))
+        );
+        if (body.messages.length < originalLength) {
+          this.logger.warn(`[Cognitive Intercept] Spoofing Guard: Stripped ${originalLength - body.messages.length} fake intercept message(s) from payload.`);
+        }
+      }
+
       // Check loop instability from message history
-      const instability = this.detectTrajectoryInstability(body.messages);
+      const instability = this.detectTrajectoryInstability(body.messages, cognitiveInterceptThreshold);
       const effectiveMaxCalls = maxCalls !== null ? maxCalls : 100;
 
       if (instability.detected) {
-        terminationReason = 'TRAJECTORY_INSTABILITY';
-        this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped: ${instability.reason}`);
+        if (cognitiveInterceptEnabled) {
+          this.logger.warn(`[Cognitive Intercept] Session ${sessionId}: Injecting steering prompt. Reason: ${instability.reason}`);
+          if (!body.messages) body.messages = [];
+          body.messages.push({
+            role: 'system',
+            content: `[SELIXES COGNITIVE INTERCEPT] ${instability.reason} You must break out of this loop. Do not repeat the same action. Formulate a final response or try a completely different approach.`
+          });
+          terminationReason = null; // Clear termination reason so request proceeds
+        } else {
+          terminationReason = 'TRAJECTORY_INSTABILITY';
+          this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped: ${instability.reason}`);
+        }
       } else if (consecutiveFailures >= 3) {
         terminationReason = 'TRAJECTORY_INSTABILITY';
         this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped: 3 consecutive server-side failures detected.`);
@@ -445,6 +569,14 @@ export class GatewayService {
           isStream: false,
           region: process.env.GATEWAY_REGION || 'us-east-1',
         });
+
+        if (overrides.cacheEnabled && cacheKey) {
+          this.redis.set(cacheKey, JSON.stringify(completionResponse), 'EX', overrides.cacheTtl).catch(() => {});
+        }
+
+        if (overrides.semanticCache && semanticVector) {
+          this.semanticCache.upsertPinecone(requestId, semanticVector, completionResponse).catch(() => {});
+        }
 
         return {
           ...completionResponse,
@@ -889,6 +1021,127 @@ export class GatewayService {
     const overrides = parseOverrides(headers);
     const startTime = Date.now();
 
+    // ── Semantic Caching: Read-Through (Streaming) ───────────────────────────
+    let semanticVector: number[] | null = null;
+    if (overrides.semanticCache && this.semanticCache.isAvailable()) {
+      try {
+        const promptText = (body.messages ?? []).map((m: any) => m.content).join('\n');
+        if (promptText) {
+          semanticVector = await this.semanticCache.generateEmbedding(promptText);
+          const cachedResponse = await this.semanticCache.queryPinecone(semanticVector, overrides.semanticThreshold);
+          
+          if (cachedResponse) {
+            this.logger.log(`[Semantic Cache Hit] Serving streaming response from Pinecone in ${Date.now() - startTime}ms`);
+            
+            this.eventBus.publish({
+              type: 'request.completed',
+              requestId,
+              correlationId: requestId,
+              apiKeyId: apiKey.id,
+              organizationId: apiKey.organizationId,
+              provider: 'semantic-cache',
+              model: cachedResponse.model,
+              latencyMs: Date.now() - startTime,
+              ttftMs: Date.now() - startTime,
+              tokens: { prompt: cachedResponse.usage?.prompt_tokens || 0, completion: cachedResponse.usage?.completion_tokens || 0, total: cachedResponse.usage?.total_tokens || 0 },
+              status: 'success',
+              isStream: true,
+              region: process.env.GATEWAY_REGION || 'us-east-1',
+            });
+
+            async function* mockSemanticStream(): AsyncGenerator<StreamChunk> {
+              yield { type: 'start', model: cachedResponse.model, provider: 'semantic-cache', latency: { ttftMs: Date.now() - startTime } };
+              const content = cachedResponse.choices?.[0]?.message?.content || '';
+              
+              // Chunk the content to simulate streaming
+              const chunkSize = 20;
+              for (let i = 0; i < content.length; i += chunkSize) {
+                yield { type: 'token', content: content.slice(i, i + chunkSize) };
+              }
+              yield { type: 'end', finishReason: 'stop' };
+            }
+
+            return {
+              stream: mockSemanticStream(),
+              requestId,
+              providerChain: ['semantic-cache:200'],
+              getFinalProvider: () => 'semantic-cache',
+              getFinalModel: () => cachedResponse.model,
+              getIsDegraded: () => false,
+              getDuration: () => Date.now() - startTime,
+              finalize: async () => {},
+              abort: async () => {},
+            };
+          }
+        }
+      } catch (err: any) {
+        this.logger.warn(`Semantic Cache read-through failed for streaming: ${err.message}`);
+      }
+    }
+
+    // ── Caching: Read-Through (Streaming) ────────────────────────────────────
+    if (overrides.cacheEnabled && this.redis.isAvailable()) {
+      const canonical = JSON.stringify({
+        max_tokens:  body.max_tokens  ?? null,
+        messages:    body.messages    ?? [],
+        model:       body.model       ?? '',
+        temperature: body.temperature ?? null,
+        top_p:       body.top_p       ?? null,
+      });
+      const hash = createHash('sha256').update(canonical).digest('hex');
+      const cacheKey = `cache:prompt:${hash}`;
+      
+      const cached = await this.redis.get(cacheKey);
+      if (cached) {
+        try {
+          const parsedCache = JSON.parse(cached);
+          this.logger.log(`[Cache Hit] Serving streaming response from Redis cache in ${Date.now() - startTime}ms`);
+          
+          this.eventBus.publish({
+            type: 'request.completed',
+            requestId,
+            correlationId: requestId,
+            apiKeyId: apiKey.id,
+            organizationId: apiKey.organizationId,
+            provider: 'redis-cache',
+            model: parsedCache.model,
+            latencyMs: Date.now() - startTime,
+            ttftMs: Date.now() - startTime,
+            tokens: { prompt: parsedCache.usage?.prompt_tokens || 0, completion: parsedCache.usage?.completion_tokens || 0, total: parsedCache.usage?.total_tokens || 0 },
+            status: 'success',
+            isStream: true,
+            region: process.env.GATEWAY_REGION || 'us-east-1',
+          });
+
+          async function* mockCacheStream(): AsyncGenerator<StreamChunk> {
+            yield { type: 'start', model: parsedCache.model, provider: 'redis-cache', latency: { ttftMs: Date.now() - startTime } };
+            const content = parsedCache.choices?.[0]?.message?.content || '';
+            
+            // Chunk the content to simulate streaming
+            const chunkSize = 20;
+            for (let i = 0; i < content.length; i += chunkSize) {
+              yield { type: 'token', content: content.slice(i, i + chunkSize) };
+            }
+            yield { type: 'end', finishReason: 'stop' };
+          }
+
+          return {
+            stream: mockCacheStream(),
+            requestId,
+            providerChain: ['redis-cache:200'],
+            getFinalProvider: () => 'redis-cache',
+            getFinalModel: () => parsedCache.model,
+            getIsDegraded: () => false,
+            getDuration: () => Date.now() - startTime,
+            finalize: async () => {},
+            abort: async () => {},
+          };
+        } catch (e: any) {
+          this.logger.warn(`Failed to parse cache payload for key ${cacheKey}`);
+        }
+      }
+    }
+
     const sessionId = getHeader(headers, 'x-selixes-session-id', 'x-apishield-session-id')?.toString() || null;
     if (sessionId && !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
       throw new HttpException('Invalid session ID format.', 400);
@@ -938,13 +1191,37 @@ export class GatewayService {
         await this.redis.expire(redisKey, 86400).catch(() => {}); // 24hr TTL
       }
 
+      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept', 'x-apishield-cognitive-intercept') !== 'false';
+      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold', 'x-apishield-cognitive-intercept-threshold') || '3', 10);
+
+      // Security: Strip any spoofed intercept messages injected by the client
+      if (body.messages) {
+        const originalLength = body.messages.length;
+        body.messages = body.messages.filter((msg: any) => 
+          !(msg.role === 'system' && typeof msg.content === 'string' && msg.content.includes('[SELIXES COGNITIVE INTERCEPT]'))
+        );
+        if (body.messages.length < originalLength) {
+          this.logger.warn(`[Cognitive Intercept] Spoofing Guard: Stripped ${originalLength - body.messages.length} fake intercept message(s) from payload.`);
+        }
+      }
+
       // Check loop instability from message history
-      const instability = this.detectTrajectoryInstability(body.messages);
+      const instability = this.detectTrajectoryInstability(body.messages, cognitiveInterceptThreshold);
       const effectiveMaxCalls = maxCalls !== null ? maxCalls : 100;
 
       if (instability.detected) {
-        terminationReason = 'TRAJECTORY_INSTABILITY';
-        this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped (Stream): ${instability.reason}`);
+        if (cognitiveInterceptEnabled) {
+          this.logger.warn(`[Cognitive Intercept] Session ${sessionId} (Stream): Injecting steering prompt. Reason: ${instability.reason}`);
+          if (!body.messages) body.messages = [];
+          body.messages.push({
+            role: 'system',
+            content: `[SELIXES COGNITIVE INTERCEPT] ${instability.reason} You must break out of this loop. Do not repeat the same action. Formulate a final response or try a completely different approach.`
+          });
+          terminationReason = null; // Clear termination reason so request proceeds
+        } else {
+          terminationReason = 'TRAJECTORY_INSTABILITY';
+          this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped (Stream): ${instability.reason}`);
+        }
       } else if (consecutiveFailures >= 3) {
         terminationReason = 'TRAJECTORY_INSTABILITY';
         this.logger.warn(`[Agent Loop Breaker] Session ${sessionId} tripped: 3 consecutive server-side failures detected.`);
@@ -1223,10 +1500,7 @@ export class GatewayService {
     ];
 
     // Write-behind cache: capture stream and write to Redis only on success
-    const cacheMode = (getHeader(headers, 'x-selixes-cache', 'x-apishield-cache') ?? '').toLowerCase();
-    if (this.redis.isAvailable() && cacheMode !== 'bypass') {
-      const ttl = parseInt(getHeader(headers, 'x-selixes-cache-ttl', 'x-apishield-cache-ttl') ?? '3600');
-      // Compute prompt canonical key
+    if (overrides.cacheEnabled && this.redis.isAvailable()) {
       const canonical = JSON.stringify({
         max_tokens:  body.max_tokens  ?? null,
         messages:    body.messages    ?? [],
@@ -1256,8 +1530,34 @@ export class GatewayService {
               total_tokens: 120 + completionTokens,
             },
           };
-          await this.redis.set(cacheKey, JSON.stringify(cacheData), 'EX', ttl)
-            .catch(e => this.logger.warn(`Stream write-behind cache capture failed: ${e.message}`));
+          await this.redis.set(cacheKey, JSON.stringify(cacheData), 'EX', overrides.cacheTtl)
+            .catch((e: any) => this.logger.warn(`Stream write-behind cache capture failed: ${e.message}`));
+        }),
+      );
+    }
+
+    if (overrides.semanticCache && semanticVector) {
+      stages.push(
+        createCacheCaptureStage(async (fullResponseText) => {
+          fullStreamedText = fullResponseText;
+          const cacheData = {
+            id: `chatcmpl-${requestId}`,
+            object: 'chat.completion',
+            created: Math.floor(Date.now() / 1000),
+            model: finalModel,
+            choices: [{
+              index: 0,
+              message: { role: 'assistant', content: fullResponseText },
+              finish_reason: 'stop',
+            }],
+            usage: {
+              prompt_tokens: 120, // estimated base
+              completion_tokens: completionTokens,
+              total_tokens: 120 + completionTokens,
+            },
+          };
+          await this.semanticCache.upsertPinecone(requestId, semanticVector, cacheData)
+            .catch((e: any) => this.logger.warn(`Stream semantic write-behind cache capture failed: ${e.message}`));
         }),
       );
     }
@@ -1387,12 +1687,40 @@ export class GatewayService {
     });
   }
 
-  private detectTrajectoryInstability(messages: any[]): { detected: boolean; reason: string | null } {
+  private detectTrajectoryInstability(messages: any[], threshold: number = 3): { detected: boolean; reason: string | null } {
     if (!messages || !Array.isArray(messages)) return { detected: false, reason: null };
 
     const toolFailures = new Map<string, { count: number; lastError: string }>();
+    
+    let consecutiveIdenticalActions = 0;
+    let lastActionSignature = '';
 
     for (const msg of messages) {
+      // 1. Detect repetitive assistant actions (Cognitive Intercept)
+      if (msg.role === 'assistant' && Array.isArray(msg.tool_calls) && msg.tool_calls.length > 0) {
+        // Create a signature of the tool calls (function names and arguments)
+        const signature = JSON.stringify(msg.tool_calls.map((t: any) => ({ name: t.function?.name, args: t.function?.arguments })));
+        if (signature === lastActionSignature && signature !== '[]') {
+          consecutiveIdenticalActions++;
+        } else {
+          consecutiveIdenticalActions = 1;
+          lastActionSignature = signature;
+        }
+        
+        // If they repeat the EXACT same tool call ${threshold} times, trip the interceptor
+        if (consecutiveIdenticalActions >= threshold) {
+          return {
+            detected: true,
+            reason: `Repetitive Action Loop Detected: You have called the exact same tool with the exact same arguments ${threshold} times in a row.`,
+          };
+        }
+      } else if (msg.role !== 'tool' && msg.role !== 'assistant') {
+        // Reset repetitive action counter if human or system interrupts
+        consecutiveIdenticalActions = 0;
+        lastActionSignature = '';
+      }
+
+      // 2. Detect repeated tool failures
       if (msg.role === 'tool') {
         const toolName = msg.name || 'unknown';
         const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content ?? '');
@@ -1424,11 +1752,11 @@ export class GatewayService {
           }
           toolFailures.set(toolName, record);
 
-          // Halt loop strictly if the same tool fails consecutively 3 times with the same error signature
-          if (record.count >= 3) {
+          // Halt loop strictly if the same tool fails consecutively threshold times with the same error signature
+          if (record.count >= threshold) {
             return {
               detected: true,
-              reason: `Instability Loop Detected: Tool '${toolName}' failed consecutively with the same error: "${normalizedError}"`,
+              reason: `Instability Loop Detected: Tool '${toolName}' failed consecutively with the same error: "${normalizedError}".`,
             };
           }
         } else {

@@ -237,7 +237,7 @@ export default function PricingClient() {
                   { name: 'Self-Hosted VPC Deployment', c: '✓ (Docker)', s: '-', e: '✓ (Private VPC)' },
                   { name: 'Upstream Provider Failover', c: '✓ (15ms)', s: '✓ (Managed Edge)', e: '✓ (Isolated Edge)' },
                   { name: 'Zero-Dependency Fallback Cache', c: '✓ (In-Memory Map)', s: '✓ (Hosted Redis)', e: '✓ (Dedicated Redis)' },
-                  { name: 'Tool Loop Trajectory Protection', c: '✓ (Standard 3 Limit)', s: '✓ (Custom Headers)', e: '✓ (Custom Rules)' },
+                  { name: 'Tool Loop Trajectory Protection', c: '✓ (Cognitive Intercept with auto-recovery)', s: '✓ (Custom Headers)', e: '✓ (Custom Rules)' },
                   { name: 'Client Close Lock Cleanups', c: '✓ (Exactly-Once)', s: '✓ (Exactly-Once)', e: '✓ (Exactly-Once)' },
                   { name: 'Visual Telemetry Dashboards', c: 'Local Console Only', s: '✓ (Cloud Console)', e: '✓ (Dedicated Console)' },
                   { name: 'Dedicated Technical Support', c: 'GitHub Issues', s: '✓ (Business SLA)', e: '✓ (24/7 Slack & Phone)' },
