@@ -1,0 +1,53 @@
+name: Daily Production & Quickstart Healthcheck
+
+on:
+  schedule:
+    # Run every day at 06:00 UTC (11:30 AM IST)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  healthcheck:
+    name: Verify Production Health & Quickstart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Live Production Website
+        run: |
+          echo "Checking https://selixes.com..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://selixes.com)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "::error::https://selixes.com returned HTTP $STATUS"
+            exit 1
+          fi
+          echo "✅ selixes.com is healthy (HTTP 200)"
+
+      - name: Verify Live Documentation Page
+        run: |
+          echo "Checking https://selixes.com/docs/getting-started..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://selixes.com/docs/getting-started)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "::error::Documentation page returned HTTP $STATUS"
+            exit 1
+          fi
+          echo "✅ Documentation is accessible (HTTP 200)"
+
+      - name: Validate Docker Compose Configuration (Blank-Slate)
+        run: |
+          echo "Validating docker-compose.yml without any existing .env file..."
+          # Ensure no .env file exists to simulate a fresh clone
+          rm -f .env
+          docker compose config --quiet
+          echo "✅ docker-compose.yml parses cleanly without requiring .env"
+
+      - name: Validate Template Configurations
+        run: |
+          echo "Checking .env.example for leaked internal credentials..."
+          if grep -iE "akrapassword|akra_flowops" .env.example docker-compose.yml; then
+            echo "::error::Leaked legacy credentials found in public templates!"
+            exit 1
+          fi
+          echo "✅ No legacy credentials found in templates"

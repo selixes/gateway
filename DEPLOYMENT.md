@@ -1,4 +1,4 @@
-# AKRA FlowOps — Deployment Guide
+# Selixes — Deployment Guide
 
 ## Self-Hosted VPS (Recommended for MVP)
 

@@ -3,19 +3,19 @@ version: '3.9'
 services:
   # ── PostgreSQL Database ──────────────────────────────────
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: selixes-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-akra}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-akrapassword}
-      POSTGRES_DB: ${POSTGRES_DB:-akra_flowops}
+      POSTGRES_USER: ${POSTGRES_USER:-selixes}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-selixespassword}
+      POSTGRES_DB: ${POSTGRES_DB:-selixes_gateway}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-akra}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-selixes}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -42,9 +42,11 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: selixes-api
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-akra}:${POSTGRES_PASSWORD:-akrapassword}@postgres:5432/${POSTGRES_DB:-akra_flowops}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-selixes}:${POSTGRES_PASSWORD:-selixespassword}@postgres:5432/${POSTGRES_DB:-selixes_gateway}?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     ports:
@@ -54,21 +56,27 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: >
-      sh -c "npx prisma db push --schema=../../packages/database/prisma/schema.prisma --accept-data-loss &&
-             npx ts-node ../../packages/database/seed.ts &&
-             npm run start:prod"
 
   # ── Selixes Web Dashboard ────────────────────────────────
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-}
+        NEXT_PUBLIC_API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-G-W88N8C3JG5}
+        NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
+        NEXT_PUBLIC_META_PIXEL_ID: ${NEXT_PUBLIC_META_PIXEL_ID:-}
+        NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN:-selixes.com}
     container_name: selixes-web
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_API_URL=${API_URL:-http://localhost:4000}
+      - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID:-G-W88N8C3JG5}
     ports:
       - "3000:3000"
     depends_on:

@@ -9,19 +9,19 @@ async function main() {
     console.log("Connected as postgres superuser.");
     
     // Check if DB exists
-    const res = await client.query("SELECT 1 FROM pg_database WHERE datname = 'selixes'");
+    const res = await client.query("SELECT 1 FROM pg_database WHERE datname = 'selixes_gateway'");
     if (res.rowCount === 0) {
-      console.log("Creating database selixes...");
-      await client.query("CREATE DATABASE selixes");
+      console.log("Creating database selixes_gateway...");
+      await client.query("CREATE DATABASE selixes_gateway");
     } else {
-      console.log("Database selixes already exists.");
+      console.log("Database selixes_gateway already exists.");
     }
     
     // Create user selixes if not exists
     const userRes = await client.query("SELECT 1 FROM pg_roles WHERE rolname = 'selixes'");
     if (userRes.rowCount === 0) {
       console.log("Creating user selixes...");
-      await client.query("CREATE USER selixes WITH PASSWORD 'changeme'");
+      await client.query("CREATE USER selixes WITH PASSWORD 'selixespassword'");
       await client.query("ALTER USER selixes WITH SUPERUSER"); // For dev convenience
     } else {
       console.log("User selixes already exists.");

@@ -9,8 +9,9 @@
  */
 
 import { PrismaClient, RunStatus, WorkflowStatus, EventType } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
 
 async function main() {
   console.log('🌱 Seeding Selixes Gateway demo data...');

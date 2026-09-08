@@ -129,7 +129,9 @@ version: '3.8'
 
 services:
   gateway:
-    image: selixes/gateway:latest
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     container_name: selixes-gateway
     ports:
       - "4000:4000"

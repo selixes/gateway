@@ -38,5 +38,22 @@ yarn-error.log*
 *.pem
 .gemini/
 .agent/
+.agents/
 work/
 
+# Internal outbound, automation, and scratch (Do NOT leak to public)
+prospects/
+scratch/
+scratch*
+scripts/automations/
+scripts/*.py
+scripts/generate-all-prospects.js
+open-source/
+*.csv
+*.mp4
+*.webm
+*.gif
+*.webp
+LINKEDIN_PROFILE_UPDATE.md
+clean_stream_architecture.jpg
+stream_failover_benchmark.jpg
