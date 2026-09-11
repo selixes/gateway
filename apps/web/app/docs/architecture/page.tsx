@@ -104,40 +104,102 @@ export default function SystemArchitecturePage() {
             Below is the lifecycle of an AI completion request routing through the sovereign gateway proxy:
           </p>
           
-          <pre style={{
-            background: '#040406', border: '1px solid #1a1a24', borderRadius: '8px',
-            padding: '1.25rem', fontSize: '0.8rem', color: '#cbd5e1', fontFamily: 'monospace',
-            lineHeight: 1.5, overflowX: 'auto', marginBottom: '1.5rem'
+          <div style={{
+            background: '#0a0a0f',
+            border: '1px solid #1c1c28',
+            borderRadius: '12px',
+            padding: '2rem 1.5rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+            alignItems: 'center'
           }}>
-{`+-----------------------+
-|  Client Application   |
-+-----------+-----------+
-            |
-            | (Standard HTTP POST to localhost:4000/v1)
-            v
-+-----------+-----------+      [Redis Check]
-|  Selixes Gateway      +=========================> (Query Active Session Cost)
-|  * Budget Validator   |<========================= (Return Current Spend)
-|  * Circuit Breaker    |
-+-----------+-----------+
-            |
-            +-------------[ Outage Tripped? ]-------------+
-            | (No)                                        | (Yes)
-            v                                             v
-+-----------+-----------+                         +-------+-------+
-| Upstream LLM Api      |                         | Standby Tier  |
-| (OpenAI / Anthropic)  |                         | (Gemini / Edge|
-+-----------+-----------+                         | Ollama Llama3)|
-            |                                     +-------+-------+
-            | (Completes Successfully)                    |
-            +---------------------+-----------------------+
-                                  |
-                                  v
-                        [Postgres Telemetry Ingest]
-                        * Prompt Snapshots (Masked)
-                        * Token Arbitrage Margin
-                        * Exact Latency & Model Hashes`}
-          </pre>
+            {/* Client App Box */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(99,102,241,0.15) 100%)',
+              border: '1px solid var(--accent)',
+              boxShadow: '0 0 15px rgba(99,102,241,0.15)',
+              borderRadius: '8px',
+              padding: '1rem 1.5rem',
+              width: '100%',
+              maxWidth: '300px',
+              textAlign: 'center'
+            }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Source</span>
+              <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff' }}>Client Application</span>
+              <span style={{ fontSize: '0.75rem', color: '#8e8e9f', display: 'block', marginTop: '4px', fontFamily: 'monospace' }}>POST /v1/chat/completions</span>
+            </div>
+
+            {/* Down Arrow */}
+            <div style={{ color: 'var(--accent)', fontSize: '1.25rem', fontWeight: 300 }}>↓</div>
+
+            {/* Selixes Gateway Box */}
+            <div style={{
+              background: '#0e0e14',
+              border: '1px solid #222230',
+              borderRadius: '10px',
+              padding: '1.25rem',
+              width: '100%',
+              maxWidth: '480px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1c1c28', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff' }}>🛡️ Selixes Gateway Proxy</span>
+                <span style={{ fontSize: '0.675rem', background: 'rgba(52,211,153,0.1)', color: '#34d399', padding: '2px 8px', borderRadius: '10px', fontWeight: 600 }}>~16ms Overhead</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div style={{ background: '#12121b', border: '1px solid #1c1c28', borderRadius: '6px', padding: '8px 12px' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff', display: 'block' }}>Redis Budget Gate</span>
+                  <span style={{ fontSize: '0.7rem', color: '#8e8e9f', display: 'block', marginTop: '2px' }}>Atomic token quota & spend validation</span>
+                </div>
+                <div style={{ background: '#12121b', border: '1px solid #1c1c28', borderRadius: '6px', padding: '8px 12px' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#fff', display: 'block' }}>Circuit Breaker</span>
+                  <span style={{ fontSize: '0.7rem', color: '#8e8e9f', display: 'block', marginTop: '2px' }}>Real-time health & latency monitor</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Split Arrows */}
+            <div style={{ display: 'flex', gap: '4rem', color: '#52526b', fontSize: '0.85rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', marginBottom: '4px', color: '#34d399' }}>Healthy</span>
+                <div>↓</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', marginBottom: '4px', color: '#f87171' }}>Outage</span>
+                <div>↓</div>
+              </div>
+            </div>
+
+            {/* Output Targets Row */}
+            <div style={{ display: 'flex', gap: '1rem', width: '100%', maxWidth: '580px', justifyContent: 'center' }}>
+              {/* Target 1 */}
+              <div style={{
+                background: '#111116', border: '1px solid #1c1c28', borderRadius: '8px',
+                padding: '10px 12px', flex: 1, textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff', display: 'block' }}>Primary Cloud</span>
+                <span style={{ fontSize: '0.7rem', color: '#8e8e9f' }}>OpenAI / Anthropic</span>
+              </div>
+              {/* Target 2 */}
+              <div style={{
+                background: '#111116', border: '1px solid #1c1c28', borderRadius: '8px',
+                padding: '10px 12px', flex: 1, textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff', display: 'block' }}>Standby Fallback</span>
+                <span style={{ fontSize: '0.7rem', color: '#8e8e9f' }}>Gemini / DeepSeek</span>
+              </div>
+              {/* Target 3 */}
+              <div style={{
+                background: 'rgba(99,102,241,0.02)', border: '1px dashed rgba(99,102,241,0.2)', borderRadius: '8px',
+                padding: '10px 12px', flex: 1, textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent-hover)', display: 'block' }}>Local continuity</span>
+                <span style={{ fontSize: '0.7rem', color: '#8e8e9f' }}>Ollama / Llama 3</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Section 3: Telemetry Schema */}
@@ -187,7 +249,7 @@ export default function SystemArchitecturePage() {
               </thead>
               <tbody>
                 {[
-                  { m: 'Middleware Latency', v: '< 15ms', d: 'Minimal transit delay added by header parsing and session token lookups.' },
+                  { m: 'Circuit-Breaker Latency', v: '~16ms', d: 'Failover detection and routing decision latency.' },
                   { m: 'Failover Switch Time', v: '< 20ms', d: 'Autonomic swap from offline primary provider to standby endpoints.' },
                   { m: 'Redis Query Cost', v: '< 1.2ms', d: 'High-throughput sliding cost check before admitting prompt tokens.' },
                   { m: 'Memory Footprint', v: '180 MB', d: 'Docker container footprint under idle conditions, optimized for edge nodes.' },

@@ -67,7 +67,7 @@ export default async function Image() {
             marginBottom: '30px',
           }}
         >
-          <img src={logoBase64} width="20" height="20" alt="Selixes Icon" />
+          <img src={logoBase64} width={20} height={20} alt="Selixes Icon" />
           <span
             style={{
               fontSize: '14px',
@@ -82,21 +82,31 @@ export default async function Image() {
         </div>
 
         {/* Brand Name */}
-        <h1
+        <div
           style={{
-            fontSize: '84px',
-            fontWeight: 900,
-            color: '#ffffff',
-            margin: '0 0 20px 0',
-            letterSpacing: '-0.04em',
             display: 'flex',
             alignItems: 'center',
-            gap: '24px',
+            gap: '30px',
+            marginBottom: '20px',
           }}
         >
-          <img src={logoBase64} width="96" height="96" alt="Selixes Logo" />
-          <span>Selixes</span>
-        </h1>
+          <img src={logoBase64} width={96} height={96} alt="Selixes Logo" style={{ objectFit: 'contain' }} />
+          <div
+            style={{
+              fontSize: '84px',
+              fontWeight: 700,
+              color: '#ffffff',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <span>SELI</span>
+            <span style={{ color: '#818cf8', textShadow: '0 0 20px rgba(99,102,241,0.95)' }}>X</span>
+            <span>ES</span>
+          </div>
+        </div>
 
         {/* Subtitle / Tagline */}
         <p
@@ -125,7 +135,7 @@ export default async function Image() {
         >
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <span style={{ color: '#818cf8', fontSize: '14px', textTransform: 'uppercase', fontWeight: 'bold' }}>Failover Speed</span>
-            <span style={{ color: '#ffffff', fontSize: '24px', fontWeight: 'bold', marginTop: '4px' }}>&lt; 15ms</span>
+            <span style={{ color: '#ffffff', fontSize: '24px', fontWeight: 'bold', marginTop: '4px' }}>~16ms</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <span style={{ color: '#818cf8', fontSize: '14px', textTransform: 'uppercase', fontWeight: 'bold' }}>Reasoning Budget</span>

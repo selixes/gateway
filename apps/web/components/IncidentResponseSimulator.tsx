@@ -25,10 +25,10 @@ export const presets: Preset[] = [
   {
     id: 'outage',
     name: '📡 Production Outage',
-    desc: 'Simulate OpenAI API downtime and track instantaneous 15ms failover routing.',
+    desc: 'Simulate OpenAI API downtime and track rapid 32ms cloud failover routing.',
     impactWithout: { downtime: '4m 18s', lostRequests: '1,248', cost: '$82.40' },
-    impactWith: { downtime: '15ms', lostRequests: '0', cost: '$0.85 (Standby)' },
-    scorecard: { recoveryTime: '15ms', requestsProtected: '100% (0 Lost)', costAvoided: '$81.55', status: 'SECURED' },
+    impactWith: { downtime: '~32ms', lostRequests: '0', cost: '$0.85 (Standby)' },
+    scorecard: { recoveryTime: '~32ms', requestsProtected: '100% (0 Lost)', costAvoided: '$81.55', status: 'SECURED' },
     codeConfig: { budgetCap: 1.50, concurrencyLimit: 10, fallbackRoute: 'anthropic' },
     steps: [
       { text: '📡 Dispatching prompt payload to primary route: OpenAI GPT-4o...', type: 'info' },
@@ -77,7 +77,7 @@ export const presets: Preset[] = [
       { text: '🛡️ Engaging Local Continuity Engine: Proxying requests to sovereign Local Edge...', type: 'system' },
       { text: '🔌 Activating Ollama Llama-3 local VPC container node...', type: 'info' },
       { text: '✅ Local model processed prompt successfully (status: 200, latency: 14ms).', type: 'success' },
-      { text: '🛡️ Zero downtime continuity maintained offline. Prompts preserved!', type: 'success' }
+      { text: '🛡️ 100% request recovery continuity maintained offline. Prompts preserved!', type: 'success' }
     ]
   },
   {
@@ -342,7 +342,7 @@ export default function IncidentResponseSimulator({
                 </div>
                 
                 <div style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="100%" height="160" viewBox="0 0 500 160" style={{ overflow: 'visible' }}>
+                  <svg width="100%" height="100%" viewBox="0 0 560 160" style={{ overflow: 'visible', maxWidth: '100%' }}>
                     {/* High-tech Neon filters and blueprint grid pattern */}
                     <defs>
                       <filter id="neon-glow-indigo" x="-20%" y="-20%" width="140%" height="140%">
@@ -457,7 +457,7 @@ export default function IncidentResponseSimulator({
                       <circle r="14" fill="#0d0d12" stroke={anthropicStatus === 'offline' ? '#ef4444' : activeRoutePath === 'anthropic' ? 'var(--accent)' : '#1f1f2c'} strokeWidth="2" filter={activeRoutePath === 'anthropic' ? 'url(#neon-glow-indigo)' : 'none'} />
                       <circle r="6" fill={anthropicStatus === 'offline' ? '#ef4444' : activeRoutePath === 'anthropic' ? 'var(--accent)' : '#a5b4fc'} />
                       <text x="22" y="3" fill="#c3c3d5" fontSize="9" fontWeight="700">Anthropic (US-West)</text>
-                      {activeRoutePath === 'anthropic' && <text x="22" y="14" fill="#34d399" fontSize="8" fontWeight="600">🟢 ACTIVE (15ms failover)</text>}
+                      {activeRoutePath === 'anthropic' && <text x="22" y="14" fill="#34d399" fontSize="8" fontWeight="600">🚀 ACTIVE (~32ms failover)</text>}
                       {anthropicStatus === 'offline' && <text x="22" y="14" fill="#ef4444" fontSize="8" fontWeight="600">🛑 OFFLINE (503)</text>}
                     </g>
 
@@ -481,7 +481,7 @@ export default function IncidentResponseSimulator({
                 </div>
 
                 <div style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  <svg width="100%" height="160" viewBox="0 0 500 160" style={{ overflow: 'visible' }}>
+                  <svg width="100%" height="100%" viewBox="0 0 540 160" style={{ overflow: 'visible', maxWidth: '100%' }}>
                     {/* High-tech SVG Filters and Blueprint definitions */}
                     <defs>
                       <filter id="neon-glow-indigo" x="-20%" y="-20%" width="140%" height="140%">
@@ -712,22 +712,22 @@ export default function IncidentResponseSimulator({
                   </div>
 
                   {/* Scorecard metric rows */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.25rem' }}>
-                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 10px', textAlign: 'center' }}>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
+                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 6px', textAlign: 'center' }}>
                       <span style={{ fontSize: '0.55rem', color: '#8e8e9f', display: 'block', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Recovery Time</span>
-                      <strong style={{ fontSize: '0.9rem', color: '#fff', display: 'block', marginTop: '2px' }}>
+                      <strong style={{ fontSize: '0.85rem', color: '#fff', display: 'block', marginTop: '2px' }}>
                         {presets.find(p => p.id === currentPreset)?.scorecard.recoveryTime}
                       </strong>
                     </div>
-                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 10px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 6px', textAlign: 'center' }}>
                       <span style={{ fontSize: '0.55rem', color: '#8e8e9f', display: 'block', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Requests Protected</span>
-                      <strong style={{ fontSize: '0.9rem', color: '#34d399', display: 'block', marginTop: '2px' }}>
+                      <strong style={{ fontSize: '0.85rem', color: '#34d399', display: 'block', marginTop: '2px' }}>
                         {presets.find(p => p.id === currentPreset)?.scorecard.requestsProtected}
                       </strong>
                     </div>
-                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 10px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '6px', padding: '8px 6px', textAlign: 'center' }}>
                       <span style={{ fontSize: '0.55rem', color: '#8e8e9f', display: 'block', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Cost Avoided</span>
-                      <strong style={{ fontSize: '0.9rem', color: '#fff', display: 'block', marginTop: '2px', fontFamily: 'monospace' }}>
+                      <strong style={{ fontSize: '0.85rem', color: '#fff', display: 'block', marginTop: '2px', fontFamily: 'monospace' }}>
                         {presets.find(p => p.id === currentPreset)?.scorecard.costAvoided}
                       </strong>
                     </div>
@@ -735,9 +735,9 @@ export default function IncidentResponseSimulator({
                 </div>
 
                 {/* Why This Matters: Side-by-Side Business Impact */}
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '8px', padding: '1rem' }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '8px', padding: '1rem' }}>
                   {/* Without Selixes */}
-                  <div style={{ borderRight: isMobile ? 'none' : '1px solid rgba(255,255,255,0.06)', paddingRight: '10px', borderBottom: isMobile ? '1px solid rgba(255,255,255,0.06)' : 'none', paddingBottom: isMobile ? '10px' : '0' }}>
+                  <div className="border-b md:border-b-0 md:border-r border-[rgba(255,255,255,0.06)] pb-3 md:pb-0 md:pr-3">
                     <span style={{ fontSize: '0.625rem', fontWeight: 800, color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
                       ⚠️ WITHOUT SELIXES
                     </span>
@@ -749,7 +749,7 @@ export default function IncidentResponseSimulator({
                   </div>
                   
                   {/* With Selixes */}
-                  <div style={{ paddingLeft: isMobile ? '0' : '4px', paddingTop: isMobile ? '6px' : '0' }}>
+                  <div className="pt-2 md:pt-0 md:pl-2">
                     <span style={{ fontSize: '0.625rem', fontWeight: 800, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>
                       🛡️ WITH SELIXES
                     </span>

@@ -73,7 +73,7 @@ export default function AboutClient() {
               <span style={{ fontSize: '1.5rem', display: 'block', marginBottom: '0.75rem' }}>🛡️</span>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>1. Reliability First</h3>
               <p style={{ fontSize: '0.85rem', color: '#8e8e9f', lineHeight: 1.6, margin: 0 }}>
-                Uptime is non-negotiable. Our autonomic gateway is engineered to fail-open gracefully, standardizing on exactly-once connection cleanup and 15ms circuit-breaker routing.
+                Uptime is non-negotiable. Our autonomic gateway is engineered to fail-open gracefully, standardizing on exactly-once connection cleanup and ~16ms circuit-breaker routing.
               </p>
             </div>
 

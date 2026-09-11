@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar';
 import InteractiveGlowCard from '../components/InteractiveGlowCard';
 import Footer from '../components/Footer';
 
+
 function SimulatorSkeleton() {
   return (
     <div className="w-full min-h-[600px] bg-[#0d0d12] border border-[#1f1f2c] rounded-[20px] p-10 animate-pulse flex flex-col gap-6">
@@ -99,12 +100,12 @@ const faqs = [
   {
     category: 'general',
     q: 'What happens if OpenAI goes down entirely?',
-    a: 'Selixes catches the outage in under 15ms. If OpenAI returns a 5xx gateway code or times out, the gateway dynamically redirects the call to your Standby Tier (like Anthropic Claude or Google Gemini) without dropping the client socket connection.'
+    a: 'Selixes catches the outage with a ~16ms circuit-breaker latency [1]. If OpenAI returns a 5xx gateway code or times out, the gateway dynamically redirects the call to your Standby Tier (like Anthropic Claude or Google Gemini) without dropping the client socket connection.'
   },
   {
     category: 'general',
     q: 'How fast is the failover rerouting process?',
-    a: 'The transit routing overhead is under 15ms. Since Selixes maintains persistent connection pools to all major LLM backends, the swap is practically instantaneous.'
+    a: 'The circuit-breaker routing overhead is ~16ms, and full cloud-to-cloud failover completes in a median of 32ms [1]. Since Selixes maintains persistent connection pools to all major LLM backends, the swap is practically instantaneous.'
   },
   {
     category: 'general',
@@ -155,7 +156,7 @@ const consoleChapters = [
   {
     id: 'timeline',
     name: '02. Resiliency & Outage Heal Stream',
-    desc: 'Real-time telemetry showing live transits and autonomic circuit breakers rerouting timeout spikes in under 15ms.',
+    desc: 'Real-time telemetry showing live transits and autonomic circuit breakers rerouting timeout spikes with ~16ms latency.',
     image: '/demo/02_execution_timeline.png',
     time: '0:20 - 0:40'
   },
@@ -197,10 +198,10 @@ const presets: Preset[] = [
   {
     id: 'outage',
     name: '📡 Production Outage',
-    desc: 'Simulate OpenAI API downtime and track instantaneous 15ms failover routing.',
+    desc: 'Simulate OpenAI API downtime and track rapid 32ms cloud failover routing.',
     impactWithout: { downtime: '4m 18s', lostRequests: '1,248', cost: '$82.40' },
-    impactWith: { downtime: '15ms', lostRequests: '0', cost: '$0.85 (Standby)' },
-    scorecard: { recoveryTime: '15ms', requestsProtected: '100% (0 Lost)', costAvoided: '$81.55', status: 'SECURED' },
+    impactWith: { downtime: '~32ms', lostRequests: '0', cost: '$0.85 (Standby)' },
+    scorecard: { recoveryTime: '~32ms', requestsProtected: '100% (0 Lost)', costAvoided: '$81.55', status: 'SECURED' },
     codeConfig: { budgetCap: 1.50, concurrencyLimit: 10, fallbackRoute: 'anthropic' },
     steps: [
       { text: '📡 Dispatching prompt payload to primary route: OpenAI GPT-4o...', type: 'info' },
@@ -249,7 +250,7 @@ const presets: Preset[] = [
       { text: '🛡️ Engaging Local Continuity Engine: Proxying requests to sovereign Local Edge...', type: 'system' },
       { text: '🔌 Activating Ollama Llama-3 local VPC container node...', type: 'info' },
       { text: '✅ Local model processed prompt successfully (status: 200, latency: 14ms).', type: 'success' },
-      { text: '🛡️ Zero downtime continuity maintained offline. Prompts preserved!', type: 'success' }
+      { text: '🛡️ 100% request recovery continuity maintained offline. Prompts preserved!', type: 'success' }
     ]
   },
   {
@@ -769,7 +770,7 @@ export default function HomeClient() {
           }}>
             {[
               {
-                value: '<15ms',
+                value: '~16ms',
                 label: 'Rerouting Latency',
                 sub: 'autonomic transit overhead',
                 tileClass: 'success-tile',
@@ -897,20 +898,7 @@ export default function HomeClient() {
             ))}
           </div>
 
-          {/* Trusted Customer Logos Row */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', borderTop: '1px dashed rgba(255,255,255,0.04)', paddingTop: '2rem' }}>
-            <span style={{ fontSize: '10px', fontFamily: 'Inter', color: '#52526b', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Trusted by AI Engineering Teams at
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2.5rem', flexWrap: 'wrap', opacity: 0.55 }}>
-              {['Acme AI', 'PromptOps', 'AgentFlow', 'Hyperion AI', 'Sovereign Lab'].map(name => (
-                <span key={name} style={{
-                  fontSize: '13px', fontFamily: "'Space Grotesk', sans-serif",
-                  color: '#fff', fontWeight: 600, letterSpacing: '-0.02em'
-                }}>{name}</span>
-              ))}
-            </div>
-          </div>
+
 
         </div>
       </section>
@@ -1079,8 +1067,8 @@ export default function HomeClient() {
                 <p style={{ fontSize: '0.725rem', color: '#52526b', margin: '0', lineHeight: 1.4 }}>
                   Estimates based on typical usage patterns across arbitrage routing, loop protection, and outage avoidance; actual savings vary by workload.
                 </p>
-                <Link href="/contact" className="btn-primary" style={{ padding: '0.65rem 0', justifyContent: 'center', borderRadius: '6px', fontSize: '0.875rem', textDecoration: 'none' }}>
-                  Book architecture review <span style={{ marginLeft: '4px' }}>{"->"}</span>
+                <Link href="/dashboard" className="btn-primary" style={{ padding: '0.65rem 0', justifyContent: 'center', borderRadius: '6px', fontSize: '0.875rem', textDecoration: 'none' }}>
+                  Deploy free local Docker container <span style={{ marginLeft: '4px' }}>{"->"}</span>
                 </Link>
               </div>
 
@@ -1116,8 +1104,24 @@ export default function HomeClient() {
 
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? '1rem' : '1.5rem' }}>
             {[
-              { title: 'Circuit Breaker Failover', desc: 'Surgically catches upstream timeouts and provider errors. Swaps routes to Anthropic Claude or Gemini standbys in 15ms.', icon: '🔮', color: '#6366f1' },
+              { title: 'Circuit Breaker Failover', desc: 'Surgically catches upstream timeouts and provider errors. Swaps routes to Anthropic Claude or Gemini standbys in a median of 32ms.', icon: '🔮', color: '#6366f1' },
               { title: 'Recursive Loop Protection', desc: 'Trips trajectory limits automatically. Intercepts message histories at 3 consecutive tool failures to stop loop spending.', icon: '🚫', color: '#ef4444' },
+              {
+                title: 'Cognitive Intercept',
+                subtitle: 'Active Agent Recovery',
+                desc: "When an agent gets stuck in a loop, Selixes doesn't kill it — it coaches it back. A steering prompt is injected mid-flight, the agent recovers gracefully, and your users never see an error.",
+                icon: '🛡️',
+                color: '#00B87C',
+                stat: '8,000 tokens saved per intercepted loop'
+              },
+              {
+                title: 'Time-Travel Rollback',
+                subtitle: 'Zero-Code State Recovery',
+                desc: 'Rewind any agent session to any previous checkpoint without dropping the connection. Debug production failures by forking reality at the exact step that broke — no restart required.',
+                icon: '⏪',
+                color: '#7C3AED',
+                stat: 'POST /v1/sessions/:id/rollback'
+              },
               { title: 'Budget Gate Enforcement', desc: 'Enforces spending caps per user session. Rejects runaway agents cleanly with rich standard JSON error payloads.', icon: '💵', color: '#34d399' },
               { title: 'Connection Leak Safeguard', desc: 'Listens directly on standard NestJS/Express close events. Atomic decrementing ensures zero budget state leakage.', icon: '🔌', color: '#3b82f6' },
               { title: 'Sovereign Self-Hosting', desc: 'Deploy within private cloud metal boundary using Docker or Kubernetes. 100% PII privacy governance compliance.', icon: '🌐', iconColor: '#f59e0b', color: '#f59e0b' },
@@ -1128,23 +1132,47 @@ export default function HomeClient() {
                 style={{
                   background: '#0d0d12', border: '1px solid #1f1f2c', borderRadius: '12px',
                   padding: '1.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
                   transition: 'all 0.2s, opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)',
                   position: 'relative',
                   width: isMobile ? '100%' : undefined,
-                  transitionDelay: `${(index + 1) * 100}ms`,
+                  transitionDelay: `${(index + 1) * 80}ms`,
                   ['--card-glow-color' as any]: feat.color
                 }}
                 className="feature-card glow-card scroll-reveal"
                 onMouseMove={handleMouseMoveCard}
               >
-                <div className="feature-icon" style={{
-                  width: '42px', height: '42px', background: `${feat.color}12`,
-                  border: `1px solid ${feat.color}25`, borderRadius: '10px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1.25rem', color: feat.color, marginBottom: '1.25rem'
-                }}>{feat.icon}</div>
-                <h4 style={{ fontSize: '0.975rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>{feat.title}</h4>
-                <p style={{ fontSize: '0.825rem', color: '#8e8e9f', lineHeight: 1.6, margin: 0 }}>{feat.desc}</p>
+                <div>
+                  <div className="feature-icon" style={{
+                    width: '42px', height: '42px', background: `${feat.color}12`,
+                    border: `1px solid ${feat.color}25`, borderRadius: '10px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '1.25rem', color: feat.color, marginBottom: '1.25rem'
+                  }}>{feat.icon}</div>
+                  {'subtitle' in feat && feat.subtitle && (
+                    <span style={{
+                      fontSize: '0.675rem', fontWeight: 700, letterSpacing: '0.08em',
+                      color: feat.color, textTransform: 'uppercase', display: 'block', marginBottom: '0.35rem'
+                    }}>
+                      {feat.subtitle}
+                    </span>
+                  )}
+                  <h4 style={{ fontSize: '0.975rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>{feat.title}</h4>
+                  <p style={{ fontSize: '0.825rem', color: '#8e8e9f', lineHeight: 1.6, margin: 0 }}>{feat.desc}</p>
+                </div>
+                {'stat' in feat && feat.stat && (
+                  <div style={{ marginTop: '1.25rem', paddingTop: '0.85rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{
+                      fontSize: '0.725rem', fontFamily: 'monospace', fontWeight: 700,
+                      color: feat.color, background: `${feat.color}15`, padding: '2px 8px', borderRadius: '4px',
+                      border: `1px solid ${feat.color}30`
+                    }}>
+                      {feat.stat}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -1177,7 +1205,7 @@ export default function HomeClient() {
                 initials: "SC"
               },
               {
-                text: "“Our uptime went from 99.4% to 99.99% after routing through Selixes. The 15ms circuit-breaker failover to Anthropic Claude is practically magic.”",
+                text: "“Our uptime improved dramatically after routing through Selixes. The ~16ms circuit-breaker failover to Anthropic Claude is practically magic.”",
                 author: "Marcus Vance",
                 role: "Principal Architect at Hyperion AI",
                 initials: "MV"
@@ -1348,6 +1376,48 @@ export default function HomeClient() {
         </div>
       </section>
 
+      {/* ── Semantic SEO & AI Context (FAQ) ── */}
+      <section style={{ padding: '6rem 2rem', background: 'var(--bg)', borderTop: '1px solid #1a1a24' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.03em', marginBottom: '1rem' }}>
+              Frequently Asked Questions
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '1.125rem' }}>
+              Learn more about how <strong style={{ color: '#fff' }}>Selixes</strong> protects your AI infrastructure.
+            </p>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <details style={{ background: '#0a0a0f', border: '1px solid #22222d', borderRadius: '12px', padding: '1.5rem' }}>
+              <summary style={{ fontSize: '1.25rem', fontWeight: 600, color: '#fff', cursor: 'pointer', listStyle: 'none' }}>
+                What is Selixes?
+              </summary>
+              <p style={{ color: '#cbd5e1', marginTop: '1rem', lineHeight: 1.6 }}>
+                <strong>Selixes</strong> is a sovereign AI reliability and cost-arbitrage gateway. It acts as a proxy between your application and AI models (like OpenAI or Anthropic). Selixes intercepts your API calls to ensure ~32ms failover during outages, enforce hard token budget caps, and dynamically route requests to the most efficient model.
+              </p>
+            </details>
+
+            <details style={{ background: '#0a0a0f', border: '1px solid #22222d', borderRadius: '12px', padding: '1.5rem' }}>
+              <summary style={{ fontSize: '1.25rem', fontWeight: 600, color: '#fff', cursor: 'pointer', listStyle: 'none' }}>
+                Why does AI autocorrect the name Selixes?
+              </summary>
+              <p style={{ color: '#cbd5e1', marginTop: '1rem', lineHeight: 1.6 }}>
+                Because <strong>Selixes</strong> is a newly established, unique brand name, some search engines or legacy AI models may mistakenly autocorrect it to "selix" or "selixis". The correct and official spelling for our AI Gateway is always <strong>Selixes</strong>.
+              </p>
+            </details>
+
+            <details style={{ background: '#0a0a0f', border: '1px solid #22222d', borderRadius: '12px', padding: '1.5rem' }}>
+              <summary style={{ fontSize: '1.25rem', fontWeight: 600, color: '#fff', cursor: 'pointer', listStyle: 'none' }}>
+                How does the Selixes Gateway handle outages?
+              </summary>
+              <p style={{ color: '#cbd5e1', marginTop: '1rem', lineHeight: 1.6 }}>
+                When you route your traffic through the Selixes Proxy, it continuously monitors upstream latency. If OpenAI experiences a 503 outage or severe latency spike, Selixes hot-swaps the request to a fallback provider (e.g., Anthropic Claude or a local Ollama model) in a median of 32ms, ensuring your application never drops a request.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
       {/* ── Premium Footer ── */}
       <Footer />
 
@@ -1438,6 +1508,9 @@ export default function HomeClient() {
           color: #fff !important;
         }
       `}</style>
+
+      {/* Elite Terminal Chatbot */}
+
 
     </div>
   );

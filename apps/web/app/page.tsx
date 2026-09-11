@@ -32,7 +32,7 @@ const faqSchema = {
       "name": "What happens if OpenAI goes down entirely?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Selixes catches the outage in under 15ms. If OpenAI returns a 5xx gateway code or times out, the gateway dynamically redirects the call to your Standby Tier (like Anthropic Claude or Google Gemini) without dropping the client socket connection."
+        "text": "Selixes catches the outage with a ~16ms circuit-breaker latency [1]. If OpenAI returns a 5xx gateway code or times out, the gateway dynamically redirects the call to your Standby Tier (like Anthropic Claude or Google Gemini) without dropping the client socket connection."
       }
     },
     {
@@ -40,7 +40,7 @@ const faqSchema = {
       "name": "How fast is the failover rerouting process?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The transit routing overhead is under 15ms. Since Selixes maintains persistent connection pools to all major LLM backends, the swap is practically instantaneous."
+        "text": "The circuit-breaker routing overhead is ~16ms, and full cloud-to-cloud failover completes in a median of 32ms [1]. Since Selixes maintains persistent connection pools to all major LLM backends, the swap is practically instantaneous. [1] See BENCHMARKS.md for full methodology."
       }
     },
     {

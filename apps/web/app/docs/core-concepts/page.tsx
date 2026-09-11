@@ -101,7 +101,7 @@ export default function CoreConceptsPage() {
           🔌 The Continuity Engine & Local Backups
         </h3>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Selixes deploys advanced circuit-breakers to intercept upstream outages in under 15ms. If OpenAI experiences a network timeout or a 5xx gateway error, the transaction is seamlessly routed to Anthropic or Gemini.
+          Selixes deploys advanced circuit-breakers to intercept upstream outages with ~16ms latency. If OpenAI experiences a network timeout or a 5xx gateway error, the transaction is seamlessly routed to Anthropic or Gemini.
         </p>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, margin: 0 }}>
           During complete cloud network blackouts, the gateway boots our **Zero-Cost Continuity Mode**, proxying critical requests to a sandboxed local-model node (running Llama-3 via Ollama) on your edge infrastructure. Your software stays functional offline at exactly **$0.00** in token fees.
@@ -114,17 +114,17 @@ export default function CoreConceptsPage() {
           💵 Cost Containment & Swarm Budgets
         </h3>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Autonomous agent systems are susceptible to concurrency explosions and infinite tool-calling loops:
+          Autonomous agent systems are highly susceptible to concurrency explosions and infinite tool-calling loops. Selixes implements an advanced real-time cost control system using Redis-backed atomic transaction blocks:
         </p>
-        <ul style={{ paddingLeft: '1.25rem', margin: '0 0 1rem 0', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#a1a1b0' }}>
+        <ul style={{ paddingLeft: '1.25rem', margin: '0 0 1.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6 }}>
           <li>
-            <strong>Session Budget Caps:</strong> Trip standard HTTP 429 locks the instant a multi-step agent run exceeds your session spending budget (e.g. $0.20 caps).
+            <strong>Session Budget Caps:</strong> Standard provider billing alerts can lag by hours. Selixes validates current cumulative spend on *every request transit* in under 1ms. By using Redis atomic floats (<code>INCRBYFLOAT</code>), the gateway blocks additional transits immediately (returning HTTP 429) the microsecond a session surpasses its configured limit (e.g. $0.20 budget).
           </li>
           <li>
-            <strong>Tool Loop Breaker:</strong> The Trajectory Instability Guard monitors messages on the fly. If a tool fails consecutively 3 times, the gateway terminates the thread instantly.
+            <strong>Trajectory Instability Guard:</strong> To detect and terminate infinite agent loops (where an agent repeatedly queries the same tool with the same result), the gateway parses prompt metadata. If a tool output or prompt structure is flagged as repeating consecutively 3 times, the gateway automatically terminates the request thread.
           </li>
           <li>
-            <strong>Concurrency Bounds:</strong> Standard Node close listeners and exactly-once decrements guarantee active connection limits are cleaned up flawlessly even during timeout aborts.
+            <strong>Atomic Concurrency Bounds:</strong> Multiple parallel agent workers can quickly saturate LLM rate limits. Selixes locks concurrent connections per session key. If a worker goes offline mid-transit, Node.js process socket close listeners guarantee that connection counts are atomically decremented in Redis, preventing locked sessions.
           </li>
         </ul>
       </section>

@@ -47,9 +47,9 @@ const response = await openai.chat.completions.create({
 
 ## 🌟 Why Selixes Exists
 
-* **🛡️ Autonomic Provider Failover:** Automatically catches HTTP timeouts (504), rate limits (429), and API connection failures, dynamically rerouting payloads to standby backup models in milliseconds.
-* **⚡ True Semantic Caching:** Stop paying for the same answer twice. Selixes uses Pinecone vector embeddings to cache responses based on meaning, not just exact string matches, reducing latency to ~50ms.
-* **🔌 Zero-Cost Local Continuity (BYOC):** During complete cloud blackouts, Selixes can dynamically route critical tasks to a sandboxed local edge node (Llama-3 via Ollama) to maintain graceful degraded service at exactly $0.00 in token fees.
+* **🛡️ Autonomic Provider Failover:** Automatically catches HTTP timeouts (504), rate limits (429), and API connection failures, dynamically rerouting payloads to standby backup models (~16ms circuit-breaker latency, median 32ms total failover [see BENCHMARKS.md](./BENCHMARKS.md)).
+* **⚡ True Semantic Caching:** Stop paying for the same answer twice. Selixes uses Pinecone vector embeddings to cache responses based on meaning, not just exact string matches (Up to 64.0% token savings on high-repetition workloads [see BENCHMARKS.md](./BENCHMARKS.md)).
+* **🔌 Zero-Cost Local Continuity (BYOC):** During complete cloud blackouts, Selixes can dynamically route critical tasks to a sandboxed local edge node (Llama-3 via Ollama) to maintain graceful degraded service with 100% request recovery [see BENCHMARKS.md](./BENCHMARKS.md).
 * **🔒 Sovereign & Self-Hosted:** Easily containerizable via Docker and deployed directly inside your private cloud (VPC). You never send your proprietary PII or prompts through a 3rd-party SaaS proxy.
 
 ---

@@ -14,7 +14,7 @@ const consoleChapters = [
   {
     id: 'timeline',
     name: '02. Resiliency & Outage Heal Stream',
-    desc: 'Real-time telemetry showing live transits and autonomic circuit breakers rerouting timeout spikes in under 15ms.',
+    desc: 'Real-time telemetry showing live transits and autonomic circuit breakers rerouting timeout spikes with ~16ms latency.',
     image: '/demo/02_execution_timeline.png',
     time: '0:20 - 0:40'
   },

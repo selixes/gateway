@@ -34,7 +34,7 @@ export default function HeroFailoverVisual() {
         setTimeText('00:04');
         setTimelineLogs(prev => [
           '[00:04] CIRCUIT_BREAKER_OPENED',
-          '[00:05] STANDBY_ROUTE_ENGAGED (15ms)',
+          '[00:05] STANDBY_ROUTE_ENGAGED (~16ms)',
           'Traffic rerouted: Anthropic Sonnet 3.5',
           ...prev
         ]);
