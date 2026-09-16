@@ -7,6 +7,7 @@ import HeroCommandCenter from '../components/HeroCommandCenter';
 import dynamic from 'next/dynamic';
 import Navbar from '../components/Navbar';
 import InteractiveGlowCard from '../components/InteractiveGlowCard';
+import AgentStackSection from '../components/AgentStackSection';
 import Footer from '../components/Footer';
 
 
@@ -902,6 +903,9 @@ export default function HomeClient() {
 
         </div>
       </section>
+
+      {/* ── Autonomous Agent Stack Reliability & Governance Section ── */}
+      <AgentStackSection />
 
       {/* ── 2-Line Migration Example Section ── */}
       <section style={{ padding: '5rem 1.5rem 3rem', background: 'transparent', display: 'flex', justifyContent: 'center' }}>

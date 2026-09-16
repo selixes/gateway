@@ -4,18 +4,25 @@ import HomeClient from './HomeClient';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Selixes - Sovereign AI Reliability & Cost Gateway',
-    description: 'Sovereign reliability layer for AI-native teams. Automatically failover provider outages, intercept recursive loops, contain concurrent bursts, and enforce cost budgets.',
+    title: 'Selixes - AI Reliability & Governance Layer for Autonomous Agent Stacks',
+    description: 'Sovereign AI gateway and reliability layer for autonomous agents and LLM applications. Sub-16ms failover, runaway tool loop protection, per-agent budget containment, and vector semantic caching.',
     keywords: [
-      'AI Gateway',
-      'LLM Proxy',
+      'AI Gateway for Autonomous Agents',
+      'AI Reliability Layer',
+      'Multi-Agent Gateway',
+      'Autonomous Agent Guardrails',
+      'Runaway Agent Loop Interceptor',
+      'Self-Hosted LLM Proxy',
       'AI Outage Failover',
+      'LiteLLM Alternative',
+      'Portkey Alternative',
+      'Helicone Alternative',
+      'LangGraph Gateway',
+      'CrewAI Proxy',
       'Token Cost Containment',
+      'Semantic Caching',
       'Sovereign AI',
-      'Sovereignty',
-      'Ollama Local Backup',
-      'Generative Engine Optimization',
-      'GEO'
+      'Ollama Continuity Mode'
     ],
     alternates: {
       canonical: 'https://selixes.com',
@@ -93,6 +100,22 @@ const faqSchema = {
     },
     {
       "@type": "Question",
+      "name": "How does Selixes protect multi-agent frameworks like LangGraph and CrewAI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Selixes detects runaway recursive tool-calling loops across autonomous agent nodes and enforces per-agent session budget caps (via 'x-selixes-max-session-cost'). If an LLM provider rate-limits midway through an agent's reasoning chain, Selixes dynamically reroutes the step to a fallback model without resetting the agent state."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Selixes compare to LiteLLM or Portkey?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Unlike managed SaaS gateways (like Portkey), Selixes is 100% self-hosted inside your VPC with zero prompt telemetry leaving your perimeter. Compared to LiteLLM, Selixes provides sub-16ms hardware-level circuit breaking, native Pinecone vector semantic caching (up to 64% token savings), and sandboxed offline local continuity to Ollama Llama-3."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Does it support local Continuity model backups with Ollama?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -105,7 +128,7 @@ const faqSchema = {
 const appSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Selixes AI Reliability Gateway",
+  "name": "Selixes AI Reliability & Agent Governance Gateway",
   "operatingSystem": "Docker, Kubernetes, Linux, Windows, macOS",
   "applicationCategory": "DeveloperApplication",
   "offers": {
@@ -113,7 +136,7 @@ const appSchema = {
     "price": "0.00",
     "priceCurrency": "USD"
   },
-  "description": "Sovereign AI reliability and budget gateway proxy that sits directly inside secure cloud boundaries to handle model failovers, prevent recursive token loop runs, and route to local model backups."
+  "description": "Sovereign AI reliability and governance gateway proxy for autonomous agent stacks and LLM applications. Sits directly inside private cloud boundaries to handle sub-16ms model failovers, halt recursive runaway agent loops, and route to local model backups."
 };
 
 export default function HomePage() {

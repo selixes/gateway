@@ -58,6 +58,7 @@ export default function Footer() {
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <Link href="/pricing" style={linkStyle}>Pricing Plans</Link>
+              <Link href="/#agent-stack" style={linkStyle}>Agent Stack Guardrails</Link>
               <Link href="/#playground" style={linkStyle}>Header Builder</Link>
               <Link href="/#simulate" style={linkStyle}>Chaos Simulator</Link>
               <Link href="/#walkthrough" style={linkStyle}>Console Preview</Link>
@@ -71,6 +72,7 @@ export default function Footer() {
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <Link href="/docs/getting-started" style={linkStyle}>Getting Started</Link>
+              <Link href="/docs/agent-stack" style={linkStyle}>Agent Stack Ops</Link>
               <Link href="/docs/openai-compatibility" style={linkStyle}>OpenAI SDK Swap</Link>
               <Link href="/docs/failover-policy" style={linkStyle}>Outage Policies</Link>
               <Link href="/docs/local-continuity" style={linkStyle}>Ollama Continuity</Link>
@@ -78,7 +80,20 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 4: Company & Legal */}
+          {/* Column 4: Compare & Alternatives */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Comparisons
+            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <Link href="/compare" style={linkStyle}>2026 AI Gateway Matrix</Link>
+              <Link href="/compare/selixes-vs-litellm" style={linkStyle}>Selixes vs. LiteLLM</Link>
+              <Link href="/compare/selixes-vs-portkey" style={linkStyle}>Selixes vs. Portkey</Link>
+              <Link href="/compare/helicone-alternative" style={linkStyle}>Helicone Alternative</Link>
+            </div>
+          </div>
+
+          {/* Column 5: Company & Legal */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Company & Legal

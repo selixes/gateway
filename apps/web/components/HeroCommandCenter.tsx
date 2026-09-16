@@ -343,7 +343,7 @@ export default function HeroCommandCenter() {
               color: '#f2f2f7',
               margin: 0,
             }}>
-              The 2-Line Outage Insurance{' '}
+              The AI Reliability Layer{' '}
               <br />
               <span style={{
                 background: 'linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #818cf8 100%)',
@@ -351,7 +351,7 @@ export default function HeroCommandCenter() {
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
               }}>
-                For OpenAI Applications
+                For Autonomous Agent Stacks
               </span>
             </h1>
             <p style={{
@@ -362,33 +362,97 @@ export default function HeroCommandCenter() {
               maxWidth: '540px',
               margin: '20px 0 0',
             }}>
-              Swap 2 lines in your standard OpenAI SDK. Automatically catch 504 gateway timeouts and 429 rate limits with ~16ms circuit-breaker routing to Anthropic & Gemini without dropping client socket connections.
+              Drop into LangGraph, CrewAI, or standard OpenAI SDKs in 2 lines. Automatically intercept runaway recursive tool loops, enforce strict per-agent session cost caps, and failover model outages in ~16ms without dropping client connections.
             </p>
           </div>
 
           {/* CTAs */}
           <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', flexWrap: 'wrap', alignItems: 'stretch', gap: '14px', width: '100%' }}>
             <Link href="/docs/getting-started" className="hero-cta-primary" style={{ justifyContent: 'center', width: isMobile ? '100%' : 'auto', minHeight: '48px', textAlign: 'center' }}>
-              Deploy Outage Protection (5 Mins)
+              Deploy Sovereign Gateway (5 Mins)
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
-            <a href="https://calendly.com/kunal3262k/30min" target="_blank" rel="noopener noreferrer" className="hero-cta-ghost" style={{ justifyContent: 'center', width: isMobile ? '100%' : 'auto', minHeight: '48px', textAlign: 'center', borderColor: 'rgba(99,102,241,0.35)', color: '#c7d2fe' }}>
+            <Link href="/compare" className="hero-cta-ghost" style={{ justifyContent: 'center', width: isMobile ? '100%' : 'auto', minHeight: '48px', textAlign: 'center', borderColor: 'rgba(99,102,241,0.35)', color: '#c7d2fe' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
               </svg>
-              Book Architecture Demo
-            </a>
+              Compare vs LiteLLM & Portkey
+            </Link>
             <a href="https://github.com/selixes/gateway" target="_blank" rel="noopener noreferrer" className="hero-cta-ghost" style={{ justifyContent: 'center', width: isMobile ? '100%' : 'auto', minHeight: '48px', textAlign: 'center' }}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style={{ flexShrink: 0 }}>
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
               </svg>
               Star on GitHub
             </a>
+          </div>
+
+          {/* Agent Stack Ecosystem Ribbon */}
+          <div style={{
+            marginTop: '8px',
+            padding: '12px 16px',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px'
+            }}>
+              <span style={{
+                fontSize: '11px',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 700,
+                color: '#6366f1',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1', display: 'inline-block' }} />
+                Agent Stack Native Governance
+              </span>
+              <span style={{ fontSize: '11px', color: '#71717a', fontFamily: "'JetBrains Mono', monospace" }}>
+                Zero code rewrites
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+              {[
+                { name: 'LangGraph', highlight: true },
+                { name: 'CrewAI', highlight: true },
+                { name: 'AutoGen', highlight: true },
+                { name: 'OpenAI Swarm', highlight: false },
+                { name: 'LlamaIndex', highlight: false },
+                { name: 'MCP Tool Security', highlight: true },
+                { name: 'Ollama Edge', highlight: false }
+              ].map((fw) => (
+                <span
+                  key={fw.name}
+                  style={{
+                    fontSize: '11px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: 600,
+                    padding: '3px 8px',
+                    borderRadius: '6px',
+                    background: fw.highlight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.04)',
+                    color: fw.highlight ? '#a5b4fc' : '#a1a1aa',
+                    border: `1px solid ${fw.highlight ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.06)'}`,
+                  }}
+                >
+                  {fw.name}
+                </span>
+              ))}
+            </div>
           </div>
 
           </div>

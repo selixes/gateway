@@ -7,6 +7,7 @@ import Navbar from '../../components/Navbar';
 
 const sidebarItems = [
   { href: '/docs/getting-started', label: '🚀 Getting Started' },
+  { href: '/docs/agent-stack', label: '🤖 Agent Stack Ops' },
   { href: '/docs/core-concepts', label: '📖 Core Concepts' },
   { href: '/docs/api-reference', label: '⚙️ API Reference' },
   { href: '/docs/architecture', label: '🏛️ System Architecture' },

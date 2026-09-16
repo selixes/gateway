@@ -121,16 +121,16 @@ const orgSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <ClerkProvider appearance={{ baseTheme: dark } as any}>
       <html lang="en" className={inter.variable} suppressHydrationWarning>
         <head>
           {/* CRITICAL: Explicit viewport meta — ensures window.innerWidth matches physical screen width on all mobile browsers */}
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
           {/* Dublin Core Metadata for Generative Search Engines */}
-          <meta name="dc.title" content="Selixes - Sovereign AI Reliability & Cost Gateway" />
+          <meta name="dc.title" content="Selixes - AI Reliability & Governance Layer for Autonomous Agent Stacks" />
           <meta name="dc.creator" content="Selixes Team" />
-          <meta name="dc.description" content="Sovereign reliability layer for AI-native teams. Automatically failover provider outages, intercept recursive loops, contain concurrent bursts, and enforce cost budgets." />
-          <meta name="dc.subject" content="AI Gateway, LLM Proxy, Outage Failover, Cost Containment, Sovereign AI, Generative Engine Optimization" />
+          <meta name="dc.description" content="Sovereign AI gateway and reliability layer for autonomous agents and LLM applications. Sub-16ms failover, runaway tool loop protection, per-agent budget containment, and vector semantic caching." />
+          <meta name="dc.subject" content="AI Gateway, AI Agent Guardrails, LLM Proxy, Outage Failover, Cost Containment, Sovereign AI, LiteLLM Alternative, Portkey Alternative, Generative Engine Optimization" />
           <meta name="dc.language" content="en" />
           <meta name="dc.publisher" content="Selixes" />
           <meta name="dc.type" content="SoftwareApplication" />
