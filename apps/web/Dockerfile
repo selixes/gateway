@@ -10,8 +10,8 @@ FROM node:20-alpine AS installer
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
-COPY package-lock.json ./
-RUN npm ci --legacy-peer-deps
+COPY package-lock.json* ./
+RUN npm install --legacy-peer-deps
 
 COPY --from=builder /app/out/full/ .
 
