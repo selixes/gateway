@@ -15,15 +15,23 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private memTTLs = new Map<string, number>(); // expiration timestamp in ms
 
   onModuleInit() {
-    this.client = new Redis({
-      host: process.env.REDIS_HOST ?? 'localhost',
-      port: parseInt(process.env.REDIS_PORT ?? '6379'),
-      password: process.env.REDIS_PASSWORD || undefined,
-      lazyConnect: true, // connect on-demand to prevent startup blockage
-      enableOfflineQueue: false, // fail fast — don't queue commands
-      connectTimeout: 2000,
-      commandTimeout: 500,
-    });
+    const redisOptions = {
+      lazyConnect: true,
+      enableOfflineQueue: false,
+      connectTimeout: 5000,
+      commandTimeout: 2000,
+    };
+
+    if (process.env.REDIS_URL) {
+      this.client = new Redis(process.env.REDIS_URL, redisOptions);
+    } else {
+      this.client = new Redis({
+        host: process.env.REDIS_HOST ?? 'localhost',
+        port: parseInt(process.env.REDIS_PORT ?? '6379'),
+        password: process.env.REDIS_PASSWORD || undefined,
+        ...redisOptions,
+      });
+    }
 
     this.client.on('error', (err) => {
       this.logger.warn(`Redis connection error: ${err.message}. Routing traffic to in-memory fallback.`);

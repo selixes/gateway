@@ -36,7 +36,7 @@ export default function Footer() {
             <p style={{ fontSize: '0.825rem', color: '#8e8e9f', lineHeight: 1.6, margin: 0 }}>
                Sovereign by design AI Gateway. millisecond failover routing, active token arbitrage, and full compliance isolation.
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '0.5rem' }}>
+            <Link href="/status" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '0.5rem', textDecoration: 'none' }}>
               <span style={{
                 width: '6px',
                 height: '6px',
@@ -48,7 +48,7 @@ export default function Footer() {
               <span style={{ fontSize: '0.675rem', fontFamily: 'monospace', color: '#22c55e', fontWeight: 700, letterSpacing: '0.05em' }}>
                 ALL SYSTEMS OPERATIONAL
               </span>
-            </div>
+            </Link>
           </div>
 
           {/* Column 2: Product */}
@@ -58,6 +58,7 @@ export default function Footer() {
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <Link href="/pricing" style={linkStyle}>Pricing Plans</Link>
+              <Link href="/status" style={linkStyle}>Live Status & Telemetry</Link>
               <Link href="/#agent-stack" style={linkStyle}>Agent Stack Guardrails</Link>
               <Link href="/#playground" style={linkStyle}>Header Builder</Link>
               <Link href="/#simulate" style={linkStyle}>Chaos Simulator</Link>

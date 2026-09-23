@@ -57,3 +57,5 @@ open-source/
 LINKEDIN_PROFILE_UPDATE.md
 clean_stream_architecture.jpg
 stream_failover_benchmark.jpg
+*.tsbuildinfo
+*.log

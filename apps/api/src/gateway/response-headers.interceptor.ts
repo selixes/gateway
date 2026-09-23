@@ -18,11 +18,17 @@ export class ResponseHeadersInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         if (data && data._meta) {
-          res.setHeader('X-Request-Id',     data._meta.requestId);
-          res.setHeader('X-Provider-Chain', data._meta.providerChain.join(','));
-          res.setHeader('X-Provider',       data._meta.providerChain
-            .findLast((p: string) => p.includes(':200') || p.endsWith(':200'))
-            ?.split(':')[0] ?? 'unknown');
+          res.setHeader('X-Request-Id', data._meta.requestId);
+
+          // SECURITY: Only expose internal provider routing chain if GATEWAY_TEST_MODE=true
+          if (process.env.GATEWAY_TEST_MODE === 'true') {
+            res.setHeader('X-Provider-Chain', data._meta.providerChain.join(','));
+            res.setHeader('X-Provider', data._meta.providerChain
+              .findLast((p: string) => p.includes(':200') || p.endsWith(':200'))
+              ?.split(':')[0] ?? 'unknown');
+          } else {
+            res.setHeader('X-Provider', 'selixes-gateway');
+          }
 
           // Strip internal meta from client-facing response body
           const { _meta, _continuity, ...clientData } = data;

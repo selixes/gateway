@@ -28,10 +28,16 @@ cp .env.production.example .env.production
 Edit `.env.production`:
 
 ```env
-# Database
-POSTGRES_USER=flowops
-POSTGRES_PASSWORD=<strong-random-password>
-POSTGRES_DB=flowops
+# ── Managed External Data Tier (Decoupled SPOF Elimination) ──
+# Current Production Database: Neon Serverless PostgreSQL in AWS us-east-1 (N. Virginia)
+# Pooled PgBouncer connection (port 5432, server-side PgBouncer active):
+DATABASE_URL="postgresql://neondb_owner:<password>@ep-sparkling-queen-awnip6gt-pooler.c-12.us-east-1.aws.neon.tech/neondb?sslmode=require&sslaccept=accept_invalid_certs"
+
+# Direct connection (for schema migrations / prisma db push):
+# DATABASE_URL="postgresql://neondb_owner:<password>@ep-sparkling-queen-awnip6gt.c-12.us-east-1.aws.neon.tech/neondb?sslmode=require&sslaccept=accept_invalid_certs"
+
+# Upstash Serverless Redis (TLS Active, Sub-2ms Lua Execution, AWS us-east-1)
+REDIS_URL="rediss://default:<token>@talented-monkey-289901.upstash.io:6379"
 
 # Clerk (from https://clerk.com → API Keys)
 CLERK_SECRET_KEY=sk_live_xxxx
@@ -39,43 +45,66 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxxx
 CLERK_WEBHOOK_SECRET=whsec_xxxx
 
 # App URL (your domain)
-APP_URL=https://flowops.yourdomain.com
-API_URL=https://api.flowops.yourdomain.com
+APP_URL=https://selixes.com
+API_URL=https://api.selixes.com
 
 # Alerts (optional — leave blank to disable)
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxx/yyy/zzz
 RESEND_API_KEY=re_xxxx
-ALERT_EMAIL=alerts@yourdomain.com
+ALERT_EMAIL=alerts@selixes.com
+```
+
+### Regional Topology & Latency Performance Characteristics
+
+| Tier / Topology | Database Region | Redis Region | Gateway Latency to DB (Read / Write) | Gateway Latency to Redis | Failover Circuit Decision | Status / Reality |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Current Reality (Neon Free Tier)** | **AWS `us-east-1` (N. Virginia)** | **AWS `us-east-1`** | **Read: 2.26ms p50 \| Write: 3.07ms p50** (Warm)<br>*(Cold Socket TLS: 27–121ms \| Wake-up: ~755ms)* | **1.20ms – 4.50ms** | **11.41ms p50** (Async Decoupled) | **ACTIVE PRODUCTION ($0/mo)** |
+| **Upgrade Target (Neon Launch / Scale)** | **AWS `us-east-1` (N. Virginia)** | **AWS `us-east-1`** | **Read: 2.26ms p50 \| Write: 3.07ms p50** (Warm)<br>*(Auto-suspend disabled: 0ms cold wake-up)* | **1.20ms – 4.50ms** | **11.41ms p50** | **Documented Upgrade ($19/mo)** |
+
+> [!NOTE]
+> **Production Reality, Detailed Latency Regimes & Upgrade Path:**
+> * **Current Production State ($0/mo Free Tier):** The live database runs on Neon Serverless PostgreSQL in AWS `us-east-1` (N. Virginia) co-located with the Lightsail API gateway. Due to the asynchronous fire-and-forget audit-logging architecture, the LLM failover critical path remains ultra-fast (**11.41ms p50**).
+> * **Empirical Database Latency Regimes (AWS `us-east-1` Gateway $\rightarrow$ Neon):**
+>   1. **Warm Pool Query Execution (Steady State):**
+>      - **Read Latency (SELECT 1 row):** `1.86ms` min, **`2.26ms` p50**, `2.25ms` avg, `3.02ms` p95
+>      - **Write Latency (INSERT):** `2.83ms` min, **`3.07ms` p50**, `3.48ms` avg, `10.38ms` p95
+>      - **Write Latency (UPDATE):** `2.58ms` min, **`3.92ms` p50**, `4.90ms` avg, `14.08ms` p95
+>   2. **Fresh Socket / TLS Handshake Overhead:** Opening a brand-new TCP socket and TLS handshake through Neon's native PgBouncer proxy layer takes **`27.36ms – 121.20ms`** (this was the source of initial ~85ms benchmarks before connection reuse). Application connection pools (`prisma` / `pg.Pool`) reuse connections to maintain steady-state sub-4ms writes.
+>   3. **Scale-to-Zero Compute Wake-Up:** After 300 seconds (5 minutes) of complete inactivity, compute suspends to zero. The first incoming request incurs a **`~755ms`** wake-up penalty (734ms boot/storage attach + 21ms query execution) before returning to warm ~2.2ms reads and ~3.0ms writes.
+> * **Known Limitations:** 100 CU-hour free tier monthly quota (running a 4-minute keep-alive ping would burn 180 CU-hours and suspend the DB by day 16; do NOT keep-alive ping on Free Tier).
+> * **Upgrade Path:** When budget / YC funding allows ($19/mo for Neon Launch tier), disable auto-suspend (`suspend_timeout_seconds: 0`) in Neon Console/API to keep compute permanently active. This eliminates the 755ms cold start completely with zero code or configuration changes.
+
+---
+
+## 2. Apply Database Schema to Managed PostgreSQL
+
+With the external Neon PostgreSQL instance, schema migrations are pushed directly via Prisma (using the direct connection endpoint):
+
+```bash
+# Push schema migrations to managed Neon PostgreSQL
+cd packages/database
+DATABASE_URL="postgresql://neondb_owner:<password>@ep-sparkling-queen-awnip6gt.c-12.us-east-1.aws.neon.tech/neondb?sslmode=require&sslaccept=accept_invalid_certs" npx prisma db push
 ```
 
 ---
 
-## 2. Apply Database Schema
+## 3. Decommission Legacy Co-Located Containers & Start Platform
+
+To eliminate the Single Point of Failure (SPOF), stop and decommission the old local PostgreSQL and Redis containers:
 
 ```bash
-# Start only the database first
-docker compose -f docker-compose.prod.yml up -d postgres
+# 1. Stop and remove the legacy co-located containers
+docker compose -f docker-compose.prod.yml stop postgres redis
+docker compose -f docker-compose.prod.yml rm -f postgres redis
 
-# Wait for postgres to be healthy, then push schema
-docker run --rm --network flowops_flowops \
-  -e DATABASE_URL=postgresql://flowops:<password>@postgres:5432/flowops \
-  -v $(pwd)/packages/database:/app \
-  -w /app node:20-alpine \
-  sh -c "npm i && npx prisma db push"
+# 2. Launch the stateless API and Web runtime
+docker compose -f docker-compose.prod.yml up -d api web
 ```
 
----
-
-## 3. Start the Platform
-
-```bash
-docker compose -f docker-compose.prod.yml up -d
-```
-
-Check health:
+Check health and live runtime connectivity:
 ```bash
 docker compose -f docker-compose.prod.yml ps
-curl http://localhost:4000/health
+curl -f http://localhost:4000/health
 ```
 
 ---

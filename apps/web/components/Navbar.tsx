@@ -115,6 +115,7 @@ export default function Navbar() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
               <Link href="/#agent-stack" style={getLinkStyle('/#agent-stack')}>Agent Stack</Link>
               <Link href="/compare" style={getLinkStyle('/compare')}>Compare</Link>
+              <Link href="/status" style={getLinkStyle('/status')}>Status</Link>
               <Link href="/docs/getting-started" style={getLinkStyle('/docs')}>Docs</Link>
               <Link href="/pricing" style={getLinkStyle('/pricing')}>Pricing</Link>
               <Link href="/about" style={getLinkStyle('/about')}>About</Link>
@@ -156,6 +157,7 @@ export default function Navbar() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <Link href="/#agent-stack" onClick={() => setIsOpen(false)} style={getLinkStyle('/#agent-stack')}>Agent Stack</Link>
             <Link href="/compare" onClick={() => setIsOpen(false)} style={getLinkStyle('/compare')}>Compare Gateways</Link>
+            <Link href="/status" onClick={() => setIsOpen(false)} style={getLinkStyle('/status')}>Live Status</Link>
             <Link href="/docs/getting-started" onClick={() => setIsOpen(false)} style={getLinkStyle('/docs')}>Docs</Link>
             <Link href="/pricing" onClick={() => setIsOpen(false)} style={getLinkStyle('/pricing')}>Pricing</Link>
             <Link href="/about" onClick={() => setIsOpen(false)} style={getLinkStyle('/about')}>About</Link>

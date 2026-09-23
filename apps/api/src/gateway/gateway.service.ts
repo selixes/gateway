@@ -45,27 +45,37 @@ function getHeader(headers: Record<string, any>, currentName: string, legacyName
 }
 
 function parseOverrides(headers: Record<string, any>): GatewayOverrides {
-  // Parse x-selixes-timeout, accepting legacy x-apishield-timeout during migration.
-  const rawTimeout = parseInt(getHeader(headers, 'x-selixes-timeout', 'x-apishield-timeout') ?? '');
+  const isTestMode = process.env.NODE_ENV === 'test' || process.env.GATEWAY_TEST_MODE === 'true';
+
+  // SECURITY: x-selixes-timeout is only honored when GATEWAY_TEST_MODE=true.
+  // In production, internal provider timeout cannot be overridden by callers.
+  const rawTimeout = isTestMode
+    ? parseInt(getHeader(headers, 'x-selixes-timeout', 'x-apishield-timeout') ?? '')
+    : NaN;
   const timeoutMs = Number.isFinite(rawTimeout) && rawTimeout > 0
     ? rawTimeout : DEFAULT_TIMEOUT;
 
-  // Parse x-selixes-failover-policy, accepting legacy x-apishield-failover-policy.
+  // SECURITY: x-selixes-failover-policy is only honored when GATEWAY_TEST_MODE=true.
+  // In production, callers cannot dictate internal upstream provider routing.
   let failoverPolicy = DEFAULT_CHAIN;
-  const rawPolicy = getHeader(headers, 'x-selixes-failover-policy', 'x-apishield-failover-policy') ?? '';
-  if (rawPolicy.includes('->')) {
-    const parts = rawPolicy.split('->').map((s: string) => s.trim().toLowerCase());
-    if (parts.every((p: string) => VALID_PROVIDERS.has(p))) {
-      failoverPolicy = parts;
+  if (isTestMode) {
+    const rawPolicy = getHeader(headers, 'x-selixes-failover-policy', 'x-apishield-failover-policy') ?? '';
+    if (rawPolicy.includes('->')) {
+      const parts = rawPolicy.split('->').map((s: string) => s.trim().toLowerCase());
+      if (parts.every((p: string) => VALID_PROVIDERS.has(p))) {
+        failoverPolicy = parts;
+      }
     }
   }
 
-  // Parse x-selixes-continuity, accepting legacy x-apishield-continuity.
-  const rawContinuity = getHeader(headers, 'x-selixes-continuity', 'x-apishield-continuity') ?? 'true';
+  // SECURITY: x-selixes-continuity is only honored when GATEWAY_TEST_MODE=true.
+  const rawContinuity = isTestMode
+    ? (getHeader(headers, 'x-selixes-continuity', 'x-apishield-continuity') ?? 'true')
+    : 'true';
   const continuity = rawContinuity.toLowerCase() !== 'false';
 
   // x-simulate-outage — only in test mode
-  const simulateOutage = process.env.GATEWAY_TEST_MODE === 'true'
+  const simulateOutage = isTestMode
     ? (headers['x-simulate-outage'] as GatewayOverrides['simulateOutage'])
     : undefined;
 
@@ -407,13 +417,15 @@ export class GatewayService {
         },
       });
 
-      await this.prisma.executionEvent.create({
+      void this.prisma.executionEvent.create({
         data: {
           runId: run.id,
           type: EventType.RUN_STARTED,
           message: 'API Gateway request transit started',
           metadata: { requestId, clientIp: headers['x-forwarded-for'] || '127.0.0.1' },
         },
+      }).catch((err) => {
+        this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
       });
 
       let completionResponse: any = null;
@@ -429,23 +441,25 @@ export class GatewayService {
           providerChain.push('openai:simulated-504');
           lastError = new Error('Simulated OpenAI Outage (504)');
           
-          await this.logFailureEvent(run.id, 'openai', lastError.message);
+          this.logFailureEvent(run.id, 'openai', lastError.message);
           continue;
         }
         if (overrides.simulateOutage === 'both' && (provider === 'openai' || provider === 'anthropic')) {
           providerChain.push(`${provider}:simulated-429`);
           lastError = new Error(`Simulated ${provider} Outage (429)`);
           
-          await this.logFailureEvent(run.id, provider, lastError.message);
+          this.logFailureEvent(run.id, provider, lastError.message);
           continue;
         }
 
-        await this.prisma.executionEvent.create({
+        void this.prisma.executionEvent.create({
           data: {
             runId: run.id,
             type: EventType.AI_CALLED,
             message: `Dispatching completion payload to ${provider} (${body.model || 'default'})`,
           },
+        }).catch((err) => {
+          this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
         });
 
         try {
@@ -458,13 +472,15 @@ export class GatewayService {
           finalProvider = provider;
           finalModel = result.model;
 
-          await this.prisma.executionEvent.create({
+          void this.prisma.executionEvent.create({
             data: {
               runId: run.id,
               type: EventType.NODE_EXECUTED,
               message: `Primary/Standby provider ${provider} resolved successfully`,
               metadata: { provider, model: finalModel },
             },
+          }).catch((err) => {
+            this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
           });
           break;
         } catch (err: any) {
@@ -473,27 +489,31 @@ export class GatewayService {
           lastError = err;
           this.logger.warn(`Provider ${provider} failed: ${err.message}`);
 
-          await this.logFailureEvent(run.id, provider, err.message);
+          this.logFailureEvent(run.id, provider, err.message);
           
           // Trigger standby retry event log
-          await this.prisma.executionEvent.create({
+          void this.prisma.executionEvent.create({
             data: {
               runId: run.id,
               type: EventType.RETRY_TRIGGERED,
               message: `Attempt with ${provider} failed. Instantly initiating failover to next standby.`,
             },
+          }).catch((err) => {
+            this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
           });
         }
       }
 
       // ── Tier 3: Edge Fallback (Ollama — Continuity Mode) ──────────────────
       if (!completionResponse && overrides.continuity && overrides.simulateOutage !== 'absolute_blackout') {
-        await this.prisma.executionEvent.create({
+        void this.prisma.executionEvent.create({
           data: {
             runId: run.id,
             type: EventType.RETRY_TRIGGERED,
             message: 'All cloud providers failed. Activating local degraded Continuity Mode fallback (Llama-3).',
           },
+        }).catch((err) => {
+          this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
         });
 
         try {
@@ -507,19 +527,21 @@ export class GatewayService {
           finalModel = result.model;
           isDegraded = true;
 
-          await this.prisma.executionEvent.create({
+          void this.prisma.executionEvent.create({
             data: {
               runId: run.id,
               type: EventType.NODE_EXECUTED,
               message: `Continuity completion succeeded locally.`,
               metadata: { provider: 'ollama-local', durationMs: Date.now() - startTime },
             },
+          }).catch((err) => {
+            this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
           });
         } catch (err: any) {
           providerChain.push(`ollama:${err.code ?? 'error'}`);
           this.logger.error(`Ollama edge fallback failed: ${err.message}`);
           
-          await this.logFailureEvent(run.id, 'ollama', err.message);
+          this.logFailureEvent(run.id, 'ollama', err.message);
         }
       }
 
@@ -619,14 +641,16 @@ export class GatewayService {
     }
   }
 
-  private async logFailureEvent(runId: string, provider: string, errMsg: string) {
-    await this.prisma.executionEvent.create({
+  private logFailureEvent(runId: string, provider: string, errMsg: string) {
+    void this.prisma.executionEvent.create({
       data: {
         runId,
         type: EventType.FAILURE_OCCURRED,
         message: `${provider} failure intercepted: ${errMsg}`,
       },
-    }).catch(() => {});
+    }).catch((err) => {
+      this.logger.warn(`Failed to write failure event audit log: ${err.message}`);
+    });
   }
 
   private async callProvider(
@@ -1312,13 +1336,15 @@ export class GatewayService {
       },
     });
 
-    await this.prisma.executionEvent.create({
+    void this.prisma.executionEvent.create({
       data: {
         runId: run.id,
         type: EventType.RUN_STARTED,
         message: 'API Gateway request transit started (Streaming)',
         metadata: { requestId, clientIp: headers['x-forwarded-for'] || '127.0.0.1' },
       },
+    }).catch((err) => {
+      this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
     });
 
     let activeGenerator: AsyncGenerator<StreamChunk> | null = null;
@@ -1333,22 +1359,24 @@ export class GatewayService {
       if (overrides.simulateOutage === 'openai' && provider === 'openai') {
         providerChain.push('openai:simulated-504');
         lastError = new Error('Simulated OpenAI Outage (504)');
-        await this.logFailureEvent(run.id, 'openai', lastError.message);
+        this.logFailureEvent(run.id, 'openai', lastError.message);
         continue;
       }
       if (overrides.simulateOutage === 'both' && (provider === 'openai' || provider === 'anthropic')) {
         providerChain.push(`${provider}:simulated-429`);
         lastError = new Error(`Simulated ${provider} Outage (429)`);
-        await this.logFailureEvent(run.id, provider, lastError.message);
+        this.logFailureEvent(run.id, provider, lastError.message);
         continue;
       }
 
-      await this.prisma.executionEvent.create({
+      void this.prisma.executionEvent.create({
         data: {
           runId: run.id,
           type: EventType.AI_CALLED,
           message: `Dispatching completion stream payload to ${provider} (${body.model || 'default'})`,
         },
+      }).catch((err) => {
+        this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
       });
 
       try {
@@ -1389,13 +1417,15 @@ export class GatewayService {
           finalModel = firstResult.value.model;
         }
 
-        await this.prisma.executionEvent.create({
+        void this.prisma.executionEvent.create({
           data: {
             runId: run.id,
             type: EventType.NODE_EXECUTED,
             message: `Primary/Standby provider ${provider} stream initialized successfully`,
             metadata: { provider, model: finalModel },
           },
+        }).catch((err) => {
+          this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
         });
         break;
       } catch (err: any) {
@@ -1403,26 +1433,30 @@ export class GatewayService {
         providerChain.push(`${provider}:${code}`);
         lastError = err;
         this.logger.warn(`Provider stream ${provider} failed pre-TTFT: ${err.message}`);
-        await this.logFailureEvent(run.id, provider, err.message);
+        this.logFailureEvent(run.id, provider, err.message);
 
-        await this.prisma.executionEvent.create({
+        void this.prisma.executionEvent.create({
           data: {
             runId: run.id,
             type: EventType.RETRY_TRIGGERED,
             message: `Stream attempt with ${provider} failed pre-TTFT. Instantly initiating failover to next standby.`,
           },
+        }).catch((err) => {
+          this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
         });
       }
     }
 
     // ── Tier 3: Continuity Fallback (Ollama) ─────────────────────────────
     if (!activeGenerator && overrides.continuity && overrides.simulateOutage !== 'absolute_blackout') {
-      await this.prisma.executionEvent.create({
+      void this.prisma.executionEvent.create({
         data: {
           runId: run.id,
           type: EventType.RETRY_TRIGGERED,
           message: 'All cloud providers failed. Activating local degraded Continuity Mode streaming fallback (Llama-3).',
         },
+      }).catch((err) => {
+        this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
       });
 
       try {
@@ -1449,18 +1483,20 @@ export class GatewayService {
         }
         isDegraded = true;
 
-        await this.prisma.executionEvent.create({
+        void this.prisma.executionEvent.create({
           data: {
             runId: run.id,
             type: EventType.NODE_EXECUTED,
             message: `Continuity streaming completion succeeded locally.`,
             metadata: { provider: 'ollama-local', durationMs: Date.now() - startTime },
           },
+        }).catch((err) => {
+          this.logger.warn(`Failed to write execution event audit log: ${err.message}`);
         });
       } catch (err: any) {
         providerChain.push(`ollama:${err.code ?? 'error'}`);
         this.logger.error(`Ollama edge fallback stream failed: ${err.message}`);
-        await this.logFailureEvent(run.id, 'ollama', err.message);
+        this.logFailureEvent(run.id, 'ollama', err.message);
       }
     }
 

@@ -8,6 +8,7 @@ import { PrometheusService } from './observability/prometheus.service';
 import { ProviderHealthService } from './observability/provider-health.service';
 import { ReplayService } from './observability/replay.service';
 import { TelemetryService } from './observability/telemetry.service';
+import { SemanticCacheService } from './semantic-cache.service';
 
 @Module({
   imports: [PrismaModule],
@@ -20,6 +21,7 @@ import { TelemetryService } from './observability/telemetry.service';
     ProviderHealthService,
     ReplayService,
     TelemetryService,
+    SemanticCacheService,
   ],
   exports: [
     GatewayService,
@@ -29,6 +31,7 @@ import { TelemetryService } from './observability/telemetry.service';
     ProviderHealthService,
     ReplayService,
     TelemetryService,
+    SemanticCacheService,
   ],
 })
 export class GatewayModule {}
