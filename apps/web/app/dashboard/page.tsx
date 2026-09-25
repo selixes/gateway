@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { RunStatusBadge } from '../../components/StatusBadge';
 import { OnboardingChecklist } from '../../components/OnboardingChecklist';
 import { CostArbitrageAdvisor } from '../../components/CostArbitrageAdvisor';
+import { GatewayEngineCards } from '../../components/GatewayEngineCards';
 
 function formatDuration(ms: number | null) {
   if (!ms) return '—';
@@ -52,13 +53,62 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: '0.25rem' }}>
           Overview
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-          AI workflow reliability and observability — real-time.
+          AI gateway reliability, edge failover telemetry, and multi-model spend bounds.
         </p>
+      </div>
+
+      {/* 1-Line Gateway Activation Box */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(16, 24, 40, 0.9) 0%, rgba(11, 16, 26, 0.95) 100%)',
+        border: '1px solid rgba(0, 242, 255, 0.25)',
+        borderRadius: '12px',
+        padding: '1.25rem 1.5rem',
+        marginBottom: '2rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        boxShadow: '0 8px 32px rgba(0, 242, 255, 0.05)',
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00f5a0', boxShadow: '0 0 10px #00f5a0' }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#00f2ff', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Sovereign Gateway Active
+            </span>
+          </div>
+          <p style={{ fontSize: '0.9rem', color: '#f1f5f9', fontWeight: 600, margin: '0 0 2px' }}>
+            Drop-in Gateway URL: <code style={{ color: '#00f2ff', background: 'rgba(0, 242, 255, 0.1)', padding: '2px 8px', borderRadius: '4px', fontFamily: 'monospace' }}>https://proxy.selixes.com/v1</code>
+          </p>
+          <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
+            Wrap your OpenAI SDK in 1 line for sub-16ms failover, token spend caps, and trajectory loop guards.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Link
+            href="/dashboard/integrations"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+              color: '#ffffff',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
+            }}
+          >
+            View SDK Snippets →
+          </Link>
+        </div>
       </div>
 
       {/* Onboarding checklist — shows when platform is new */}
@@ -81,6 +131,9 @@ export default async function DashboardPage() {
           color="var(--warning)"
         />
       </div>
+
+      {/* Production Gateway Engine: Semantic Cache & Quota Guard */}
+      <GatewayEngineCards />
 
       <CostArbitrageAdvisor />
 

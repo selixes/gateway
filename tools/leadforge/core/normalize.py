@@ -106,6 +106,16 @@ def normalize_address(raw_email: str) -> Dict[str, Any]:
             "verdict": Verdict.PERMANENT_FAIL.value
         }
 
+    # RFC 5322: dots cannot be leading, trailing, or consecutive in local-part
+    if ".." in local_part or local_part.startswith(".") or local_part.endswith("."):
+        return {
+            "valid": False,
+            "raw": raw_email,
+            "clean": canonical_address,
+            "error": "invalid_dot_placement",
+            "verdict": Verdict.PERMANENT_FAIL.value
+        }
+
     if len(domain) == 0 or len(domain) > 255 or len(canonical_address) > 254:
         return {
             "valid": False,

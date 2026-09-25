@@ -8,16 +8,15 @@ import { useState, useEffect, useRef } from 'react';
 
 const navItems = [
   { href: '/dashboard', label: 'Overview', icon: '◈', exact: true },
-  { href: '/dashboard/workflows', label: 'Workflows', icon: '⬡' },
-  { href: '/dashboard/runs', label: 'Runs', icon: '⟳' },
-  { href: '/dashboard/traces', label: 'AI Traces', icon: '◊' },
   { href: '/dashboard/observability', label: 'Observability', icon: '📡' },
-  { href: '/dashboard/templates', label: 'Templates', icon: '⊞' },
-  { href: '/dashboard/integrations', label: 'Integrations', icon: '⚡' },
+  { href: '/dashboard/traces', label: 'AI Traces', icon: '◊' },
+  { href: '/dashboard/workflows', label: 'Gateway Routes', icon: '⚡' },
+  { href: '/dashboard/runs', label: 'Execution Runs', icon: '⟳' },
+  { href: '/dashboard/integrations', label: 'SDK Quickstarts', icon: '💻' },
 ];
 
 const bottomItems = [
-  { href: '/dashboard/settings', label: 'Settings', icon: '⚙' },
+  { href: '/dashboard/settings', label: 'Settings & Keys', icon: '⚙' },
 ];
 
 export default function Sidebar() {
