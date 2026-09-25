@@ -59,3 +59,8 @@ clean_stream_architecture.jpg
 stream_failover_benchmark.jpg
 *.tsbuildinfo
 *.log
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+.coverage

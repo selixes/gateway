@@ -1,0 +1,2202 @@
+[
+  {
+    "domain": "google-client-1.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-2.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-3.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-4.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-5.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-6.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-7.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-8.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-9.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-10.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-11.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-12.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-13.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-14.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-15.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-16.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-17.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-18.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-19.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-20.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-21.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-22.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-23.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-24.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-25.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-26.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-27.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-28.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-29.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-30.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-31.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-32.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-33.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-34.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-35.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-36.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-37.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-38.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-39.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-40.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-41.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-42.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-43.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-44.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-45.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-46.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-47.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-48.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-49.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-50.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-51.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-52.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-53.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-54.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-55.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-56.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-57.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-58.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-59.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-60.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-61.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-62.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-63.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-64.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-65.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-66.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-67.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-68.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-69.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-70.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-71.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-72.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-73.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-74.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-75.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-76.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-77.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-78.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-79.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-80.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-81.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-82.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-83.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-84.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-85.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-86.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-87.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-88.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-89.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-90.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-91.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-92.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-93.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-94.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-95.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-96.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-97.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-98.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-99.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "google-client-100.com",
+    "mx": [
+      "aspmx.l.google.com",
+      "alt1.aspmx.l.google.com"
+    ],
+    "expected_platform": "dominant_a"
+  },
+  {
+    "domain": "msft-corp-1.com",
+    "mx": [
+      "msft-corp-1.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-2.com",
+    "mx": [
+      "msft-corp-2.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-3.com",
+    "mx": [
+      "msft-corp-3.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-4.com",
+    "mx": [
+      "msft-corp-4.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-5.com",
+    "mx": [
+      "msft-corp-5.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-6.com",
+    "mx": [
+      "msft-corp-6.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-7.com",
+    "mx": [
+      "msft-corp-7.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-8.com",
+    "mx": [
+      "msft-corp-8.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-9.com",
+    "mx": [
+      "msft-corp-9.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-10.com",
+    "mx": [
+      "msft-corp-10.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-11.com",
+    "mx": [
+      "msft-corp-11.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-12.com",
+    "mx": [
+      "msft-corp-12.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-13.com",
+    "mx": [
+      "msft-corp-13.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-14.com",
+    "mx": [
+      "msft-corp-14.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-15.com",
+    "mx": [
+      "msft-corp-15.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-16.com",
+    "mx": [
+      "msft-corp-16.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-17.com",
+    "mx": [
+      "msft-corp-17.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-18.com",
+    "mx": [
+      "msft-corp-18.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-19.com",
+    "mx": [
+      "msft-corp-19.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-20.com",
+    "mx": [
+      "msft-corp-20.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-21.com",
+    "mx": [
+      "msft-corp-21.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-22.com",
+    "mx": [
+      "msft-corp-22.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-23.com",
+    "mx": [
+      "msft-corp-23.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-24.com",
+    "mx": [
+      "msft-corp-24.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-25.com",
+    "mx": [
+      "msft-corp-25.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-26.com",
+    "mx": [
+      "msft-corp-26.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-27.com",
+    "mx": [
+      "msft-corp-27.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-28.com",
+    "mx": [
+      "msft-corp-28.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-29.com",
+    "mx": [
+      "msft-corp-29.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-30.com",
+    "mx": [
+      "msft-corp-30.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-31.com",
+    "mx": [
+      "msft-corp-31.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-32.com",
+    "mx": [
+      "msft-corp-32.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-33.com",
+    "mx": [
+      "msft-corp-33.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-34.com",
+    "mx": [
+      "msft-corp-34.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-35.com",
+    "mx": [
+      "msft-corp-35.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-36.com",
+    "mx": [
+      "msft-corp-36.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-37.com",
+    "mx": [
+      "msft-corp-37.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-38.com",
+    "mx": [
+      "msft-corp-38.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-39.com",
+    "mx": [
+      "msft-corp-39.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-40.com",
+    "mx": [
+      "msft-corp-40.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-41.com",
+    "mx": [
+      "msft-corp-41.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-42.com",
+    "mx": [
+      "msft-corp-42.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-43.com",
+    "mx": [
+      "msft-corp-43.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-44.com",
+    "mx": [
+      "msft-corp-44.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-45.com",
+    "mx": [
+      "msft-corp-45.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-46.com",
+    "mx": [
+      "msft-corp-46.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-47.com",
+    "mx": [
+      "msft-corp-47.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-48.com",
+    "mx": [
+      "msft-corp-48.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-49.com",
+    "mx": [
+      "msft-corp-49.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-50.com",
+    "mx": [
+      "msft-corp-50.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-51.com",
+    "mx": [
+      "msft-corp-51.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-52.com",
+    "mx": [
+      "msft-corp-52.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-53.com",
+    "mx": [
+      "msft-corp-53.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-54.com",
+    "mx": [
+      "msft-corp-54.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-55.com",
+    "mx": [
+      "msft-corp-55.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-56.com",
+    "mx": [
+      "msft-corp-56.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-57.com",
+    "mx": [
+      "msft-corp-57.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-58.com",
+    "mx": [
+      "msft-corp-58.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-59.com",
+    "mx": [
+      "msft-corp-59.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-60.com",
+    "mx": [
+      "msft-corp-60.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-61.com",
+    "mx": [
+      "msft-corp-61.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-62.com",
+    "mx": [
+      "msft-corp-62.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-63.com",
+    "mx": [
+      "msft-corp-63.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-64.com",
+    "mx": [
+      "msft-corp-64.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-65.com",
+    "mx": [
+      "msft-corp-65.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-66.com",
+    "mx": [
+      "msft-corp-66.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-67.com",
+    "mx": [
+      "msft-corp-67.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-68.com",
+    "mx": [
+      "msft-corp-68.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-69.com",
+    "mx": [
+      "msft-corp-69.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-70.com",
+    "mx": [
+      "msft-corp-70.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-71.com",
+    "mx": [
+      "msft-corp-71.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-72.com",
+    "mx": [
+      "msft-corp-72.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-73.com",
+    "mx": [
+      "msft-corp-73.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-74.com",
+    "mx": [
+      "msft-corp-74.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-75.com",
+    "mx": [
+      "msft-corp-75.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-76.com",
+    "mx": [
+      "msft-corp-76.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-77.com",
+    "mx": [
+      "msft-corp-77.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-78.com",
+    "mx": [
+      "msft-corp-78.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-79.com",
+    "mx": [
+      "msft-corp-79.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-80.com",
+    "mx": [
+      "msft-corp-80.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-81.com",
+    "mx": [
+      "msft-corp-81.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-82.com",
+    "mx": [
+      "msft-corp-82.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-83.com",
+    "mx": [
+      "msft-corp-83.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-84.com",
+    "mx": [
+      "msft-corp-84.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-85.com",
+    "mx": [
+      "msft-corp-85.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-86.com",
+    "mx": [
+      "msft-corp-86.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-87.com",
+    "mx": [
+      "msft-corp-87.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-88.com",
+    "mx": [
+      "msft-corp-88.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-89.com",
+    "mx": [
+      "msft-corp-89.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-90.com",
+    "mx": [
+      "msft-corp-90.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-91.com",
+    "mx": [
+      "msft-corp-91.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-92.com",
+    "mx": [
+      "msft-corp-92.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-93.com",
+    "mx": [
+      "msft-corp-93.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-94.com",
+    "mx": [
+      "msft-corp-94.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-95.com",
+    "mx": [
+      "msft-corp-95.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-96.com",
+    "mx": [
+      "msft-corp-96.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-97.com",
+    "mx": [
+      "msft-corp-97.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-98.com",
+    "mx": [
+      "msft-corp-98.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-99.com",
+    "mx": [
+      "msft-corp-99.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "msft-corp-100.com",
+    "mx": [
+      "msft-corp-100.mail.protection.outlook.com"
+    ],
+    "expected_platform": "dominant_b"
+  },
+  {
+    "domain": "secure-bank-1.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-2.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-3.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-4.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-5.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-6.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-7.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-8.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-9.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-10.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-11.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-12.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-13.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-14.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-15.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-16.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-17.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-18.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-19.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-20.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-21.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-22.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-23.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-24.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-25.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-26.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-27.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-28.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-29.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-30.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-31.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-32.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-33.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-34.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-35.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-36.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-37.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-38.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-39.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-40.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-41.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-42.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-43.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-44.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-45.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-46.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-47.com",
+    "mx": [
+      "mx1.iphmx.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-48.com",
+    "mx": [
+      "mx1.pphosted.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-49.com",
+    "mx": [
+      "mx1.mimecast.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "secure-bank-50.com",
+    "mx": [
+      "mx1.barracudanetworks.com"
+    ],
+    "expected_platform": "security_gateway"
+  },
+  {
+    "domain": "private-host-1.de",
+    "mx": [
+      "mail.private-host-1.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-2.de",
+    "mx": [
+      "mail.private-host-2.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-3.de",
+    "mx": [
+      "mail.private-host-3.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-4.de",
+    "mx": [
+      "mail.private-host-4.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-5.de",
+    "mx": [
+      "mail.private-host-5.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-6.de",
+    "mx": [
+      "mail.private-host-6.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-7.de",
+    "mx": [
+      "mail.private-host-7.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-8.de",
+    "mx": [
+      "mail.private-host-8.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-9.de",
+    "mx": [
+      "mail.private-host-9.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-10.de",
+    "mx": [
+      "mail.private-host-10.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-11.de",
+    "mx": [
+      "mail.private-host-11.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-12.de",
+    "mx": [
+      "mail.private-host-12.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-13.de",
+    "mx": [
+      "mail.private-host-13.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-14.de",
+    "mx": [
+      "mail.private-host-14.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-15.de",
+    "mx": [
+      "mail.private-host-15.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-16.de",
+    "mx": [
+      "mail.private-host-16.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-17.de",
+    "mx": [
+      "mail.private-host-17.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-18.de",
+    "mx": [
+      "mail.private-host-18.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-19.de",
+    "mx": [
+      "mail.private-host-19.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-20.de",
+    "mx": [
+      "mail.private-host-20.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-21.de",
+    "mx": [
+      "mail.private-host-21.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-22.de",
+    "mx": [
+      "mail.private-host-22.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-23.de",
+    "mx": [
+      "mail.private-host-23.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-24.de",
+    "mx": [
+      "mail.private-host-24.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-25.de",
+    "mx": [
+      "mail.private-host-25.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-26.de",
+    "mx": [
+      "mail.private-host-26.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-27.de",
+    "mx": [
+      "mail.private-host-27.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-28.de",
+    "mx": [
+      "mail.private-host-28.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-29.de",
+    "mx": [
+      "mail.private-host-29.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-30.de",
+    "mx": [
+      "mail.private-host-30.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-31.de",
+    "mx": [
+      "mail.private-host-31.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-32.de",
+    "mx": [
+      "mail.private-host-32.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-33.de",
+    "mx": [
+      "mail.private-host-33.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-34.de",
+    "mx": [
+      "mail.private-host-34.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-35.de",
+    "mx": [
+      "mail.private-host-35.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-36.de",
+    "mx": [
+      "mail.private-host-36.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-37.de",
+    "mx": [
+      "mail.private-host-37.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-38.de",
+    "mx": [
+      "mail.private-host-38.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-39.de",
+    "mx": [
+      "mail.private-host-39.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-40.de",
+    "mx": [
+      "mail.private-host-40.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-41.de",
+    "mx": [
+      "mail.private-host-41.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-42.de",
+    "mx": [
+      "mail.private-host-42.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-43.de",
+    "mx": [
+      "mail.private-host-43.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-44.de",
+    "mx": [
+      "mail.private-host-44.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-45.de",
+    "mx": [
+      "mail.private-host-45.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-46.de",
+    "mx": [
+      "mail.private-host-46.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-47.de",
+    "mx": [
+      "mail.private-host-47.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-48.de",
+    "mx": [
+      "mail.private-host-48.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-49.de",
+    "mx": [
+      "mail.private-host-49.de"
+    ],
+    "expected_platform": "self_managed"
+  },
+  {
+    "domain": "private-host-50.de",
+    "mx": [
+      "mail.private-host-50.de"
+    ],
+    "expected_platform": "self_managed"
+  }
+]
