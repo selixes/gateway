@@ -117,6 +117,10 @@ curl http://localhost:4000/v1/chat/completions \
 *   [Core Primitives](https://selixes.com/docs/core-concepts) — Deep dive into failover circuits and trajectory guard mechanics.
 *   [API Schema Specification](https://selixes.com/docs/api-reference) — Complete payload structures, headers, and HTTP error code references.
 *   [System Architecture](https://selixes.com/docs/architecture) — Internal diagrams, telemetries, and Postgres/Redis database models.
+*   [Comparison Matrix & Benchmarks](https://selixes.com/compare) — Side-by-side comparison of Selixes vs LiteLLM, Portkey, and Helicone.
+*   [Selixes vs LiteLLM](https://selixes.com/compare/selixes-vs-litellm) — In-depth architectural trade-offs, sub-16ms failover, and local continuity.
+*   [Selixes vs Portkey](https://selixes.com/compare/selixes-vs-portkey) — Governance, trajectory guards, and cost containment comparison.
+*   [Helicone Alternative](https://selixes.com/compare/helicone-alternative) — Comparing passive telemetry with active network circuit breakers.
 *   [Pricing Portal](https://selixes.com/pricing) — Compare self-hosted versus cloud licenses.
 *   [Contact Page](https://selixes.com/contact) — Schedule a private architectural demo.
 

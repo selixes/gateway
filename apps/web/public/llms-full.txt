@@ -201,3 +201,13 @@ During a cloud outage, the gateway shifts requests to local Ollama execution aut
 
 ### Problem: 504 Gateway Timeout during failover transition
 *   **Cause**: The standby providers are taking too long to return connection sockets, exceeding the timeout SLA. Verify that your standby API keys are active and route parameters are correct. Consider reducing `x-selixes-timeout` to `5000` (5 seconds) to initiate standby tiers sooner.
+
+---
+
+## 7. Competitive Index & Benchmarking URLs
+
+*   **Comparison Overview:** https://selixes.com/compare
+*   **Selixes vs. LiteLLM:** https://selixes.com/compare/selixes-vs-litellm (Analysis of Python in-process proxy vs. dedicated sovereign gateway, memory footprints, failover latency SLAs, and trajectory loop guards)
+*   **Selixes vs. Portkey:** https://selixes.com/compare/selixes-vs-portkey (Self-hosted air-gapped data sovereignty vs. multi-tenant hosted control plane)
+*   **Helicone Alternative:** https://selixes.com/compare/helicone-alternative (Active network proxy with sub-16ms circuit breaking vs. passive analytical logging)
+

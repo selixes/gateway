@@ -3,236 +3,474 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Story Carousel: The Sunday Night Agentic Meltdown</title>
+  <title>Selixes • LinkedIn Story Carousel: The Sunday Night Agentic Meltdown</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: #0d0e15; color: #f0f4f8; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 40px; }
-    
-    .instruction-banner {
-      max-width: 900px;
-      width: 100%;
-      background: rgba(0, 242, 255, 0.08);
-      border: 1px solid rgba(0, 242, 255, 0.25);
-      border-radius: 12px;
-      padding: 20px 24px;
-      color: #94a3b8;
-      font-size: 14px;
-      line-height: 1.6;
+    :root {
+      --bg: #06080e;
+      --card-bg: rgba(16, 20, 34, 0.72);
+      --card-border: rgba(0, 242, 255, 0.16);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cyan: #00f2ff;
+      --cyan-glow: rgba(0, 242, 255, 0.28);
+      --purple: #a855f7;
+      --purple-glow: rgba(168, 85, 247, 0.28);
+      --red: #ff4757;
+      --red-bg: rgba(255, 71, 87, 0.08);
+      --red-border: rgba(255, 71, 87, 0.3);
+      --emerald: #00f5a0;
+      --emerald-bg: rgba(0, 245, 160, 0.08);
+      --emerald-border: rgba(0, 245, 160, 0.28);
     }
-    .instruction-banner strong { color: #00f2ff; }
-    .instruction-banner code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #fff; }
 
-    /* LinkedIn 4:5 Slide Aspect Ratio (1080 x 1350 proportional: 540px x 675px) */
-    .carousel-container { display: flex; flex-direction: column; gap: 36px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    
+    body {
+      background-color: #040508;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      gap: 36px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .instruction-banner {
+      max-width: 720px;
+      width: 100%;
+      background: rgba(0, 242, 255, 0.06);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .instruction-banner strong { color: var(--cyan); }
+    .instruction-banner code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: #fff; }
+
+    /* LinkedIn 4:5 Aspect Ratio (720px x 900px, renders to 1080x1350 via 1.5x DPI) */
+    .carousel-container { display: flex; flex-direction: column; gap: 40px; }
 
     .slide {
-      width: 600px;
-      height: 750px;
-      background: radial-gradient(circle at 80% 20%, #151828 0%, #07080d 100%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
+      width: 720px;
+      height: 900px;
+      background: radial-gradient(circle at 85% 15%, #141828 0%, #080911 65%, #05060a 100%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 20px;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 48px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      padding: 44px 44px 38px 44px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(0, 242, 255, 0.12);
       page-break-after: always;
     }
 
+    /* Precision Grid Blueprint Accent */
     .slide::before {
       content: '';
       position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(0, 242, 255, 0.12) 0%, transparent 70%);
+      inset: 0;
+      background-image: 
+        radial-gradient(rgba(0, 242, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 32px 32px, 96px 96px, 96px 96px;
       pointer-events: none;
+      opacity: 0.85;
     }
 
+    /* Glowing ambient lighting blobs */
+    .glow-cyan {
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(0, 242, 255, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(28px);
+    }
+
+    .glow-purple {
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.14) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(28px);
+    }
+
+    .glow-red {
+      position: absolute;
+      top: 15%;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(255, 71, 87, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(32px);
+    }
+
+    /* SLIDE HEADER */
     .slide-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
-      z-index: 2;
+      z-index: 5;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: contain;
+      box-shadow: 0 0 14px rgba(0, 242, 255, 0.35);
+      background: #0d111e;
+      padding: 2px;
+      border: 1px solid rgba(0, 242, 255, 0.3);
+    }
+
+    .brand-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      color: #ffffff;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title span {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      opacity: 0.85;
+    }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(0, 242, 255, 0.1);
-      border: 1px solid rgba(0, 242, 255, 0.3);
-      color: #00f2ff;
+      background: rgba(0, 242, 255, 0.08);
+      border: 1px solid rgba(0, 242, 255, 0.28);
+      color: var(--cyan);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 100px;
+      padding: 5px 12px;
+      border-radius: 999px;
     }
 
     .badge.danger {
-      background: rgba(255, 68, 68, 0.12);
-      border-color: rgba(255, 68, 68, 0.35);
-      color: #ff5555;
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red);
     }
 
     .badge.purple {
-      background: rgba(168, 85, 247, 0.12);
+      background: rgba(168, 85, 247, 0.1);
       border-color: rgba(168, 85, 247, 0.35);
-      color: #c084fc;
+      color: #d8b4fe;
+    }
+
+    .badge.emerald {
+      background: var(--emerald-bg);
+      border-color: var(--emerald-border);
+      color: var(--emerald);
     }
 
     .slide-number {
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted);
       letter-spacing: 1px;
     }
 
+    /* SLIDE BODY */
     .slide-body {
       position: relative;
-      z-index: 2;
+      z-index: 5;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
+      margin: auto 0;
+    }
+
+    .pill-kicker {
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(0, 242, 255, 0.08);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 242, 255, 0.25);
     }
 
     .title-giant {
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 800;
-      line-height: 1.15;
+      line-height: 1.12;
       color: #ffffff;
-      letter-spacing: -0.5px;
+      letter-spacing: -1px;
     }
 
-    .title-giant span {
-      background: linear-gradient(135deg, #00f2ff, #a855f7);
+    .title-giant span.gradient-text {
+      background: linear-gradient(135deg, #00f2ff 0%, #a855f7 70%, #ff5555 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .title-large {
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 1.25;
+      font-size: 29px;
+      font-weight: 800;
+      line-height: 1.22;
       color: #ffffff;
+      letter-spacing: -0.6px;
     }
 
     .subtitle {
-      font-size: 17px;
-      color: #94a3b8;
+      font-size: 16px;
+      color: var(--muted);
       line-height: 1.55;
+      font-weight: 400;
     }
 
+    .subtitle strong {
+      color: #ffffff;
+    }
+
+    /* GLASSMORPHIC STORY CARDS */
     .story-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 12px;
-      padding: 20px;
-      font-size: 15px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-size: 14.5px;
       color: #cbd5e1;
       line-height: 1.6;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     .story-card.danger {
-      background: rgba(255, 68, 68, 0.04);
-      border-color: rgba(255, 68, 68, 0.2);
+      background: rgba(36, 12, 18, 0.7);
+      border-color: rgba(255, 71, 87, 0.32);
+      box-shadow: 0 8px 28px rgba(255, 71, 87, 0.12);
     }
 
     .story-card.highlight {
-      background: rgba(0, 242, 255, 0.04);
-      border-color: rgba(0, 242, 255, 0.2);
+      background: rgba(8, 28, 38, 0.75);
+      border-color: rgba(0, 242, 255, 0.32);
+      box-shadow: 0 8px 28px rgba(0, 242, 255, 0.12);
     }
 
+    .story-card.emerald {
+      background: rgba(6, 32, 24, 0.75);
+      border-color: rgba(0, 245, 160, 0.35);
+      box-shadow: 0 8px 28px rgba(0, 245, 160, 0.12);
+    }
+
+    /* METRIC STATS */
     .metric-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 14px;
+    }
+
+    .metric-grid.grid-3 {
+      grid-template-columns: 1fr 1fr 1fr;
     }
 
     .metric-box {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 10px;
+      background: rgba(14, 18, 30, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
       padding: 16px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
-    .metric-box.red { border-color: rgba(255,68,68,0.3); background: rgba(255,68,68,0.05); }
-    .metric-box.cyan { border-color: rgba(0,242,255,0.3); background: rgba(0,242,255,0.05); }
 
-    .metric-value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-    .metric-box.red .metric-value { color: #ff5555; }
-    .metric-box.cyan .metric-value { color: #00f2ff; }
-    .metric-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-box.red {
+      border-color: var(--red-border);
+      background: rgba(255, 71, 87, 0.06);
+    }
 
-    .list-steps { display: flex; flex-direction: column; gap: 12px; }
+    .metric-box.cyan {
+      border-color: rgba(0, 242, 255, 0.32);
+      background: rgba(0, 242, 255, 0.06);
+    }
+
+    .metric-box.emerald {
+      border-color: var(--emerald-border);
+      background: var(--emerald-bg);
+    }
+
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+
+    .metric-box.red .metric-value { color: #ff5565; text-shadow: 0 0 16px rgba(255, 85, 101, 0.4); }
+    .metric-box.cyan .metric-value { color: var(--cyan); text-shadow: 0 0 16px rgba(0, 242, 255, 0.4); }
+    .metric-box.emerald .metric-value { color: var(--emerald); text-shadow: 0 0 16px rgba(0, 245, 160, 0.4); }
+
+    .metric-label {
+      font-size: 11px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* STEP FLOW LISTS */
+    .list-steps { display: flex; flex-direction: column; gap: 11px; }
+    
     .step-item {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 14px;
+      background: rgba(14, 18, 30, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 13px 16px;
       font-size: 14px;
       color: #cbd5e1;
       line-height: 1.5;
     }
+
     .step-dot {
-      min-width: 22px;
-      height: 22px;
-      background: rgba(0, 242, 255, 0.15);
-      border: 1px solid #00f2ff;
+      min-width: 24px;
+      height: 24px;
+      background: rgba(0, 242, 255, 0.12);
+      border: 1px solid var(--cyan);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: #00f2ff;
-      margin-top: 2px;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-top: 1px;
+      font-family: 'JetBrains Mono', monospace;
     }
 
+    .step-dot.danger {
+      background: rgba(255, 71, 87, 0.15);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .step-dot.emerald {
+      background: rgba(0, 245, 160, 0.15);
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    /* CODE SNIPPET BOX */
+    .code-box {
+      background: #090b12;
+      border: 1px solid rgba(0, 242, 255, 0.22);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.55;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .code-keyword { color: #a855f7; font-weight: 700; }
+    .code-string { color: #00f5a0; }
+    .code-comment { color: #64748b; font-style: italic; }
+    .code-accent { color: #00f2ff; }
+
+    /* FOOTER */
     .slide-footer {
       position: relative;
-      z-index: 2;
+      z-index: 5;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 18px;
-      font-size: 12px;
+      padding-top: 16px;
+      font-size: 12.5px;
       color: #64748b;
     }
 
     .author-pill {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: #cbd5e1;
+      gap: 10px;
+      color: #e2e8f0;
       font-weight: 600;
     }
 
     .author-avatar {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00f2ff, #a855f7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 11px;
       color: #000;
       font-weight: 800;
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.35);
+    }
+
+    .author-pill .title-sub {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 400;
     }
 
     .swipe-hint {
-      color: #00f2ff;
-      font-weight: 600;
+      color: var(--cyan);
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
     }
 
     @media print {
@@ -245,252 +483,428 @@
 <body>
 
   <div class="instruction-banner">
-    <strong>💡 How to Export for LinkedIn:</strong> Open this file in Google Chrome / Brave, hit <code>Ctrl + P</code> (Print), select <strong>"Save as PDF"</strong>, set Margins to <strong>None</strong>, and click Save. Upload the resulting PDF directly to LinkedIn as a <strong>Document post</strong> to get the swipeable interactive carousel!
+    <strong>💡 Selixes Production Carousel Assets:</strong> Generated from live incident benchmarks. Open this file in Google Chrome / Brave, hit <code>Ctrl + P</code>, select <strong>"Save as PDF"</strong>, set Margins to <strong>None</strong>, and click Save to post as an interactive LinkedIn Document Carousel.
   </div>
 
   <div class="carousel-container">
 
+    <!-- ========================================== -->
     <!-- SLIDE 1: COVER -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge danger">⚠️ Production Incident</span>
-        <span class="slide-number">01 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h1 class="title-giant">The Sunday Night<br><span>Agentic Meltdown</span></h1>
-        <p class="subtitle">How an unhandled 429 rate limit trapped an autonomous reasoning agent in an 840-loop spiral—and burned $2,400 while the engineering team slept.</p>
-        <div class="story-card danger">
-          <strong>The Lesson:</strong> Models are the brain. But when they fail, they don't crash like traditional code—they hallucinate and retry in circles. You need a deterministic control plane.
-        </div>
-      </div>
-      <div class="slide-footer">
-        <div class="author-pill">
-          <div class="author-avatar">KK</div>
-          <span>Kunal Kaushik • Selixes</span>
-        </div>
-        <div class="swipe-hint">Swipe to read the breakdown ➔</div>
-      </div>
-    </div>
+    <!-- ========================================== -->
+    <div class="slide" id="slide-1">
+      <div class="glow-cyan"></div>
+      <div class="glow-red"></div>
 
-    <!-- SLIDE 2: THE SETUP -->
-    <div class="slide">
       <div class="slide-header">
-        <span class="badge">The Incident: Part 1</span>
-        <span class="slide-number">02 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h2 class="title-large">"Everything Looked Green at 5:00 PM"</h2>
-        <div class="story-card">
-          <strong>Friday, 4:30 PM:</strong> A scaleup deployed an autonomous multi-agent pipeline to enrich 2,500 target accounts before Monday morning.
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// AI RELIABILITY GATEWAY</span></div>
         </div>
-        <p class="subtitle">Each lead required multi-step tool execution:</p>
-        <div class="list-steps">
-          <div class="step-item">
-            <div class="step-dot">1</div>
-            <div>Scrape corporate site & parse team structure</div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">2</div>
-            <div>Query external API for verified CRM records</div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">3</div>
-            <div>Reason with Claude 3.5 / GPT-4o & synthesize dossier</div>
-          </div>
-        </div>
-        <div class="story-card highlight">
-          Tasks 1 through 1,800 executed with zero errors. Average cost: <strong>$0.006 per lead</strong>. The team logged off for the weekend.
+        <div class="header-pills">
+          <span class="badge danger">⚠️ Production Incident</span>
+          <span class="slide-number">01 / 07</span>
         </div>
       </div>
-      <div class="slide-footer">
-        <div class="author-pill"><span>Selixes Reliability Engineering</span></div>
-        <div class="swipe-hint">Next ➔</div>
-      </div>
-    </div>
 
-    <!-- SLIDE 3: THE FRACTURE -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge danger">The Incident: Part 2</span>
-        <span class="slide-number">03 / 07</span>
-      </div>
       <div class="slide-body">
-        <h2 class="title-large">Sunday, 2:18 AM: When Reasoning Becomes a Trap</h2>
+        <div class="pill-kicker">Autonomous Agent Failure Mode #01</div>
+        <h1 class="title-giant">The Sunday Night<br><span class="gradient-text">Agentic Meltdown</span></h1>
+        
+        <p class="subtitle">
+          How an unhandled <strong>HTTP 429 rate limit</strong> trapped an autonomous reasoning agent in an <strong>840-loop spiral</strong> — and burned <strong>$2,418.60</strong> while the engineering team slept.
+        </p>
+
         <div class="story-card danger">
-          An upstream enrichment endpoint returned an unexpected <strong>HTTP 429 (Too Many Requests)</strong>.
+          <strong style="color: #ff5565;">The Architectural Reality:</strong><br>
+          When traditional software encounters an error, it throws an exception and crashes. When an autonomous LLM encounters an error, it <em>hallucinates a parameter fix and enters an infinite cognitive loop.</em>
         </div>
-        <p class="subtitle">What traditional software does:<br><span style="color:#cbd5e1;">Throws an uncaught exception, halts execution, triggers PagerDuty.</span></p>
-        <p class="subtitle">What an autonomous reasoning LLM does:</p>
-        <div class="story-card">
-          <em>"The API returned rate limited. Let me modify the query parameters, reformat the headers, and invoke the tool again."</em>
-        </div>
-        <div class="metric-grid">
+
+        <div class="metric-grid" style="margin-top: 4px;">
           <div class="metric-box red">
             <div class="metric-value">840</div>
             <div class="metric-label">Recursive Retries</div>
           </div>
           <div class="metric-box red">
-            <div class="metric-value">45 min</div>
-            <div class="metric-label">Duration in the Dark</div>
+            <div class="metric-value">161x</div>
+            <div class="metric-label">Token Cost Overrun</div>
           </div>
         </div>
       </div>
-      <div class="slide-footer">
-        <div class="author-pill"><span>Selixes Reliability Engineering</span></div>
-        <div class="swipe-hint">Next ➔</div>
-      </div>
-    </div>
 
-    <!-- SLIDE 4: THE BILL & FAILURE MODES -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge danger">Monday 8:00 AM</span>
-        <span class="slide-number">04 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h2 class="title-large">Why Traditional Code Failed to Protect the Bill</h2>
-        <div class="metric-grid">
-          <div class="metric-box cyan">
-            <div class="metric-value">$15.00</div>
-            <div class="metric-label">Expected Job Cost</div>
-          </div>
-          <div class="metric-box red">
-            <div class="metric-value">$2,418.60</div>
-            <div class="metric-label">Actual Token Spend</div>
-          </div>
-        </div>
-        <div class="list-steps">
-          <div class="step-item">
-            <div class="step-dot">❌</div>
-            <div><strong>Try/Catch didn't trip:</strong> The LLM transit succeeded (HTTP 200). The model simply kept reasoning inside the tool loop.</div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">❌</div>
-            <div><strong>Billing alerts lagged:</strong> Provider billing dashboards lag by 2 to 6 hours. The email arrived at 6:30 AM.</div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">❌</div>
-            <div><strong>Exponential backoff failed:</strong> Backoff delays retries, but doesn't halt cognitive loops across 20 parallel workers.</div>
-          </div>
-        </div>
-      </div>
-      <div class="slide-footer">
-        <div class="author-pill"><span>Selixes Reliability Engineering</span></div>
-        <div class="swipe-hint">Next ➔</div>
-      </div>
-    </div>
-
-    <!-- SLIDE 5: THE INFRASTRUCTURE FIX -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge purple">The Solution</span>
-        <span class="slide-number">05 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h2 class="title-large">The 3-Layer Gateway Fix</h2>
-        <p class="subtitle">Reliability cannot be patched with prompt engineering. It belongs in the transport infrastructure.</p>
-        
-        <div class="list-steps">
-          <div class="step-item">
-            <div class="step-dot">1</div>
-            <div>
-              <strong style="color:#00f2ff;">Trajectory Instability Guards:</strong><br>
-              Maintain a rolling sliding-window SHA-256 hash of <code>(tool_name + normalized_args)</code>. If 3 consecutive calls repeat, trigger an immediate Cognitive Intercept.
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">2</div>
-            <div>
-              <strong style="color:#00f2ff;">Microsecond Atomic Session Budgets:</strong><br>
-              Redis <code>INCRBYFLOAT</code> evaluates spend before every outbound request. If session > cap, halt instantly.
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-dot">3</div>
-            <div>
-              <strong style="color:#00f2ff;">Sub-16ms Edge Circuit Breakers:</strong><br>
-              Hot-swap to backup models or edge tiers without dropping client WebSockets.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="slide-footer">
-        <div class="author-pill"><span>Selixes Architecture Blueprint</span></div>
-        <div class="swipe-hint">Next ➔</div>
-      </div>
-    </div>
-
-    <!-- SLIDE 6: BEFORE VS AFTER -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge">Benchmark Data</span>
-        <span class="slide-number">06 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h2 class="title-large">Production Comparison: Before vs. After</h2>
-        
-        <div class="metric-grid" style="margin-top: 10px;">
-          <div class="metric-box red">
-            <div class="metric-label" style="margin-bottom: 8px;">Unprotected Stack</div>
-            <div style="font-size: 14px; text-align: left; line-height: 1.8; color: #cbd5e1;">
-              • 840 loops on 429 error<br>
-              • $2,400+ runaway bill<br>
-              • Corrupted SSE token streams<br>
-              • 6-hour alert lag
-            </div>
-          </div>
-
-          <div class="metric-box cyan">
-            <div class="metric-label" style="margin-bottom: 8px; color:#00f2ff;">With Selixes Gateway</div>
-            <div style="font-size: 14px; text-align: left; line-height: 1.8; color: #cbd5e1;">
-              • Halted at Loop 3 (<12ms)<br>
-              • Total cost capped at $0.04<br>
-              • Synthetic stream splicing<br>
-              • 100% In-VPC Sovereignty
-            </div>
-          </div>
-        </div>
-
-        <div class="story-card highlight" style="margin-top: 10px;">
-          <strong>Result:</strong> Zero broken client WebSockets. Zero surprise token bills. Total infrastructure determinism.
-        </div>
-      </div>
-      <div class="slide-footer">
-        <div class="author-pill"><span>Selixes Benchmark Suite</span></div>
-        <div class="swipe-hint">Next ➔</div>
-      </div>
-    </div>
-
-    <!-- SLIDE 7: TAKEAWAY & CTA -->
-    <div class="slide">
-      <div class="slide-header">
-        <span class="badge">Architecture Takeaway</span>
-        <span class="slide-number">07 / 07</span>
-      </div>
-      <div class="slide-body">
-        <h2 class="title-giant" style="font-size: 32px;">"Models are the brain.<br><span>You still need a control plane."</span></h2>
-        
-        <p class="subtitle">
-          Models will evolve. Providers will hiccup. Pricing will fluctuate.<br><br>
-          Your production architecture shouldn't have to break every time an upstream endpoint returns a 429 or drops a socket.
-        </p>
-
-        <div class="story-card">
-          <strong>Question for AI & Platform Engineers:</strong><br>
-          Where does your reliability boundary live today? In the prompt layer, in application try/catches, or at the network gateway?
-        </div>
-
-        <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
-          ⚡ Built Selixes as an open, sovereign reliability layer: <strong>selixes.com</strong><br>
-          🐙 GitHub: <strong>github.com/selixes/gateway</strong>
-        </div>
-      </div>
       <div class="slide-footer">
         <div class="author-pill">
           <div class="author-avatar">KK</div>
-          <span>Kunal Kaushik • DM for technical audit</span>
+          <div>
+            <div>Kunal Kaushik</div>
+            <div class="title-sub">Full-Stack & AI Systems Architect</div>
+          </div>
         </div>
-        <div style="color: #64748b;">Drop a comment below 👇</div>
+        <div class="swipe-hint">Swipe for Incident Breakdown ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 2: THE SETUP -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-2">
+      <div class="glow-cyan"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// CASE AUDIT</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge">Part 1: The Setup</span>
+          <span class="slide-number">02 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="pill-kicker">Friday, 4:30 PM Deployment</div>
+        <h2 class="title-large">"Everything Looked Green at 5:00 PM"</h2>
+        
+        <div class="story-card">
+          A high-growth scaleup deployed an autonomous multi-agent pipeline to enrich <strong>2,500 target enterprise accounts</strong> before Monday morning.
+        </div>
+
+        <p class="subtitle">Each lead required multi-step agent tool calling:</p>
+
+        <div class="list-steps">
+          <div class="step-item">
+            <div class="step-dot">1</div>
+            <div><strong>Scrape Corporate Site:</strong> Ingest team hierarchy and extract executive emails.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-dot">2</div>
+            <div><strong>External CRM Query:</strong> Cross-reference external databases for verified company revenue.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-dot">3</div>
+            <div><strong>Synthesize Account Dossier:</strong> Reason with GPT-4o / Claude 3.5 to draft hyper-tailored outreach.</div>
+          </div>
+        </div>
+
+        <div class="story-card highlight">
+          Tasks 1 through 1,800 executed cleanly with zero errors.<br>
+          Average cost: <strong>$0.006 per account</strong>. The engineering team logged off for the weekend.
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <span>Selixes Reliability Engineering</span>
+        </div>
+        <div class="swipe-hint">The Fracture ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 3: THE FRACTURE -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-3">
+      <div class="glow-red"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// INCIDENT TRAJECTORY</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge danger">Part 2: The Fracture</span>
+          <span class="slide-number">03 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="pill-kicker" style="color: #ff5565; border-color: var(--red-border); background: var(--red-bg);">Sunday, 2:18 AM Crash</div>
+        <h2 class="title-large">When Model Reasoning Becomes a Trap</h2>
+        
+        <div class="story-card danger">
+          An upstream data enrichment API hit a temporary burst limit and returned <strong>HTTP 429 (Too Many Requests)</strong>.
+        </div>
+
+        <div class="list-steps">
+          <div class="step-item">
+            <div class="step-dot danger">⚡</div>
+            <div>
+              <strong style="color: #cbd5e1;">What Traditional Software Does:</strong><br>
+              Throws an unhandled exception, halts execution, and immediately pages the on-call engineer.
+            </div>
+          </div>
+
+          <div class="step-item" style="border-color: rgba(255, 71, 87, 0.35); background: rgba(255, 71, 87, 0.05);">
+            <div class="step-dot danger">🤖</div>
+            <div>
+              <strong style="color: #ff5565;">What Autonomous Reasoning LLMs Do:</strong><br>
+              <em>"The API returned rate limited. Let me modify the query parameters, reformat the headers, and invoke the tool again."</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-grid grid-3">
+          <div class="metric-box red">
+            <div class="metric-value">840</div>
+            <div class="metric-label">Recursive Calls</div>
+          </div>
+          <div class="metric-box red">
+            <div class="metric-value">45 min</div>
+            <div class="metric-label">Silent Bleed</div>
+          </div>
+          <div class="metric-box red">
+            <div class="metric-value">20</div>
+            <div class="metric-label">Parallel Loops</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <span>Selixes Post-Mortem Diagnostics</span>
+        </div>
+        <div class="swipe-hint">The Financial Damage ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 4: THE INVOICE -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-4">
+      <div class="glow-red"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// FINANCIAL IMPACT</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge danger">Part 3: Monday 8:00 AM</span>
+          <span class="slide-number">04 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="pill-kicker" style="color: #ff5565; border-color: var(--red-border); background: var(--red-bg);">Runaway Cost Audit</div>
+        <h2 class="title-large">Why Traditional Code Failed to Protect the Bill</h2>
+
+        <div class="metric-grid">
+          <div class="metric-box cyan">
+            <div class="metric-value">$15.00</div>
+            <div class="metric-label">Expected Job Spend</div>
+          </div>
+          <div class="metric-box red">
+            <div class="metric-value">$2,418.60</div>
+            <div class="metric-label">Actual Token Invoice</div>
+          </div>
+        </div>
+
+        <div class="list-steps">
+          <div class="step-item">
+            <div class="step-dot danger">✕</div>
+            <div>
+              <strong>The Try/Catch Never Tripped:</strong><br>
+              The HTTP connection to the LLM succeeded (200 OK). The model was validly reasoning inside its tool orchestration loop.
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-dot danger">✕</div>
+            <div>
+              <strong>Billing Alerts Lagged by Hours:</strong><br>
+              Provider billing webhooks lag by 2 to 6 hours. The $2,000 threshold email landed at 6:30 AM — 4 hours after the money was gone.
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-dot danger">✕</div>
+            <div>
+              <strong>Exponential Backoff Delayed, Didn't Stop:</strong><br>
+              Backoff pauses requests, but does nothing to intercept the cognitive loop across 20 parallel worker threads.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <span>Selixes FinOps Analysis</span>
+        </div>
+        <div class="swipe-hint">The Gateway Architecture ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 5: THE 3-LAYER FIX -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-5">
+      <div class="glow-cyan"></div>
+      <div class="glow-purple"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// CONTROL PLANE</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge purple">Part 4: The Solution</span>
+          <span class="slide-number">05 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="pill-kicker">Deterministic Infrastructure Shield</div>
+        <h2 class="title-large">The 3-Layer Gateway Control Plane</h2>
+        
+        <p class="subtitle" style="margin-top: -6px;">
+          You cannot solve infrastructure instability with prompt engineering. <strong>Reliability belongs in the transport layer.</strong>
+        </p>
+
+        <div class="list-steps">
+          <div class="step-item">
+            <div class="step-dot emerald">1</div>
+            <div>
+              <strong style="color: #00f2ff;">Trajectory Instability Guards:</strong><br>
+              Maintains a rolling sliding-window SHA-256 hash of <code>(tool_name + normalized_args)</code>. If 3 consecutive calls repeat the trajectory under error, an instant Cognitive Intercept aborts the loop.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-dot emerald">2</div>
+            <div>
+              <strong style="color: #00f2ff;">Microsecond Atomic Session Budgets:</strong><br>
+              Redis <code>INCRBYFLOAT</code> evaluates spend before every outbound token leaves the perimeter. If a session breaches its cap (e.g. $0.15), it terminates at the edge.
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-dot emerald">3</div>
+            <div>
+              <strong style="color: #00f2ff;">Sub-16ms Multi-Cloud Circuit Breakers:</strong><br>
+              Instantly hot-swaps failing upstream providers (OpenAI ➔ Anthropic ➔ Gemini ➔ local Ollama Llama-3) in ~16ms without dropping client WebSockets.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <span>Selixes Reliability Layer</span>
+        </div>
+        <div class="swipe-hint">Before vs. After Benchmark ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 6: BENCHMARK DATA -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-6">
+      <div class="glow-cyan"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// BENCHMARK AUDIT</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge emerald">Part 5: Production Test</span>
+          <span class="slide-number">06 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <div class="pill-kicker">Empirical Staging Benchmark (360 Iterations)</div>
+        <h2 class="title-large">Production Comparison: Before vs. After</h2>
+
+        <div class="metric-grid">
+          <div class="metric-box red" style="text-align: left; padding: 20px;">
+            <div class="metric-label" style="margin-bottom: 12px; color: #ff5565;">❌ Unprotected Stack</div>
+            <div style="font-size: 13.5px; line-height: 1.8; color: #cbd5e1;">
+              • 840 loops on single 429 error<br>
+              • $2,418+ surprise weekend bill<br>
+              • Corrupted SSE token streams<br>
+              • 6-hour provider alert latency<br>
+              • 100% Azure/OpenAI single-cloud lock-in
+            </div>
+          </div>
+
+          <div class="metric-box cyan" style="text-align: left; padding: 20px;">
+            <div class="metric-label" style="margin-bottom: 12px; color: #00f2ff;">🛡️ With Selixes Gateway</div>
+            <div style="font-size: 13.5px; line-height: 1.8; color: #cbd5e1;">
+              • Intercepted at Loop 3 (&lt;12ms)<br>
+              • Total spend hard-capped at $0.04<br>
+              • Zero dropped client WebSockets<br>
+              • Sub-16ms circuit trip (32ms failover)<br>
+              • 100% In-VPC Data Sovereignty & PII Scrub
+            </div>
+          </div>
+        </div>
+
+        <div class="story-card emerald">
+          <strong style="color: #00f5a0;">Benchmark Verification:</strong> Staging chaos suite confirmed <strong>0/30 requests dropped</strong> during simulated public cloud blackout, routing to local Ollama Llama-3 in 125ms median latency.
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <span>BENCHMARKS.md Empirical Suite</span>
+        </div>
+        <div class="swipe-hint">The 2-Line Fix ➔</div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SLIDE 7: TAKEAWAY & 2-LINE SDK -->
+    <!-- ========================================== -->
+    <div class="slide" id="slide-7">
+      <div class="glow-cyan"></div>
+      <div class="glow-purple"></div>
+
+      <div class="slide-header">
+        <div class="brand-mark">
+          <img src="./selixes_icon.png" alt="Selixes Logo" class="brand-icon">
+          <div class="brand-title">SELIXES <span>// ARCHITECTURE</span></div>
+        </div>
+        <div class="header-pills">
+          <span class="badge">Part 6: Actionable Setup</span>
+          <span class="slide-number">07 / 07</span>
+        </div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="title-giant" style="font-size: 33px;">
+          "Models are the brain.<br>
+          <span class="gradient-text">You still need a control plane."</span>
+        </h2>
+
+        <p class="subtitle" style="font-size: 14.5px; margin-top: -6px;">
+          Securing your agentic workflows against provider outages, silent rate limits, and runaway bills takes <strong>exactly two lines of code</strong>:
+        </p>
+
+        <div class="code-box">
+          <span class="code-keyword">import</span> OpenAI <span class="code-keyword">from</span> <span class="code-string">'openai'</span>;<br><br>
+          <span class="code-keyword">const</span> openai = <span class="code-keyword">new</span> OpenAI({<br>
+          &nbsp;&nbsp;apiKey: process.env.<span class="code-accent">SELIXES_API_KEY</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 1. Secure In-VPC Key</span><br>
+          &nbsp;&nbsp;baseURL: <span class="code-string">'https://api.selixes.com/v1'</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// 2. Point to Selixes Gateway</span><br>
+          });
+        </div>
+
+        <div class="story-card highlight" style="padding: 16px 20px;">
+          <strong style="color: #00f2ff;">⚡ Open-Source & Sovereign:</strong> Self-host inside your VPC or deploy with Docker in 32 seconds. Your proprietary prompts and customer PII never touch third-party SaaS proxies.
+        </div>
+
+        <div style="display: flex; gap: 12px; font-size: 12.5px; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">
+          <span>🌐 selixes.com</span> • 
+          <span>🐙 github.com/selixes/gateway</span>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="author-pill">
+          <div class="author-avatar">KK</div>
+          <div>
+            <div>Kunal Kaushik</div>
+            <div class="title-sub">DM for AI Reliability Architecture Audit</div>
+          </div>
+        </div>
+        <div style="color: var(--cyan); font-weight: 700;">Drop your thoughts below 👇</div>
       </div>
     </div>
 
