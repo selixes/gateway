@@ -114,9 +114,17 @@ curl http://localhost:4000/v1/chat/completions \
 ## Reference Navigation Directory
 
 *   [Quickstart Guide](https://selixes.com/docs/getting-started) — 5-minute setup and Docker integration.
+*   [Agent Stack Ops](https://selixes.com/docs/agent-stack) — Multi-agent loop containment and trajectory safeguards.
 *   [Core Primitives](https://selixes.com/docs/core-concepts) — Deep dive into failover circuits and trajectory guard mechanics.
 *   [API Schema Specification](https://selixes.com/docs/api-reference) — Complete payload structures, headers, and HTTP error code references.
 *   [System Architecture](https://selixes.com/docs/architecture) — Internal diagrams, telemetries, and Postgres/Redis database models.
+*   [OpenAI SDK Compatibility](https://selixes.com/docs/openai-compatibility) — Retarget standard OpenAI clients with zero code refactoring.
+*   [Failover Policy Mechanics](https://selixes.com/docs/failover-policy) — Circuit breaker trip thresholds, retry policies, and standby backoffs.
+*   [Model Registry & Mapping](https://selixes.com/docs/model-registry) — Dynamic capability checks and provider priority mapping.
+*   [Local Continuity Mode](https://selixes.com/docs/local-continuity) — Offline Ollama failover configuration for air-gapped workloads.
+*   [Migration Guide](https://selixes.com/docs/migration) — Migrating from legacy API Shield headers to Selixes.
+*   [Security Registry](https://selixes.com/security-registry) — Data residency, encryption protocols, and VPC isolation boundaries.
+*   [System Status](https://selixes.com/status) — Live uptime telemetry and empirical latency tracking across LLM providers.
 *   [Comparison Matrix & Benchmarks](https://selixes.com/compare) — Side-by-side comparison of Selixes vs LiteLLM, Portkey, and Helicone.
 *   [Selixes vs LiteLLM](https://selixes.com/compare/selixes-vs-litellm) — In-depth architectural trade-offs, sub-16ms failover, and local continuity.
 *   [Selixes vs Portkey](https://selixes.com/compare/selixes-vs-portkey) — Governance, trajectory guards, and cost containment comparison.
@@ -132,4 +140,6 @@ In-depth technical articles authored by the Selixes team on AI infrastructure en
 
 *   [What Happens When OpenAI Goes Down?](https://selixes.com/blog/openai-outage-failover-guide) — Circuit breaker architecture, standby provider routing, and local edge fallback strategies.
 *   [Runaway LLM Costs: How Recursive Agent Loops Drain Cloud Budgets](https://selixes.com/blog/llm-cost-runaway-prevention) — Session-level spend gates, trajectory guards, and header-driven budget contracts.
-*   [Deploying AI Infrastructure in a Private VPC](https://selixes.com/blog/sovereign-ai-deployment-private-vpc) — Complete sovereignty checklist covering network isolation, local model hosting, gateway proxy audit trails, and compliance mapping (HIPAA, GDPR, SOC 2, FedRAMP).
+*   [Best Open-Source AI Gateway for Enterprise VPC](https://selixes.com/blog/best-open-source-ai-gateway-enterprise-vpc) — Complete sovereignty checklist covering network isolation, local model hosting, and gateway proxy audit trails.
+*   [GDPR & Sovereign AI Compliance](https://selixes.com/blog/gdpr-sovereign-ai-self-hosted-llm-proxy) — Self-hosted LLM proxy architectures for strict data sovereignty and EU compliance.
+*   [Building a Sub-15ms LLM Failover Gateway](https://selixes.com/blog/building-sub-15ms-llm-failover-gateway) — Low-latency socket preservation and connection pooling mechanics.

@@ -211,3 +211,22 @@ During a cloud outage, the gateway shifts requests to local Ollama execution aut
 *   **Selixes vs. Portkey:** https://selixes.com/compare/selixes-vs-portkey (Self-hosted air-gapped data sovereignty vs. multi-tenant hosted control plane)
 *   **Helicone Alternative:** https://selixes.com/compare/helicone-alternative (Active network proxy with sub-16ms circuit breaking vs. passive analytical logging)
 
+---
+
+## 8. Full Documentation & System Playbooks
+
+*   **Quickstart Guide:** https://selixes.com/docs/getting-started
+*   **Agent Stack Ops:** https://selixes.com/docs/agent-stack
+*   **Core Concepts:** https://selixes.com/docs/core-concepts
+*   **API Reference:** https://selixes.com/docs/api-reference
+*   **System Architecture:** https://selixes.com/docs/architecture
+*   **OpenAI Compatibility:** https://selixes.com/docs/openai-compatibility
+*   **Failover Policy:** https://selixes.com/docs/failover-policy
+*   **Model Registry:** https://selixes.com/docs/model-registry
+*   **Local Continuity:** https://selixes.com/docs/local-continuity
+*   **Migration Guide:** https://selixes.com/docs/migration
+*   **Security Registry:** https://selixes.com/security-registry
+*   **System Status:** https://selixes.com/status
+*   **Privacy Policy:** https://selixes.com/privacy-policy
+*   **Terms of Service:** https://selixes.com/terms-of-service
+
