@@ -6,6 +6,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Failover Policy & Circuit Breaker Mechanics - Selixes',
     description: 'Understand the circuit breaker failover mechanics, retries, backoffs, and standby routing algorithms inside Selixes.',
     keywords: ['Failover Policy', 'Circuit Breaker', 'Standby Provider Routing', 'Retry Backoff'],
+    alternates: {
+      canonical: 'https://selixes.com/docs/failover-policy',
+    },
   };
 }
 

@@ -6,6 +6,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Model Registry & Provider Mapping - Selixes',
     description: 'Explore the supported models, priorities, capabilities, and automatic endpoint mappings of the Selixes Model Registry.',
     keywords: ['Model Registry', 'Provider Mapping', 'AI Model Routing'],
+    alternates: {
+      canonical: 'https://selixes.com/docs/model-registry',
+    },
   };
 }
 

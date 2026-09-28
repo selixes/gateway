@@ -6,6 +6,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'OpenAI SDK Compatibility - Selixes',
     description: 'Learn how to retarget standard OpenAI client SDKs (Python, Node.js) to route traffic through the Selixes proxy gateway.',
     keywords: ['OpenAI Compatibility', 'Selixes SDK Swap', 'AI Proxy Client Configuration'],
+    alternates: {
+      canonical: 'https://selixes.com/docs/openai-compatibility',
+    },
   };
 }
 

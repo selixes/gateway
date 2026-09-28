@@ -6,6 +6,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Legacy API Shield Migration - Selixes',
     description: 'Guidelines to migrate client applications from legacy API Shield headers and key prefixes to the updated Selixes standard.',
     keywords: ['Migration Guide', 'API Shield Compatibility', 'Selixes Upgrade'],
+    alternates: {
+      canonical: 'https://selixes.com/docs/migration',
+    },
   };
 }
 

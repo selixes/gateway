@@ -6,6 +6,9 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Local Continuity Mode - Selixes',
     description: 'Learn how to set up Ollama and configure Selixes to fail over to local models during cloud outages.',
     keywords: ['Local Continuity', 'Ollama Integration', 'Air-Gapped AI', 'Offline Fallback'],
+    alternates: {
+      canonical: 'https://selixes.com/docs/local-continuity',
+    },
   };
 }
 

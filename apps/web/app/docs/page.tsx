@@ -1,18 +1,14 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+export const metadata: Metadata = {
+  title: 'Documentation - Selixes AI Reliability Layer',
+  description: 'Official technical guides, API references, architecture playbooks, and configuration documentation for Selixes.',
+  alternates: {
+    canonical: 'https://selixes.com/docs/getting-started',
+  },
+};
 
 export default function DocsIndexPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace('/docs/getting-started');
-  }, [router]);
-
-  return (
-    <div style={{ padding: '2rem', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-      Redirecting to Getting Started playbook...
-    </div>
-  );
+  redirect('/docs/getting-started');
 }

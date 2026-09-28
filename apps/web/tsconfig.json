@@ -2,7 +2,8 @@
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@repo/motion-growth-agent": ["../../packages/motion-growth-agent/src/index.ts"]
     },
     "plugins": [
       {

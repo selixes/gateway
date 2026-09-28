@@ -28,7 +28,7 @@ export default function robots(): MetadataRoute.Robots {
           'Amazonbot',
           'Bytespider',
         ],
-        allow: ['/', '/docs', '/about', '/pricing', '/contact', '/blog', '/compare', '/llms.txt', '/llms-full.txt'],
+        allow: ['/', '/docs', '/about', '/pricing', '/contact', '/blog', '/compare', '/status', '/security-registry', '/privacy-policy', '/terms-of-service', '/llms.txt', '/llms-full.txt'],
         disallow: [
           '/dashboard',
           '/sign-in',
