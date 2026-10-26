@@ -13,6 +13,7 @@ import { GatewayModule } from './gateway/gateway.module';
 import { KeysModule } from './keys/keys.module';
 import { RedisModule } from './redis/redis.module';
 import { BillingModule } from './billing/billing.module';
+import { AlertsModule } from './alerts/alerts.module';
 import * as crypto from 'crypto';
 
 @Module({
@@ -41,6 +42,7 @@ import * as crypto from 'crypto';
     KeysModule,
     RedisModule,
     BillingModule,
+    AlertsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

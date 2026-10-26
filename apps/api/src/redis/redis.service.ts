@@ -278,6 +278,26 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  async hget(key: string, field: string): Promise<string | null> {
+    if (this.useFallback) {
+      if (this.isExpired(key)) return null;
+      const hash = this.memHashes.get(key);
+      if (!hash) return null;
+      return hash.get(field) ?? null;
+    }
+    try {
+      const res = await this.breaker.fire(() => this.client.hget(key, field));
+      return (res as string) ?? null;
+    } catch (err) {
+      this.logger.warn(`Redis command failed (hget): ${err.message}. Using fallback.`);
+      this.useFallback = true;
+      if (this.isExpired(key)) return null;
+      const hash = this.memHashes.get(key);
+      if (!hash) return null;
+      return hash.get(field) ?? null;
+    }
+  }
+
   async hset(key: string, field: string, value: string): Promise<number> {
     if (this.useFallback) {
       if (this.isExpired(key)) this.memHashes.delete(key);

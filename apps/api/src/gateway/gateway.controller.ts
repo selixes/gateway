@@ -13,6 +13,8 @@ import { PrometheusService } from './observability/prometheus.service';
 import { ReplayService } from './observability/replay.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
+import { AiImmuneSystemService } from './immune-system.service';
+import { TimeTravelRollbackService } from './time-travel-rollback.service';
 
 @Controller('v1')
 export class GatewayController {
@@ -22,7 +24,10 @@ export class GatewayController {
     private readonly replayService: ReplayService,
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
+    private readonly immuneSystem: AiImmuneSystemService,
+    private readonly rollbackEngine: TimeTravelRollbackService,
   ) {}
+
 
   @Post('chat/completions')
   @UseGuards(ClerkAuthGuard, QuotaGuard)
@@ -49,6 +54,9 @@ export class GatewayController {
       res.setHeader('X-Request-Id', handle.requestId);
       res.setHeader('X-Provider-Chain', handle.providerChain.join(','));
       res.setHeader('X-Provider', handle.getFinalProvider());
+      if ((handle as any).isMock) {
+        res.setHeader('X-Selixes-Mock', 'true');
+      }
       
       const runtimeMode = this.redis.isFallbackActive() ? 'fallback-memory' : 'redis';
       res.setHeader('X-SELIXES-RUNTIME-MODE', runtimeMode);
@@ -240,4 +248,27 @@ export class GatewayController {
       return res.status(500).json({ error: 'Replay retrieval failed', message: err.message });
     }
   }
+
+  @Get('sessions/:sessionId/checkpoints')
+  async getSessionCheckpoints(@Param('sessionId') sessionId: string) {
+    const checkpoints = await this.rollbackEngine.getCheckpoints(sessionId);
+    return { sessionId, count: checkpoints.length, checkpoints };
+  }
+
+  @Post('sessions/:sessionId/rollback')
+  async rollbackSession(
+    @Param('sessionId') sessionId: string,
+    @Body() body: { targetStep?: number; step?: number },
+  ) {
+    const target = body.step !== undefined ? body.step : (body.targetStep !== undefined ? body.targetStep : 1);
+    const result = await this.rollbackEngine.rollbackToStep(sessionId, target);
+    await this.redis.hset(`session:metrics:${sessionId}`, 'total_calls', result.rolledBackToStep.toString()).catch(() => {});
+    await this.redis.hset(`session:${sessionId}`, 'calls', result.rolledBackToStep.toString()).catch(() => {});
+    return {
+      success: true,
+      message: `Successfully rolled back session ${sessionId} to step ${result.rolledBackToStep}`,
+      result,
+    };
+  }
 }
+

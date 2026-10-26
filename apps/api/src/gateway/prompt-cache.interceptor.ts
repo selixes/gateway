@@ -1,9 +1,8 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { RedisService } from '../redis/redis.service';
-import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_TTL_SECONDS = 3600; // 1 hour
 
@@ -11,7 +10,7 @@ function getHeader(headers: Record<string, any>, currentName: string, legacyName
   return headers[currentName] ?? headers[legacyName];
 }
 
-function buildCacheKey(body: Record<string, any>): string {
+function buildCacheKey(body: Record<string, any>, organizationId?: string): string {
   // Always sort keys alphabetically to prevent key-order hash collisions
   const canonical = JSON.stringify({
     max_tokens:  body.max_tokens  ?? null,
@@ -22,7 +21,8 @@ function buildCacheKey(body: Record<string, any>): string {
     // Intentionally excluded: stream, user, requestId — these must not fragment the cache
   });
   const hash = createHash('sha256').update(canonical).digest('hex');
-  return `cache:prompt:${hash}`;
+  const orgPrefix = organizationId ? `${organizationId}:` : '';
+  return `cache:prompt:${orgPrefix}${hash}`;
 }
 
 @Injectable()
@@ -43,7 +43,15 @@ export class PromptCacheInterceptor implements NestInterceptor {
     }
 
     const cacheMode = (getHeader(req.headers, 'x-selixes-cache', 'x-apishield-cache') ?? '').toLowerCase();
-    const cacheKey  = buildCacheKey(body);
+    const organizationId = req.resolvedApiKey?.organizationId ?? req.orgId ?? req.user?.orgId;
+
+    // Fail closed: If there is no resolved organizationId, skip prompt caching to prevent shared global cache collisions
+    if (!organizationId) {
+      res.setHeader('X-Cache', 'BYPASS');
+      return next.handle();
+    }
+
+    const cacheKey  = buildCacheKey(body, organizationId);
     const ttl       = parseInt(getHeader(req.headers, 'x-selixes-cache-ttl', 'x-apishield-cache-ttl') ?? String(DEFAULT_TTL_SECONDS));
 
     // ── bypass: skip read AND write ────────────────────────────────
@@ -77,14 +85,14 @@ export class PromptCacheInterceptor implements NestInterceptor {
           res.setHeader('Content-Type', 'text/event-stream');
           res.setHeader('Cache-Control', 'no-cache');
           res.setHeader('Connection', 'keep-alive');
-          res.setHeader('X-Request-Id', `cache-hit-${uuidv4()}`);
+          res.setHeader('X-Request-Id', `cache-hit-${randomUUID()}`);
           res.setHeader('X-Provider-Chain', 'cache:200');
           res.setHeader('X-Provider', 'cache');
 
           const parsed = JSON.parse(cached);
           const text = parsed.choices?.[0]?.message?.content ?? '';
           const model = parsed.model ?? 'gpt-4o';
-          const id = parsed.id ?? `chatcmpl-${uuidv4()}`;
+          const id = parsed.id ?? `chatcmpl-${randomUUID()}`;
           const created = parsed.created ?? Math.floor(Date.now() / 1000);
 
           // Send start event
