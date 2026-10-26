@@ -21,7 +21,20 @@ export async function* streamAnthropic(
   }
 
   const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
+  const anthropicModel = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
+  let anthropicBase = (process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com').replace(/\/+$/, '');
+  const anthropicUrl = anthropicBase.endsWith('/v1') ? `${anthropicBase}/messages` : `${anthropicBase}/v1/messages`;
+  const allowMock = process.env.NODE_ENV !== 'production' && process.env.SELIXES_ALLOW_MOCK !== 'false';
+
   if (!anthropicApiKey) {
+    if (!allowMock) {
+      throw {
+        statusCode: 503,
+        code: 'PROVIDER_UNCONFIGURED',
+        message: 'Anthropic provider is unconfigured (ANTHROPIC_API_KEY missing) and mocks are disabled in this environment.',
+      };
+    }
+
     // ── Dev Sandbox Mock Anthropic Streaming ─────────────────────────────────
     const mockText =
       'Lead Qualification [Anthropic standby]: Acme Corp ($15M ARR, 250 employees) fits the optimal B2B profile.';
@@ -41,7 +54,7 @@ export async function* streamAnthropic(
     yield {
       type: 'start',
       provider: 'anthropic',
-      model: 'claude-3-5-sonnet',
+      model: anthropicModel,
       latency: { ttftMs },
     };
 
@@ -61,22 +74,22 @@ export async function* streamAnthropic(
         type: 'token',
         content: token,
         provider: 'anthropic',
-        model: 'claude-3-5-sonnet',
+        model: anthropicModel,
       };
     }
 
     yield {
       type: 'end',
       provider: 'anthropic',
-      model: 'claude-3-5-sonnet',
+      model: anthropicModel,
     };
   } else {
     // ── Live Anthropic streaming request ─────────────────────────────────────
     try {
       const response = await axios.post(
-        'https://api.anthropic.com/v1/messages',
+        anthropicUrl,
         {
-          model: 'claude-3-5-sonnet-20241022',
+          model: anthropicModel,
           messages: body.messages.map((m: any) => ({ role: m.role, content: m.content })),
           max_tokens: body.max_tokens || 1000,
           temperature: body.temperature,
@@ -98,6 +111,7 @@ export async function* streamAnthropic(
       const stream = response.data;
       let buffer = '';
       let first = true;
+      let liveModel = anthropicModel;
 
       for await (const chunk of stream) {
         buffer += chunk.toString('utf8');
@@ -112,10 +126,11 @@ export async function* streamAnthropic(
               const parsed = JSON.parse(trimmed.slice(6));
               if (first && parsed.type === 'message_start') {
                 first = false;
+                liveModel = parsed.message?.model || anthropicModel;
                 yield {
                   type: 'start',
                   provider: 'anthropic',
-                  model: 'claude-3-5-sonnet',
+                  model: liveModel,
                   latency: { ttftMs: Date.now() - started },
                 };
               }
@@ -124,14 +139,14 @@ export async function* streamAnthropic(
                   type: 'token',
                   content: parsed.delta.text,
                   provider: 'anthropic',
-                  model: 'claude-3-5-sonnet',
+                  model: liveModel,
                 };
               }
               if (parsed.type === 'message_stop') {
                 yield {
                   type: 'end',
                   provider: 'anthropic',
-                  model: 'claude-3-5-sonnet',
+                  model: liveModel,
                 };
                   return;
               }
@@ -141,7 +156,7 @@ export async function* streamAnthropic(
           }
         }
       }
-      yield { type: 'end', provider: 'anthropic', model: 'claude-3-5-sonnet' };
+      yield { type: 'end', provider: 'anthropic', model: liveModel };
     } catch (err: any) {
       throw {
         statusCode: err.response?.status ?? 500,

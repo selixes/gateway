@@ -24,8 +24,18 @@ export async function* streamGemini(
   const targetModel = body.model === 'gemini-3.5-flash' || body.model === 'gemini-3.1-pro' 
     ? body.model 
     : 'gemini-3.5-flash';
+  const geminiBaseUrl = (process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai/v1').replace(/\/+$/, '');
+  const allowMock = process.env.NODE_ENV !== 'production' && process.env.SELIXES_ALLOW_MOCK !== 'false';
 
   if (!geminiApiKey) {
+    if (!allowMock) {
+      throw {
+        statusCode: 503,
+        code: 'PROVIDER_UNCONFIGURED',
+        message: 'Gemini provider is unconfigured (GEMINI_API_KEY missing) and mocks are disabled in this environment.',
+      };
+    }
+
     // ── Dev Sandbox Mock Gemini Streaming ────────────────────────────────────
     const mockText = `Lead Qualification [Gemini 3.5 Flash cost-arbitrage]: Acme Corp ($15M ARR, 250 employees) fits the optimal B2B startup profile perfectly.`;
     const words = mockText.split(' ');
@@ -77,7 +87,7 @@ export async function* streamGemini(
     // ── Live Gemini streaming request ────────────────────────────────────────
     try {
       const response = await axios.post(
-        'https://generativelanguage.googleapis.com/v1beta/openai/v1/chat/completions',
+        `${geminiBaseUrl}/chat/completions`,
         { ...body, model: targetModel, stream: true },
         {
           headers: {

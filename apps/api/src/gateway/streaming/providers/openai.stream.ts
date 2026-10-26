@@ -21,7 +21,18 @@ export async function* streamOpenAI(
   }
 
   const openAiApiKey = process.env.OPENAI_API_KEY;
+  const openAiBaseUrl = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/+$/, '');
+  const allowMock = process.env.NODE_ENV !== 'production' && process.env.SELIXES_ALLOW_MOCK !== 'false';
+
   if (!openAiApiKey) {
+    if (!allowMock) {
+      throw {
+        statusCode: 503,
+        code: 'PROVIDER_UNCONFIGURED',
+        message: 'OpenAI provider is unconfigured (OPENAI_API_KEY missing) and mocks are disabled in this environment.',
+      };
+    }
+
     // ── Dev Sandbox Mock OpenAI Streaming ────────────────────────────────────
     const mockText =
       'Acme Corp is a high-value lead for Selixes. With $15M ARR and 250 employees, they are in the sweet spot for our B2B team.';
@@ -74,7 +85,7 @@ export async function* streamOpenAI(
     // ── Live OpenAI streaming request ────────────────────────────────────────
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
+        `${openAiBaseUrl}/chat/completions`,
         { ...body, stream: true },
         {
           headers: {
