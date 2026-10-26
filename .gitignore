@@ -26,6 +26,15 @@ coverage
 out/
 build
 dist
+*.tsbuildinfo
+
+# Benchmark Datasets & Outputs
+scripts/data/
+data/
+*.results.json
+benchmark_*.log
+benchmark_*.json
+heldout_*.json
 
 
 # Debug

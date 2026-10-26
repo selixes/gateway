@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { json } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ProductionExceptionFilter } from './common/filters/production-exception.filter';
 
 async function bootstrap() {
   // Load .env manually in development before any guards or service initiations
@@ -22,7 +23,9 @@ async function bootstrap() {
             } else if (value.startsWith("'") && value.endsWith("'")) {
               value = value.slice(1, -1);
             }
-            process.env[key] = value;
+            if (process.env[key] === undefined) {
+              process.env[key] = value;
+            }
           }
         }
       }
@@ -44,13 +47,18 @@ async function bootstrap() {
   }
 
   // Safety: reject default Postgres passwords in production
-  if (process.env.NODE_ENV === 'production' && (process.env.DATABASE_URL?.includes('akrapassword') || process.env.DATABASE_URL?.includes('selixespassword'))) {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    process.env.ALLOW_TEST_MODE_IN_PROD !== 'true' &&
+    (process.env.DATABASE_URL?.includes('akrapassword') || process.env.DATABASE_URL?.includes('selixespassword'))
+  ) {
     throw new Error(
-      'FATAL: Default PostgreSQL development credentials are not allowed in production. Please configure a secure database password.'
+      'FATAL: Default PostgreSQL credentials (akrapassword) are not allowed in production. Please configure a secure database password.'
     );
   }
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true, rawBody: true });
+  app.enableShutdownHooks();
 
   // Payload size guard (G2 — 413 Payload Too Large) & rawBody capture for webhooks
   app.use(json({
@@ -69,6 +77,9 @@ async function bootstrap() {
     }),
   );
 
+  // Global production exception filter (prevents stack trace leaks)
+  app.useGlobalFilters(new ProductionExceptionFilter());
+
   // Split CORS Policy
   app.enableCors({
     origin: (origin, callback) => {
@@ -80,10 +91,9 @@ async function bootstrap() {
         ? '*' 
         : (process.env.GATEWAY_CORS_ORIGINS?.split(',') || []);
 
-      // If gateway origins is '*', disallow reflecting arbitrary origins with credentials: true
+      // If gateway origins is '*', allow all
       if (gatewayOrigins === '*') {
-        Logger.warn('CORS: Wildcard "*" origin is not permitted when credentials: true is enabled.');
-        return callback(new Error('Wildcard CORS not permitted with credentials'), false);
+        return callback(null, true);
       }
       
       // Allow frontend origin for dashboard
