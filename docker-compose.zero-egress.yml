@@ -1,0 +1,68 @@
+version: '3.9'
+
+networks:
+  zero_egress:
+    driver: bridge
+    internal: true # Hard isolation: Docker drops all outbound/ingress routing outside this bridge
+
+services:
+  # ── Local In-Network Model Server (Ollama / vLLM) ────────
+  local-model:
+    image: ollama/ollama:latest
+    container_name: selixes-local-model
+    restart: unless-stopped
+    networks:
+      - zero_egress
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0:11434
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── In-Network Redis Cache & Time-Travel Store ───────────
+  redis:
+    image: redis:7-alpine
+    container_name: selixes-zero-egress-redis
+    restart: unless-stopped
+    networks:
+      - zero_egress
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Selixes Gateway Engine (Zero-Egress Mode) ───────────
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: selixes-zero-egress-gateway
+    restart: unless-stopped
+    networks:
+      - zero_egress
+    depends_on:
+      local-model:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DEFAULT_PROVIDER_CHAIN=ollama
+      - LOCAL_OPENAI_URL=http://local-model:11434/v1
+      - OLLAMA_URL=http://local-model:11434/v1
+      - OLLAMA_MODEL=qwen2.5-coder:1.5b
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SEMANTIC_CACHE_DEFAULT_ENABLED=false
+      - SELIXES_ALLOW_MOCK=false
+      # Hard zero-egress enforcement: any attempt to resolve external domains or IPs will fail inside network
+
+volumes:
+  ollama_models:

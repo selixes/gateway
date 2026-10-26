@@ -24,6 +24,9 @@ RUN npx prisma generate --schema=packages/database/prisma/schema.prisma
 # Build the project
 RUN npx turbo run build --filter=api...
 
+# Pre-download local ONNX embedding model for zero-egress offline execution
+RUN node -e "import('@xenova/transformers').then(({ pipeline }) => pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2')).catch(() => {});" || true
+
 # Production runner stage
 FROM node:20-alpine AS runner
 RUN apk add --no-cache openssl curl
