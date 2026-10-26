@@ -68,7 +68,7 @@ describe('PART 2: Mid-Stream Recovery ("Resilient Recovery")', () => {
     const testCases = [1, 50, 1200];
 
     for (const N of testCases) {
-      it(`guarantees continuous stream without drop when upstream dies at token N = ${N}`, async () => {
+      it(`recovers continuous stream without drop when upstream dies at token N = ${N}`, async () => {
         // Provider A emits N tokens then dies abruptly
         const providerA = async function* (): AsyncGenerator<StreamChunk> {
           yield { type: 'start', model: 'gpt-4o', provider: 'openai' };

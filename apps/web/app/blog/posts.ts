@@ -70,8 +70,8 @@ export const blogPosts: BlogPost[] = [
     `
   },
   {
-    slug: 'building-sub-15ms-llm-failover-gateway',
-    title: 'How to Build a Sub-15ms LLM Failover Gateway for OpenAI and Anthropic',
+    slug: 'building-autonomous-llm-failover-gateway',
+    title: 'How to Build an Autonomous LLM Failover Gateway for OpenAI and Anthropic',
     description: 'Learn how to architect an AI proxy gateway that automatically detects API timeouts and rate limits, instantly failing over to backup models without dropping user sessions.',
     date: 'August 25, 2026',
     readTime: '7 min read',
@@ -82,7 +82,7 @@ export const blogPosts: BlogPost[] = [
 
 <h2>The Solution: Edge Proxy Failover</h2>
 <p>To guarantee reliability, we need to intercept traffic at the edge. A failover gateway acts as a reverse proxy. When your application sends a request to OpenAI, it actually goes to the gateway.</p>
-<p>If the gateway detects latency exceeding 15ms or receives an <a href="/blog/mitigating-llm-rate-limits-scale-multi-provider-routing">HTTP 429 (Rate Limit)</a>, it immediately triggers <strong>multi-model fallback</strong>. The gateway translates the request payload and utilizes semantic <strong>LLM routing</strong> to send the traffic to a secondary provider (like Anthropic Claude or Google Gemini).</p>
+<p>If the gateway detects latency stalls or receives an <a href="/blog/mitigating-llm-rate-limits-scale-multi-provider-routing">HTTP 429 (Rate Limit)</a>, it immediately triggers <strong>multi-model fallback</strong>. The gateway translates the request payload and utilizes semantic <strong>LLM routing</strong> to send the traffic to a secondary provider (like Anthropic Claude or Google Gemini).</p>
 
 <h2>Architecting the Gateway</h2>
 <p>Building this requires three core components:</p>
@@ -104,8 +104,8 @@ try {
 }
 </code></pre>
 
-<h2>Why 15ms Matters</h2>
-<p>In conversational AI, human latency tolerance is approximately 200-300ms. If your fallback takes 1 second to negotiate, the user will experience an awkward pause. By handling the routing entirely in-memory at the edge, you can guarantee sub-15ms failover switching, keeping the conversation fluid and natural.</p>
+<h2>Why Latency Continuity Matters</h2>
+<p>In conversational AI, human latency tolerance is approximately 200-300ms. If your fallback takes seconds to negotiate, the user will experience an awkward pause. By handling the routing entirely in-memory at the edge, you minimize failover switching delay, keeping the conversation fluid and natural.</p>
     `
   },
   {
@@ -121,7 +121,7 @@ try {
 <p>The modern architectural solution is to configure a local, open-weight model—like Llama 3 running on <strong>Ollama</strong>—as an automatic failover fallback.</p>
 
 <h2>Enter Selixes: The Traffic Controller</h2>
-<p>Selixes acts as the intelligent proxy between your application and your AI models. By configuring Selixes to route traffic to OpenAI first, and then failover to your local Ollama instance if OpenAI goes down or rate-limits you, you guarantee 100% uptime.</p>
+<p>Selixes acts as the intelligent proxy between your application and your AI models. By configuring Selixes to route traffic to OpenAI first, and then failover to your local Ollama instance if OpenAI goes down or rate-limits you, you maintain continuous local availability.</p>
 
 <h3>Step 1: Setting up Ollama</h3>
 <p>First, ensure Ollama is running on your local enterprise infrastructure and has your desired fallback model pulled:</p>
@@ -145,7 +145,7 @@ const routes = {
 
 <h2>The Benefits of Ollama Failover</h2>
 <ul>
-  <li><strong>Zero Downtime:</strong> When the cloud goes down, your app seamlessly switches to local inference.</li>
+  <li><strong>High Availability:</strong> When the cloud goes down, your app switches to local inference.</li>
   <li><strong>Cost Arbitrage:</strong> You can route simple queries to the free, local Ollama instance, and only send complex reasoning tasks to expensive cloud models.</li>
   <li><strong>Data Sovereignty:</strong> Highly sensitive data can be routed exclusively to the local Ollama instance, never touching the public internet.</li>
 </ul>
@@ -246,7 +246,7 @@ async function routeLLMRequest(prompt) {
 <p>Handling failovers during Server-Sent Events (SSE) streaming is notoriously difficult. If the connection drops mid-stream, the proxy must catch the error, open a connection to the fallback provider, and append the remaining stream chunks without breaking the client's parser. This is a core feature of the Selixes Gateway.</p>
 
 <h2>Conclusion</h2>
-<p>Do not wait for the next global LLM outage to realize your app needs high availability. Implement an AI gateway with native, cross-provider circuit breaking to guarantee zero-downtime AI deployments.</p>
+<p>Do not wait for the next global LLM outage to realize your app needs high availability. Implement an AI gateway with native, cross-provider circuit breaking to ensure resilient AI deployments.</p>
     `
   },
   {
@@ -343,7 +343,7 @@ async function markCooldown(provider, durationSeconds = 60) {
 </code></pre>
 
 <h2>Seamless Client Integration</h2>
-<p>By routing through a unified proxy like Selixes, client applications do not need to implement complex retry-and-fallback logic. The proxy handles the HTTP 429 status code, retries with a fallback model, and returns a successful response. This keeps your application code clean and your uptime guaranteed.</p>
+<p>By routing through a unified proxy like Selixes, client applications do not need to implement complex retry-and-fallback logic. The proxy handles the HTTP 429 status code, retries with a fallback model, and returns a successful response. This keeps your application code clean and resilient against upstream rate limits.</p>
     `
   },
   {

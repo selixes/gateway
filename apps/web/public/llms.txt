@@ -6,7 +6,7 @@
 > [!TIP]
 > See also: [Full Developer & API Reference](/llms-full.txt) for complete schemas, configuration templates, and database tables.
 
-Selixes is a sovereign, neutral AI gateway proxy and cost governance layer designed to sit directly inside secure cloud boundaries (VPC or private metal). It acts as an outage-proof bridge between client applications and upstream LLM API providers, guaranteeing uptime, monitoring concurrency spikes, scrubbing sensitive data, and capping reasoning spend automatically.
+Selixes is a sovereign, neutral AI gateway proxy and cost governance layer designed to sit directly inside secure cloud boundaries (VPC or private metal). It acts as an outage-proof bridge between client applications and upstream LLM API providers, maximizing uptime, monitoring concurrency spikes, scrubbing sensitive data, and capping reasoning spend automatically.
 
 ---
 

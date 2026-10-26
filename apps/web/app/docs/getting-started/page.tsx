@@ -76,41 +76,65 @@ export default function GettingStartedPage() {
         <h1 style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', margin: '0.25rem 0 0.5rem' }}>
           Time to First Request: 5 Minutes
         </h1>
-        <p style={{ color: '#8e8e9f', fontSize: '1rem', lineHeight: 1.5 }}>
+        <p style={{ color: '#8e8e9f', fontSize: '1rem', lineHeight: 1.5, marginBottom: '1.5rem' }}>
           Follow this playbook to deploy your AI Reliability Layer locally. You will route your first request, trigger a failover, and view the AI-native telemetry in under 5 minutes.
         </p>
+
+        {/* GEO / AEO Direct Answer Box */}
+        <div style={{
+          background: 'rgba(99,102,241,0.04)',
+          border: '1px solid rgba(99,102,241,0.2)',
+          borderRadius: '8px',
+          padding: '1rem 1.25rem',
+          marginBottom: '2rem',
+          fontSize: '0.875rem',
+          lineHeight: 1.6,
+          color: '#cbd5e1'
+        }}>
+          <strong style={{ color: '#fff', display: 'block', marginBottom: '0.35rem' }}>⚡ Quick Summary</strong>
+          To deploy Selixes, launch the Docker container on port 4000 and generate an API key. Next, swap the <code>baseURL</code> in your standard OpenAI SDK to <code>http://localhost:4000/v1</code> and supply your Selixes key. Selixes operates as an in-VPC reverse proxy, automatically routing requests across OpenAI, Anthropic, Gemini, and local Ollama while enforcing session cost limits and autonomous failover during upstream outages.
+        </div>
       </div>
 
       {/* Step 1 */}
       <section style={{ marginBottom: '2.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ display: 'inline-flex', width: '24px', height: '24px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>1</span>
-          Deploy the Sovereign Stack (2-Minute Quickstart)
-        </h3>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span aria-hidden="true" style={{ display: 'inline-flex', width: '26px', height: '26px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 }}>1</span>
+          Step 1: Deploy the Core Engine &amp; Generate API Key
+        </h2>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Selixes is containerized for zero-friction local development. Clone the repository and boot the full sovereign stack (API Gateway, Redis cache, Postgres telemetry, and Web Console) with a single command:
+          Selixes is containerized for zero-friction local development. Run the core engine (Control Plane + Data Plane) on your local machine:
         </p>
         <pre style={{
           background: '#040406', border: '1px solid #1a1a24', borderRadius: '8px',
           padding: '1rem 1.25rem', fontSize: '0.8rem', color: '#cbd5e1', fontFamily: 'monospace',
           overflowX: 'auto', marginBottom: '1rem'
         }}>
-          <code>{`git clone https://github.com/selixes/gateway.git
-cd gateway && docker compose up -d`}</code>
+          <code>docker run -d -p 4000:4000 --name selixes-core selixes/core:latest</code>
         </pre>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          The API Gateway is immediately live at <code>http://localhost:4000</code> and the companion dashboard console at <code>http://localhost:3000</code>.
+          Next, generate your first API key to authenticate requests. Run this CLI command inside the container:
+        </p>
+        <pre style={{
+          background: '#040406', border: '1px solid #1a1a24', borderRadius: '8px',
+          padding: '1rem 1.25rem', fontSize: '0.8rem', color: '#cbd5e1', fontFamily: 'monospace',
+          overflowX: 'auto', margin: 0
+        }}>
+          <code>docker exec -it selixes-core selixes-cli generate-key</code>
+        </pre>
+        <p style={{ fontSize: '0.825rem', color: '#8e8e9f', marginTop: '0.5rem', lineHeight: 1.5 }}>
+          *(Save this key, you will need it in the next step).*
         </p>
       </section>
 
       {/* Step 2 */}
       <section style={{ marginBottom: '2.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ display: 'inline-flex', width: '24px', height: '24px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>2</span>
-          2-Line SDK Drop-in
-        </h3>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span aria-hidden="true" style={{ display: 'inline-flex', width: '26px', height: '26px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 }}>2</span>
+          Step 2: 2-Line SDK Drop-in
+        </h2>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Selixes is fully compatible with the standard OpenAI SDK. Swap the `baseURL` and point your existing application to the local reliability layer:
+          Selixes is fully compatible with the standard OpenAI SDK. Swap the `baseURL` and `apiKey` to point your existing application to the local reliability layer:
         </p>
         <pre style={{
           background: '#040406', border: '1px solid #1a1a24', borderRadius: '8px',
@@ -118,21 +142,21 @@ cd gateway && docker compose up -d`}</code>
           overflowX: 'auto', margin: 0
         }}>
           <code>{`import OpenAI from 'openai';
-
-// Selixes integration takes exactly 2 lines:
-const openai = new OpenAI({
-  apiKey: process.env.SELIXES_API_KEY || 'sk_selixes_local',
-  baseURL: 'http://localhost:4000/v1'      // Swapped base URL
-});`}</code>
+ 
+ // Selixes integration takes exactly 2 lines:
+ const openai = new OpenAI({
+   apiKey: process.env.SELIXES_API_KEY,     // 1. Secure reliability key
+   baseURL: 'http://localhost:4000/v1'      // 2. Swapped base URL
+ });`}</code>
         </pre>
       </section>
 
       {/* Step 3 */}
       <section style={{ marginBottom: '2.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ display: 'inline-flex', width: '24px', height: '24px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>3</span>
-          Dispatch Your First Reliable Request
-        </h3>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span aria-hidden="true" style={{ display: 'inline-flex', width: '26px', height: '26px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 }}>3</span>
+          Step 3: Dispatch Your First Reliable Request
+        </h2>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
           Pass transaction cost caps, timeout limits, and semantic caching directives directly through standard HTTP request headers:
         </p>
@@ -156,23 +180,26 @@ const openai = new OpenAI({
 
       {/* Step 4 */}
       <section style={{ marginBottom: '3.5rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ display: 'inline-flex', width: '24px', height: '24px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>4</span>
-          Access Live Telemetry & Observability
-        </h3>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span aria-hidden="true" style={{ display: 'inline-flex', width: '26px', height: '26px', background: 'var(--accent-glow)', border: '1px solid var(--accent)', borderRadius: '50%', fontSize: '0.75rem', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 }}>4</span>
+          Step 4: Access AI-Native Telemetry
+        </h2>
         <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Selixes doesn't just proxy requests; it tells you *why* routing decisions, circuit-breaker trips, and failovers occurred.
-        </p>
-        <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
-          Open <code style={{ color: 'var(--accent-hover)', background: 'rgba(99,102,241,0.1)', padding: '2px 6px', borderRadius: '4px' }}>http://localhost:3000</code> in your browser to inspect active provider health, review transaction traces, and audit token economics.
+          Selixes doesn't just log requests; it tells you *why* routing decisions were made. Start the companion dashboard:
         </p>
         <pre style={{
           background: '#040406', border: '1px solid #1a1a24', borderRadius: '8px',
           padding: '1rem 1.25rem', fontSize: '0.8rem', color: '#cbd5e1', fontFamily: 'monospace',
           overflowX: 'auto', marginBottom: '1rem'
         }}>
-          <code>curl http://localhost:4000/health</code>
+          <code>docker run -d -p 3000:3000 --name selixes-dashboard --link selixes-core selixes/dashboard:latest</code>
         </pre>
+        <p style={{ fontSize: '0.875rem', color: '#a1a1b0', lineHeight: 1.6, marginBottom: '1rem' }}>
+          Navigate to <code style={{ color: 'var(--accent-hover)', background: 'rgba(99,102,241,0.1)', padding: '2px 6px', borderRadius: '4px' }}>http://localhost:3000</code> to review active transactions, inspect provider failover rationales, and audit token economics.
+        </p>
+        <p style={{ fontSize: '0.825rem', color: '#8e8e9f', marginTop: '0.5rem', lineHeight: 1.5 }}>
+          *(Note: For staging or production deployments, use our `docker-compose.yml` to orchestrate both services and Redis simultaneously).*
+        </p>
       </section>
 
       {/* CTA Box */}

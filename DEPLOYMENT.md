@@ -149,7 +149,7 @@ DATABASE_URL=postgresql://flowops:<pass>@<your-vps-ip>:5432/flowops \
 ## 7. Production Hardening & Reliability
 
 ### Container Resource Limits
-Our `docker-compose.prod.yml` enforces strict hardware boundaries to guarantee high-availability:
+Our `docker-compose.prod.yml` enforces strict hardware boundaries to ensure high-availability:
 - **API & Web Containers**: Capped at 1.0 CPU core and 512MB RAM.
 - **Database & Redis Containers**: Capped at 0.5 CPU cores and 256MB RAM.
 

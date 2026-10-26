@@ -55,7 +55,7 @@ LOCAL_CONTINUITY_MODEL=llama3.1:8b`}
       <ul style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
         <li>The gateway interceptor intercepts the outgoing request.</li>
         <li>It maps the query format to match the local model parameters.</li>
-        <li>The request is processed locally at $0.00 token cost, guaranteeing system availability during complete ISP or backbone network outages.</li>
+        <li>The request is processed locally at $0.00 token cost, maintaining system availability during complete ISP or backbone network outages.</li>
       </ul>
     </div>
   );

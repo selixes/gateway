@@ -77,7 +77,7 @@ export const presets: Preset[] = [
       { text: '🛡️ Engaging Local Continuity Engine: Proxying requests to sovereign Local Edge...', type: 'system' },
       { text: '🔌 Activating Ollama Llama-3 local VPC container node...', type: 'info' },
       { text: '✅ Local model processed prompt successfully (status: 200, latency: 14ms).', type: 'success' },
-      { text: '🛡️ Zero downtime continuity maintained offline. Prompts preserved!', type: 'success' }
+      { text: '🛡️ Local continuity maintained offline. Prompts preserved!', type: 'success' }
     ]
   },
   {

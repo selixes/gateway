@@ -132,7 +132,7 @@ Reporting Period: ${oneWeekAgo.toLocaleDateString()} - ${now.toLocaleDateString(
 ------------------------------------------------------------------------
 - Total API Gateway Transits:    ${totalRuns.toLocaleString()} requests
 - Cloud Provider Outages Logged: ${outagesCount} events
-  └── Outages Intercepted & Resolved: ${outagesCount} (100% healing rate)
+  └── Outages Intercepted & Resolved: ${outagesCount} (${outagesCount > 0 ? 'resolved' : 'none'})
 - Local degraded Continuity Runs:  ${localContinuityRuns} executions
 
 💵 Cost Governance & Token Arbitrage Metrics:
