@@ -2,7 +2,7 @@
  * ================================================================================
  *      COMPREHENSIVE VERIFICATION BENCHMARK (ITEMS 2 & 3: PRODUCTION DEFAULTS)
  * ================================================================================
- * Machine: AWS Lightsail throwaway verification server (98.86.17.221)
+ * Machine: AWS Lightsail verification server (us-east-1)
  * Environment: 2 vCPUs Intel Xeon Platinum 8259CL @ 2.50GHz, 2.0 GiB RAM, Ubuntu 22.04
  * 
  * Rules:
@@ -149,7 +149,7 @@ async function main() {
   console.log('='.repeat(100));
   console.log('       PRODUCTION CONFIGURATION & VERIFICATION AUDIT (COMMIT 457811a)');
   console.log('='.repeat(100));
-  console.log(`Machine Environment             : AWS Lightsail (98.86.17.221) [Throwaway Verification Server]`);
+  console.log(`Machine Environment             : AWS Lightsail (us-east-1)`);
   console.log(`CPU / OS Specs                  : 2 vCPUs Intel Xeon Platinum 8259CL @ 2.50GHz, Ubuntu 22.04 LTS`);
   console.log(`Commit Hash                     : ${FROZEN_COMMIT}`);
   console.log(`Bi-Encoder Model (Stage 1)      : ${PROD_CONFIG.biEncoderModel} (384-dim dense cosine similarity)`);

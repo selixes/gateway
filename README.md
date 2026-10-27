@@ -126,7 +126,7 @@ Every feature listed below is fully implemented and tested in this repository:
   *Source:* [`apps/api/src/gateway/streaming/resilient-stream.ts:196-234`](./apps/api/src/gateway/streaming/resilient-stream.ts#L196-L234)
 
 * **Cognitive Intercept Loop Breaker (`422 AGENT_LOOP_HALTED`):** Sliding-window trajectory engine inspects rolling SHA-256 digests of tool calls, arguments, and return values. When repetitive action loops are detected, the gateway terminates the run with `HTTP 422 AGENT_LOOP_HALTED` instead of returning 429s that cause client retry storms.  
-  *Source:* [`apps/api/src/gateway/gateway.service.ts:498`](./apps/api/src/gateway/gateway.service.ts#L498), [`apps/api/src/gateway/immune-system.service.ts`](./apps/api/src/gateway/immune-system.service.ts) | Test: [`apps/api/src/gateway/agent-loop-halted-422.spec.ts`](./apps/api/src/gateway/agent-loop-halted-422.spec.ts)
+  *Source:* [`apps/api/src/gateway/gateway.service.ts:498`](./apps/api/src/gateway/gateway.service.ts#L498), [`apps/api/src/gateway/immune-system.service.ts`](./apps/api/src/gateway/immune-system.service.ts) | Benchmark: [`scripts/bench_loop_detection.js`](./scripts/bench_loop_detection.js) | Test: [`apps/api/src/gateway/agent-loop-halted-422.spec.ts`](./apps/api/src/gateway/agent-loop-halted-422.spec.ts)
 
 * **Request Idempotency & Replay:** Inspects `Idempotency-Key` or `X-Idempotency-Key` headers, fingerprints payloads into Redis for 24 hours, and replays cached responses on identical requests with `X-Idempotency-Cache: HIT`.  
   *Source:* [`apps/api/src/gateway/idempotency.interceptor.ts`](./apps/api/src/gateway/idempotency.interceptor.ts) | Test: [`apps/api/src/gateway/idempotency.interceptor.spec.ts`](./apps/api/src/gateway/idempotency.interceptor.spec.ts)
@@ -160,6 +160,7 @@ Standard HTTP gateways use total request timeouts (e.g. 30s). In streaming SSE, 
 When an autonomous agent gets stuck repeating tool executions (e.g., calling `read_file` with the same path after a failure):
 * Traditional rate limiters return HTTP 429 (Too Many Requests), which client SDKs treat as transient and immediately retry with exponential backoff.
 * Selixes recognizes semantic tool loops and returns **`HTTP 422 Unprocessable Entity`** with error code `AGENT_LOOP_HALTED`. This explicitly notifies agent orchestrators (LangChain, AutoGen, CrewAI) that the action is syntactically invalid, breaking the loop permanently.
+* **In-Process Performance:** The rolling trajectory evaluator executes in microseconds without database queries or network roundtrips. Run [`node scripts/bench_loop_detection.js`](./scripts/bench_loop_detection.js) to measure loop detection across 1,000 multi-turn iterations on your hardware (baseline: 22.30 µs median on a 2-vCPU verification server; 8.75 µs on Oryon aarch64).
 
 ### 4. Idempotency Interceptor
 * Clients supply an `Idempotency-Key: <UUID>` header.

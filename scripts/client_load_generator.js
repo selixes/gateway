@@ -3,7 +3,7 @@
  *          CLIENT-SIDE LOAD GENERATOR (RUNS ON SEPARATE CLIENT MACHINE)
  * ================================================================================
  * Sends real HTTPS/HTTP2 requests across the public internet to:
- *   https://98.86.17.221/v1/chat/completions (Host: selixes.com)
+ *   https://127.0.0.1/v1/chat/completions (Host: selixes.com)
  *
  * Workload:
  * - 50% Paraphrases of the 200 seeded prompts (tests semantic cache hit).
@@ -18,7 +18,7 @@ const https = require('https');
 const path = require('path');
 const fs = require('fs');
 
-const TARGET_HOST = '98.86.17.221';
+const TARGET_HOST = process.env.TARGET_HOST || '127.0.0.1';
 const DOMAIN_HEADER = 'selixes.com';
 const UPSTREAM_DELAY_MS = 50;
 

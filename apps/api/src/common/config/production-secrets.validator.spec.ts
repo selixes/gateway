@@ -41,14 +41,31 @@ describe('Production Secrets Validator', () => {
       expect(() => validateProductionSecrets(devEnv)).not.toThrow();
     });
 
-    it('should bypass checks when ALLOW_TEST_MODE_IN_PROD is true (staging override)', () => {
-      const stagingEnv = {
-        NODE_ENV: 'production',
-        ALLOW_TEST_MODE_IN_PROD: 'true',
+    it('should allow GATEWAY_TEST_MODE when ALLOW_TEST_MODE_IN_PROD is true, but still enforce production secret checks', () => {
+      const stagingValid = {
+        ...validStrongEnv,
         GATEWAY_TEST_MODE: 'true',
-        DATABASE_URL: 'postgresql://selixes:selixespassword@localhost:5432/selixes_gateway',
+        ALLOW_TEST_MODE_IN_PROD: 'true',
       };
-      expect(() => validateProductionSecrets(stagingEnv)).not.toThrow();
+      expect(() => validateProductionSecrets(stagingValid)).not.toThrow();
+
+      // Still rejects weak database password even if ALLOW_TEST_MODE_IN_PROD is true
+      const stagingWeakDb = {
+        ...validStrongEnv,
+        GATEWAY_TEST_MODE: 'true',
+        ALLOW_TEST_MODE_IN_PROD: 'true',
+        DATABASE_URL: 'postgresql://selixes:weakpassword@localhost:5432/selixes_gateway',
+      };
+      expect(() => validateProductionSecrets(stagingWeakDb)).toThrow(/forbidden keyword/);
+
+      // Still rejects missing REPLAY_CRYPTO_SECRET even if ALLOW_TEST_MODE_IN_PROD is true
+      const stagingWeakReplay = {
+        ...validStrongEnv,
+        GATEWAY_TEST_MODE: 'true',
+        ALLOW_TEST_MODE_IN_PROD: 'true',
+        REPLAY_CRYPTO_SECRET: '',
+      };
+      expect(() => validateProductionSecrets(stagingWeakReplay)).toThrow(/REPLAY_CRYPTO_SECRET/);
     });
 
     it('should throw when GATEWAY_TEST_MODE is true in production', () => {
@@ -57,6 +74,40 @@ describe('Production Secrets Validator', () => {
         GATEWAY_TEST_MODE: 'true',
       };
       expect(() => validateProductionSecrets(env)).toThrow(/GATEWAY_TEST_MODE=true is not allowed in production/);
+    });
+
+    it('should read real .env.example from disk and assert rejection of its DATABASE_URL and REPLAY_CRYPTO_SECRET in production mode', () => {
+      const fs = require('fs');
+      const path = require('path');
+      const envExamplePath = path.resolve(__dirname, '../../../../../.env.example');
+      expect(fs.existsSync(envExamplePath)).toBe(true);
+
+      const content = fs.readFileSync(envExamplePath, 'utf8');
+      const parsedEnv: Record<string, string> = {};
+      for (const line of content.split('\n')) {
+        const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+        if (match) {
+          let val = (match[2] || '').trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+          }
+          parsedEnv[match[1]] = val;
+        }
+      }
+
+      // Assert DATABASE_URL from real .env.example is rejected in production
+      const envWithExampleDb = {
+        ...validStrongEnv,
+        DATABASE_URL: parsedEnv.DATABASE_URL,
+      };
+      expect(() => validateProductionSecrets(envWithExampleDb)).toThrow(/forbidden keyword/);
+
+      // Assert REPLAY_CRYPTO_SECRET from real .env.example is rejected in production
+      const envWithExampleReplay = {
+        ...validStrongEnv,
+        REPLAY_CRYPTO_SECRET: parsedEnv.REPLAY_CRYPTO_SECRET,
+      };
+      expect(() => validateProductionSecrets(envWithExampleReplay)).toThrow(/contains forbidden keyword/);
     });
 
     it('should reject .env.example password (selixes_dev_password)', () => {

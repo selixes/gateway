@@ -20,13 +20,14 @@ export function extractDbPassword(dbUrl: string): string | null {
 }
 
 export function validateProductionSecrets(env: Record<string, string | undefined> = process.env): void {
-  // Allow local development and explicit CI test overrides
-  if (env.NODE_ENV !== 'production' || env.ALLOW_TEST_MODE_IN_PROD === 'true') {
+  // Only enforce in production mode
+  if (env.NODE_ENV !== 'production') {
     return;
   }
 
   // 1. Outage Simulation Flag Check
-  if (env.GATEWAY_TEST_MODE === 'true') {
+  // ALLOW_TEST_MODE_IN_PROD skips ONLY this check (e.g. for staging outage testing), never secrets
+  if (env.GATEWAY_TEST_MODE === 'true' && env.ALLOW_TEST_MODE_IN_PROD !== 'true') {
     throw new Error(
       'FATAL: GATEWAY_TEST_MODE=true is not allowed in production. ' +
       'This enables simulated outage injection and must never be deployed.'

@@ -19,7 +19,7 @@ async function main() {
   console.log('='.repeat(95));
   console.log('    ITEM 2: SEMANTIC-HIT LOAD TEST OVER REAL HTTP (SEPARATE CLIENT MACHINE)');
   console.log('='.repeat(95));
-  console.log('Target Server : AWS Lightsail (98.86.17.221:443 via Nginx -> Port 4000)');
+  console.log('Target Server : Gateway (:443 via Nginx -> Port 4000)');
   console.log('Client Machine: Separate Client Machine (ARM64 Termux client over public WAN)');
   console.log('Workload      : 50% Paraphrases of 200 Seeded Prompts + 50% Unrelated Control Prompts');
   console.log('='.repeat(95));

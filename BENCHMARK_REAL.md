@@ -1,7 +1,7 @@
 # Real Benchmark Report
 
 **Date:** 2026-10-26T17:15:00.000Z  
-**Host Environment:** AWS Lightsail Throwaway Verification Server (`98.86.17.221`, `us-east-1`)  
+**Host Environment:** AWS Lightsail Verification Server (`us-east-1`)  
 **Hardware Specs:** 2 vCPUs Intel Xeon Platinum 8259CL @ 2.50GHz, 2.0 GiB RAM + 4.0 GiB Swap, Ubuntu 22.04 LTS  
 
 ---

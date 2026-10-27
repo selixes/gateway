@@ -2,7 +2,7 @@
  * ================================================================================
  *          CONFIG MATRIX BENCHMARK: CONFIGS A (0.93, 0.95, 0.97), B, C, D
  * ================================================================================
- * Machine: AWS Lightsail throwaway verification server (98.86.17.221)
+ * Machine: AWS Lightsail verification server (us-east-1)
  * Environment: 2 vCPUs Intel Xeon Platinum 8259CL @ 2.50GHz, 2.0 GiB RAM, Ubuntu 22.04
  * ================================================================================
  */
@@ -171,7 +171,7 @@ async function main() {
   console.log('='.repeat(100));
   console.log('                      CONFIG MATRIX BENCHMARK EXECUTION');
   console.log('='.repeat(100));
-  console.log('Machine: AWS Lightsail (98.86.17.221) [Throwaway Verification Server]');
+  console.log('Machine: AWS Lightsail (us-east-1)');
   console.log('Specs: 2 vCPUs Intel Xeon Platinum 8259CL @ 2.50GHz, 2.0 GiB RAM, 4.0 GiB Swap, Ubuntu 22.04 LTS');
   console.log('\n--- PRODUCTION CONFIGURATION SPECIFICATION ---');
   console.log('Single-Stage Bi-Encoder: Xenova/all-MiniLM-L6-v2 (quantized ONNX, 384-dimensional dense vectors)');
@@ -491,7 +491,7 @@ async function main() {
   console.log('='.repeat(100));
 
   const outPayload = {
-    machine: 'AWS Lightsail 98.86.17.221',
+    machine: 'AWS Lightsail (us-east-1)',
     timestamp: new Date().toISOString(),
     datasets: allResults,
     latency: latencyResults,
