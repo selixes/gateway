@@ -121,7 +121,7 @@ const orgSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <ClerkProvider appearance={{ baseTheme: dark } as any}>
       <html lang="en" className={inter.variable} suppressHydrationWarning>
         <head>
           {/* CRITICAL: Explicit viewport meta — ensures window.innerWidth matches physical screen width on all mobile browsers */}
