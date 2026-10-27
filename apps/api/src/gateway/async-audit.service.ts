@@ -315,9 +315,15 @@ export class AsyncAuditService implements OnModuleInit, OnModuleDestroy, OnAppli
       this.totalFlushed += batch.length;
     } catch (err: any) {
       this.logger.error(`[AsyncAuditService] Batch flush failed: ${err.message}`);
+      // If shutdown deadline was exceeded or flush timed out during shutdown, immediately drop batch
+      if (this.shutdownDeadline !== null && (Date.now() >= this.shutdownDeadline || err.message?.includes('timed out'))) {
+        this.logger.warn(`[AsyncAuditService] Shutdown deadline exceeded during batch flush. Dropping ${batch.length} record(s).`);
+        this.totalDropped += batch.length;
+        return;
+      }
       // Fallback: try individual writes so one bad record does not drop the whole batch
       for (const item of batch) {
-        if (this.isDestroyed && this.shutdownDeadline && Date.now() > this.shutdownDeadline) {
+        if (this.isDestroyed && this.shutdownDeadline && Date.now() >= this.shutdownDeadline) {
           this.logger.warn(`[AsyncAuditService] Shutdown deadline exceeded during fallback writes. Skipping remaining fallback item(s).`);
           this.totalDropped++;
           continue;
