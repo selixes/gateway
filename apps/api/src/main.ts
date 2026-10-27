@@ -6,6 +6,33 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ProductionExceptionFilter } from './common/filters/production-exception.filter';
 
+function validateProductionSecrets() {
+  if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_TEST_MODE_IN_PROD === 'true') {
+    return;
+  }
+
+  if (process.env.GATEWAY_TEST_MODE === 'true') {
+    throw new Error(
+      'FATAL: GATEWAY_TEST_MODE=true is not allowed in production. ' +
+      'This enables simulated outage injection and must never be deployed.'
+    );
+  }
+
+  const dbUrl = process.env.DATABASE_URL || '';
+  if (dbUrl.includes('akrapassword') || dbUrl.includes('selixespassword')) {
+    throw new Error(
+      'FATAL: Default PostgreSQL credentials (akrapassword/selixespassword) are not allowed in production. Please configure a secure database password.'
+    );
+  }
+
+  const replaySecret = process.env.REPLAY_CRYPTO_SECRET || '';
+  if (!replaySecret || replaySecret === 'akra-shield-default-secure-vault-key-32b' || replaySecret.includes('REPLACE')) {
+    throw new Error(
+      'FATAL: REPLAY_CRYPTO_SECRET must be set to a secure, custom key (minimum 32 bytes) in production.'
+    );
+  }
+}
+
 async function bootstrap() {
   // Load .env manually in development before any guards or service initiations
   if (process.env.NODE_ENV !== 'production') {
@@ -34,28 +61,8 @@ async function bootstrap() {
     }
   }
 
-  // Safety: prevent test mode running in production
-  if (
-    process.env.NODE_ENV === 'production' &&
-    process.env.GATEWAY_TEST_MODE === 'true' &&
-    process.env.ALLOW_TEST_MODE_IN_PROD !== 'true'
-  ) {
-    throw new Error(
-      'FATAL: GATEWAY_TEST_MODE=true is not allowed in production. ' +
-      'This enables simulated outage injection and must never be deployed.'
-    );
-  }
-
-  // Safety: reject default Postgres passwords in production
-  if (
-    process.env.NODE_ENV === 'production' &&
-    process.env.ALLOW_TEST_MODE_IN_PROD !== 'true' &&
-    (process.env.DATABASE_URL?.includes('akrapassword') || process.env.DATABASE_URL?.includes('selixespassword'))
-  ) {
-    throw new Error(
-      'FATAL: Default PostgreSQL credentials (akrapassword) are not allowed in production. Please configure a secure database password.'
-    );
-  }
+  // Hardened production startup secrets validation
+  validateProductionSecrets();
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true, rawBody: true });
   app.enableShutdownHooks();
