@@ -30,7 +30,7 @@ const {
   DEFAULT_SEMANTIC_CACHE_TTL_SECONDS,
 } = require('../apps/api/dist/gateway/semantic-cache.service.js');
 
-const FROZEN_COMMIT = '457811a (private: akra-flowops) / 0957468 (public: selixes-public)';
+const FROZEN_COMMIT = '0957468 (public: selixes-gateway)';
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 const GROQ_MODEL = 'qwen/qwen3.8-27b';
 const STUB_DELAY_MS = 50;

@@ -23,7 +23,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      {/* API Shield Gateways Key Manager */}
+      {/* Selixes Gateway Key Manager */}
       <ApiKeyManager />
 
       {/* Operations Resiliency & Savings Report */}

@@ -60,7 +60,6 @@ export class GatewayController {
       
       const runtimeMode = this.redis.isFallbackActive() ? 'fallback-memory' : 'redis';
       res.setHeader('X-SELIXES-RUNTIME-MODE', runtimeMode);
-      res.setHeader('X-APISHIELD-RUNTIME-MODE', runtimeMode);
 
       const id = `chatcmpl-${handle.requestId}`;
       const created = Math.floor(Date.now() / 1000);

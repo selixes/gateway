@@ -29,9 +29,9 @@ Edit `.env.production`:
 
 ```env
 # Database
-POSTGRES_USER=flowops
+POSTGRES_USER=selixes
 POSTGRES_PASSWORD=<strong-random-password>
-POSTGRES_DB=flowops
+POSTGRES_DB=selixes
 
 # Clerk (from https://clerk.com → API Keys)
 CLERK_SECRET_KEY=sk_live_xxxx
@@ -39,8 +39,8 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_xxxx
 CLERK_WEBHOOK_SECRET=whsec_xxxx
 
 # App URL (your domain)
-APP_URL=https://flowops.yourdomain.com
-API_URL=https://api.flowops.yourdomain.com
+APP_URL=https://selixes.yourdomain.com
+API_URL=https://api.selixes.yourdomain.com
 
 # Alerts (optional — leave blank to disable)
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxx/yyy/zzz
@@ -57,8 +57,8 @@ ALERT_EMAIL=alerts@yourdomain.com
 docker compose -f docker-compose.prod.yml up -d postgres
 
 # Wait for postgres to be healthy, then push schema
-docker run --rm --network flowops_flowops \
-  -e DATABASE_URL=postgresql://flowops:<password>@postgres:5432/flowops \
+docker run --rm --network selixes_selixes \
+  -e DATABASE_URL=postgresql://selixes:<password>@postgres:5432/selixes \
   -v $(pwd)/packages/database:/app \
   -w /app node:20-alpine \
   sh -c "npm i && npx prisma db push"
@@ -82,12 +82,12 @@ curl http://localhost:4000/health
 
 ## 4. Nginx Reverse Proxy (optional, recommended)
 
-Install nginx and create `/etc/nginx/sites-available/flowops`:
+Install nginx and create `/etc/nginx/sites-available/selixes`:
 
 ```nginx
 # Web frontend
 server {
-    server_name flowops.yourdomain.com;
+    server_name selixes.yourdomain.com;
     location / {
         proxy_pass http://localhost:3000;
         proxy_set_header Host $host;
@@ -97,7 +97,7 @@ server {
 
 # API
 server {
-    server_name api.flowops.yourdomain.com;
+    server_name api.selixes.yourdomain.com;
     location / {
         proxy_pass http://localhost:4000;
         proxy_set_header Host $host;
@@ -108,8 +108,8 @@ server {
 
 Enable and configure SSL with Let's Encrypt:
 ```bash
-ln -s /etc/nginx/sites-available/flowops /etc/nginx/sites-enabled/
-certbot --nginx -d flowops.yourdomain.com -d api.flowops.yourdomain.com
+ln -s /etc/nginx/sites-available/selixes /etc/nginx/sites-enabled/
+certbot --nginx -d selixes.yourdomain.com -d api.selixes.yourdomain.com
 systemctl reload nginx
 ```
 
@@ -124,7 +124,7 @@ certbot renew --dry-run
 ## 5. Configure Clerk Webhooks
 
 In Clerk Dashboard → Webhooks → Add endpoint:
-- URL: `https://api.flowops.yourdomain.com/webhooks/clerk`
+- URL: `https://api.selixes.yourdomain.com/webhooks/clerk`
 - Events: `user.created`, `user.updated`, `organization.created`, `organizationMembership.created`
 - Copy the signing secret → `CLERK_WEBHOOK_SECRET` in `.env.production`
 
@@ -140,7 +140,7 @@ docker compose -f docker-compose.prod.yml exec api \
 Or run locally against production DB:
 ```bash
 cd packages/database
-DATABASE_URL=postgresql://flowops:<pass>@<your-vps-ip>:5432/flowops \
+DATABASE_URL=postgresql://selixes:<pass>@<your-vps-ip>:5432/selixes \
   npx ts-node seed.ts
 ```
 
@@ -169,20 +169,20 @@ Always back up your database to prevent data loss.
 ### Manual Backup Dump
 Generate a compressed backup of your database:
 ```bash
-mkdir -p /var/backups/flowops
-docker exec -t flowops-postgres pg_dump -U flowops flowops | gzip > /var/backups/flowops/flowops_db_$(date +%F_%H-%M-%S).sql.gz
+mkdir -p /var/backups/selixes
+docker exec -t selixes-postgres pg_dump -U selixes selixes | gzip > /var/backups/selixes/selixes_db_$(date +%F_%H-%M-%S).sql.gz
 ```
 
 ### Automated Nightly Backups (Cron Job)
-Create a backup shell script at `/usr/local/bin/flowops-backup.sh`:
+Create a backup shell script at `/usr/local/bin/selixes-backup.sh`:
 ```bash
 #!/bin/bash
-BACKUP_DIR="/var/backups/flowops"
+BACKUP_DIR="/var/backups/selixes"
 mkdir -p "$BACKUP_DIR"
 FILENAME="$BACKUP_DIR/db_$(date +%F_%H%M%S).sql.gz"
 
 # Dump database
-docker exec -t flowops-postgres pg_dump -U flowops flowops | gzip > "$FILENAME"
+docker exec -t selixes-postgres pg_dump -U selixes selixes | gzip > "$FILENAME"
 
 # Delete backups older than 14 days to conserve disk space
 find "$BACKUP_DIR" -type f -name "*.sql.gz" -mtime +14 -delete
@@ -190,12 +190,12 @@ find "$BACKUP_DIR" -type f -name "*.sql.gz" -mtime +14 -delete
 
 Make it executable:
 ```bash
-chmod +x /usr/local/bin/flowops-backup.sh
+chmod +x /usr/local/bin/selixes-backup.sh
 ```
 
 Configure a system cron job to run it every night at 2:00 AM. Run `crontab -e` and append:
 ```cron
-0 2 * * * /usr/local/bin/flowops-backup.sh >/dev/null 2>&1
+0 2 * * * /usr/local/bin/selixes-backup.sh >/dev/null 2>&1
 ```
 
 ---

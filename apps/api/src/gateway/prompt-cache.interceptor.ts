@@ -6,8 +6,8 @@ import { RedisService } from '../redis/redis.service';
 
 const DEFAULT_TTL_SECONDS = 3600; // 1 hour
 
-function getHeader(headers: Record<string, any>, currentName: string, legacyName: string): any {
-  return headers[currentName] ?? headers[legacyName];
+function getHeader(headers: Record<string, any>, currentName: string, legacyName?: string): any {
+  return headers[currentName] ?? (legacyName ? headers[legacyName] : undefined);
 }
 
 function buildCacheKey(body: Record<string, any>, organizationId?: string): string {
@@ -42,7 +42,7 @@ export class PromptCacheInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const cacheMode = (getHeader(req.headers, 'x-selixes-cache', 'x-apishield-cache') ?? '').toLowerCase();
+    const cacheMode = (getHeader(req.headers, 'x-selixes-cache') ?? '').toLowerCase();
     const organizationId = req.resolvedApiKey?.organizationId ?? req.orgId ?? req.user?.orgId;
 
     // Fail closed: If there is no resolved organizationId, skip prompt caching to prevent shared global cache collisions
@@ -52,7 +52,7 @@ export class PromptCacheInterceptor implements NestInterceptor {
     }
 
     const cacheKey  = buildCacheKey(body, organizationId);
-    const ttl       = parseInt(getHeader(req.headers, 'x-selixes-cache-ttl', 'x-apishield-cache-ttl') ?? String(DEFAULT_TTL_SECONDS));
+    const ttl       = parseInt(getHeader(req.headers, 'x-selixes-cache-ttl') ?? String(DEFAULT_TTL_SECONDS));
 
     // ── bypass: skip read AND write ────────────────────────────────
     if (cacheMode === 'bypass') {

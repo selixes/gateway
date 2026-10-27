@@ -56,7 +56,7 @@ export function OnboardingChecklist({ completedSteps = 0 }: { completedSteps?: n
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
         <div>
           <h2 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 3px' }}>
-            Get started with API Shield
+            Get started with Selixes Gateway
           </h2>
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
             {completedSteps} of {STEPS.length} steps complete

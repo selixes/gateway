@@ -22,7 +22,7 @@ const {
   verifyEntityGuard,
 } = require('../apps/api/dist/gateway/semantic-cache.service.js');
 
-const FROZEN_COMMIT = '457811a (private: akra-flowops) / 0957468 (public: selixes-public)';
+const FROZEN_COMMIT = '0957468 (public: selixes-gateway)';
 
 const pawsHeldoutPath = path.join(__dirname, 'data', 'heldout_paws_2000.json');
 const qqpNonDupPath = path.join(__dirname, 'data', 'heldout_qqp_non_dup_1000.json');

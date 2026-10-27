@@ -11,7 +11,7 @@ export class WebhookSecretGuard implements CanActivate {
       throw new UnauthorizedException('Webhook authentication is not configured');
     }
 
-    const provided = req.headers['x-selixes-webhook-secret'] ?? req.headers['x-apishield-webhook-secret'];
+    const provided = req.headers['x-selixes-webhook-secret'];
     const token = Array.isArray(provided) ? provided[0] : provided;
 
     if (!token || !safeEqual(token, expected)) {

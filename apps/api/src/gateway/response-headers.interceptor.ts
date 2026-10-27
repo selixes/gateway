@@ -13,7 +13,6 @@ export class ResponseHeadersInterceptor implements NestInterceptor {
     // Inject runtime mode header indicating Redis coordination state
     const mode = this.redis.isFallbackActive() ? 'fallback-memory' : 'redis';
     res.setHeader('X-SELIXES-RUNTIME-MODE', mode);
-    res.setHeader('X-APISHIELD-RUNTIME-MODE', mode);
 
     return next.handle().pipe(
       map((data) => {

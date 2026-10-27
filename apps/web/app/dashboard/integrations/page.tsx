@@ -1,4 +1,4 @@
-const API_BASE = 'https://your-api.akra.io'; // Replace with actual domain
+const API_BASE = 'https://api.selixes.com'; // Replace with actual domain
 
 const snippets = {
   register: `POST ${API_BASE}/workflows/register

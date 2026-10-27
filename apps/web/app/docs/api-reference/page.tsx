@@ -97,9 +97,6 @@ export default function ApiReferencePage() {
         }}>
           <code>Authorization: Bearer selixes_placeholder_key</code>
         </pre>
-        <p style={{ fontSize: '0.8rem', color: '#8e8e9f', lineHeight: 1.5, margin: 0 }}>
-          💡 <strong>Legacy Support:</strong> The gateway is fully backwards-compatible. You can continue to authenticate using your existing keys (prefixed with <code>apishield_live_</code>) during the migration phase.
-        </p>
       </section>
 
       {/* Headers reference table */}
@@ -122,11 +119,11 @@ export default function ApiReferencePage() {
             </thead>
             <tbody>
               {[
-                { h: 'x-selixes-session-id', t: 'String', d: 'Unique identifier mapping reasoning budgets across an active agent run. (Legacy fallback: x-apishield-session-id)' },
-                { h: 'x-selixes-max-session-cost', t: 'Float', d: 'Cap cap spending cap (e.g. 0.15 for $0.15 limit). Blocks further calls if exceeded. (Legacy fallback: x-apishield-max-session-cost)' },
-                { h: 'x-selixes-max-concurrent-calls', t: 'Integer', d: 'Concurrency connection caps (e.g. 3 active calls). Limits parallel agent swarm bursts. (Legacy fallback: x-apishield-max-concurrent-calls)' },
-                { h: 'x-selixes-timeout', t: 'Integer', d: 'Upstream provider timeout threshold in milliseconds. Reroutes to Standby if exceeded. (Legacy fallback: x-apishield-timeout)' },
-                { h: 'x-selixes-fallback-route', t: 'String', d: 'Override standby targets manually (values: "anthropic" | "gemini" | "ollama"). (Legacy fallback: x-apishield-fallback-route)' },
+                { h: 'x-selixes-session-id', t: 'String', d: 'Unique identifier mapping reasoning budgets across an active agent run.' },
+                { h: 'x-selixes-max-session-cost', t: 'Float', d: 'Session spending cap (e.g. 0.15 for $0.15 limit). Halts further calls if exceeded.' },
+                { h: 'x-selixes-max-concurrent-calls', t: 'Integer', d: 'Concurrency connection caps (e.g. 3 active calls). Limits parallel agent swarm bursts.' },
+                { h: 'x-selixes-timeout', t: 'Integer', d: 'Upstream provider timeout threshold in milliseconds. Reroutes to Standby if exceeded.' },
+                { h: 'x-selixes-fallback-route', t: 'String', d: 'Override standby targets manually (values: "anthropic" | "gemini" | "ollama").' },
               ].map((row, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px solid #1a1a24', color: '#a1a1b0' }}>
                   <td style={{ padding: '10px 8px', color: '#fff', fontWeight: 600, fontFamily: 'monospace' }}>{row.h}</td>
@@ -137,9 +134,6 @@ export default function ApiReferencePage() {
             </tbody>
           </table>
         </div>
-        <p style={{ fontSize: '0.8rem', color: '#8e8e9f', lineHeight: 1.5, margin: 0 }}>
-          💡 <strong>Compatibility:</strong> You can continue to dispatch requests with your legacy <code>x-apishield-*</code> headers. The gateway translates them seamlessly to <code>x-selixes-*</code> primitives.
-        </p>
       </section>
 
       {/* Response Payloads */}

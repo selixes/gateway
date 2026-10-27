@@ -5,33 +5,7 @@ import { json } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ProductionExceptionFilter } from './common/filters/production-exception.filter';
-
-function validateProductionSecrets() {
-  if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_TEST_MODE_IN_PROD === 'true') {
-    return;
-  }
-
-  if (process.env.GATEWAY_TEST_MODE === 'true') {
-    throw new Error(
-      'FATAL: GATEWAY_TEST_MODE=true is not allowed in production. ' +
-      'This enables simulated outage injection and must never be deployed.'
-    );
-  }
-
-  const dbUrl = process.env.DATABASE_URL || '';
-  if (dbUrl.includes('akrapassword') || dbUrl.includes('selixespassword')) {
-    throw new Error(
-      'FATAL: Default PostgreSQL credentials (akrapassword/selixespassword) are not allowed in production. Please configure a secure database password.'
-    );
-  }
-
-  const replaySecret = process.env.REPLAY_CRYPTO_SECRET || '';
-  if (!replaySecret || replaySecret === 'akra-shield-default-secure-vault-key-32b' || replaySecret.includes('REPLACE')) {
-    throw new Error(
-      'FATAL: REPLAY_CRYPTO_SECRET must be set to a secure, custom key (minimum 32 bytes) in production.'
-    );
-  }
-}
+import { validateProductionSecrets } from './common/config/production-secrets.validator';
 
 async function bootstrap() {
   // Load .env manually in development before any guards or service initiations

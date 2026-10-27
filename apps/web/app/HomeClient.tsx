@@ -232,7 +232,7 @@ const presets: Preset[] = [
       { text: '⚠️ Recursive tool loop detected: Agent invoking same tools iteratively.', type: 'warn' },
       { text: '📈 Wallet drainage warning: Cumulative session spend at $0.90...', type: 'warn' },
       { text: '📈 Cumulative session spend hits budget threshold at $1.50...', type: 'warn' },
-      { text: '🛡️ BUDGET GATE TRIPPED: x-apishield-max-session-cost limit (1.50) exceeded.', type: 'system' },
+      { text: '🛡️ BUDGET GATE TRIPPED: x-selixes-max-session-cost limit (1.50) exceeded.', type: 'system' },
       { text: '🚫 Intercepting runaway agent loop: Selixes deflecting active connections.', type: 'error' },
       { text: '✅ Request blocked with HTTP 429 runaway_agent_protection. Budget secured!', type: 'success' }
     ]
@@ -269,7 +269,7 @@ const presets: Preset[] = [
       { text: '🌊 Swarm burst: Launching concurrent pipelines (100 parallel active agents)...', type: 'info' },
       { text: '📥 Concurrency load rising: Admitting Request #1, #2, #3...', type: 'info' },
       { text: '⚠️ Swarm ceiling warning: Concurrency limit reaching standard levels...', type: 'warn' },
-      { text: '🛡️ CONCURRENCY CEILING TRIAGED: limit (x-apishield-max-concurrent-calls: 3) hit.', type: 'system' },
+      { text: '🛡️ CONCURRENCY CEILING TRIAGED: limit (x-selixes-max-concurrent-calls: 3) hit.', type: 'system' },
       { text: '🚫 Request #4: Blocked and isolated. Thrown 429 queue limit reached.', type: 'error' },
       { text: '🚫 Request #5: Blocked and isolated. Thrown 429 queue limit reached.', type: 'error' },
       { text: '📤 Request #1 completed successfully. Active slots open: 1', type: 'success' },
@@ -289,7 +289,7 @@ const presets: Preset[] = [
       { text: '📡 Processing customer service request containing user prompt...', type: 'info' },
       { text: '🔍 Scanning prompt payload for sensitive parameters...', type: 'info' },
       { text: '⚠️ SECURITY ALERT: PII patterns detected (Customer SSN: ***-**-4912, OpenAI API Key).', type: 'warn' },
-      { text: '🛡️ Edge Sanitization Engaged: x-apishield-pii-scrubbing active.', type: 'system' },
+      { text: '🛡️ Edge Sanitization Engaged: x-selixes-pii-scrubbing active.', type: 'system' },
       { text: '✂️ Redaction applied: SSN masked to [REDACTED_SSN], API Key replaced with [REDACTED_TOKEN].', type: 'info' },
       { text: '📤 Releasing sanitized prompt payload securely to upstream provider...', type: 'info' },
       { text: '✅ Upstream provider answered safely without receiving sensitive raw customer data.', type: 'success' },

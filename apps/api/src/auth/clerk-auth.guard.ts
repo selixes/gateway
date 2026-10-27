@@ -23,7 +23,7 @@ interface ApiKeyMeta {
   orgPlan?: string;
 }
 
-const KEY_FORMAT = /^(selixes|apishield)_live_[a-f0-9]{32}$/;
+const KEY_FORMAT = /^selixes_live_[a-f0-9]{32}$/;
 const CACHE_TTL = 300; // 5 minutes, fixed - NOT sliding
 
 @Injectable()
@@ -116,7 +116,7 @@ export class ClerkAuthGuard implements CanActivate {
     }
 
     // ── Step 3: Check credentials type ────────────────────────────
-    if (token.startsWith('selixes_live_') || token.startsWith('apishield_live_')) {
+    if (token.startsWith('selixes_live_')) {
       // ── Step 3a: Regex pre-filter (zero DB cost for garbage keys) ──
       if (!KEY_FORMAT.test(token)) {
         throw new UnauthorizedException('Invalid or revoked API Key');

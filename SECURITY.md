@@ -8,7 +8,7 @@ We take the security of Selixes AI Gateway and the applications built on it seri
 
 Instead, please report the vulnerability privately via email:
 
-* **Security Email:** `security@selixes.com`
+* **Security Contact Email:** `support@selixes.com`
 
 ### What to Include in Your Report
 To help us triage and investigate as quickly as possible, please provide:

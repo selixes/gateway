@@ -340,7 +340,7 @@ async function main() {
   const redis = new Redis({
     host: '172.18.0.3',
     port: 6379,
-    password: 'FlowOpsSecureRedis2026',
+    password: 'SelixesSecureRedis2026',
     lazyConnect: true,
   });
   await redis.connect();

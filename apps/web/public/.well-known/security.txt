@@ -1,4 +1,4 @@
-Contact: mailto:security@selixes.com
+Contact: mailto:support@selixes.com
 Expires: 2027-06-05T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://selixes.com/.well-known/security.txt

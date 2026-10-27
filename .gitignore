@@ -50,7 +50,7 @@ yarn-error.log*
 .agents/
 work/
 
-# Internal outbound, automation, and scratch (Do NOT leak to public)
+# Local development, automation, and scratch
 applications/
 posts/
 prospects/

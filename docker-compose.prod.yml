@@ -4,16 +4,16 @@ services:
   # ── PostgreSQL ────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: flowops-postgres
+    container_name: selixes-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-flowops}
+      POSTGRES_USER: ${POSTGRES_USER:-selixes}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
-      POSTGRES_DB: ${POSTGRES_DB:-flowops}
+      POSTGRES_DB: ${POSTGRES_DB:-selixes}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-flowops}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-selixes}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,12 +31,12 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      - flowops
+      - selixes
 
   # ── Redis ─────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: flowops-redis
+    container_name: selixes-redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD:?err} --appendonly yes
     volumes:
@@ -60,19 +60,19 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      - flowops
+      - selixes
 
   # ── NestJS API ────────────────────────────────────────────
   api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    container_name: flowops-api
+    container_name: selixes-api
     stop_grace_period: 15s
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-flowops}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-flowops}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-selixes}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-selixes}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:?err}
@@ -127,14 +127,14 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      - flowops
+      - selixes
 
   # ── Next.js Web ───────────────────────────────────────────
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    container_name: flowops-web
+    container_name: selixes-web
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -164,12 +164,12 @@ services:
         max-size: "10m"
         max-file: "3"
     networks:
-      - flowops
+      - selixes
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  flowops:
+  selixes:
     driver: bridge

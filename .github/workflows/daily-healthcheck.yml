@@ -45,9 +45,9 @@ jobs:
 
       - name: Validate Template Configurations
         run: |
-          echo "Checking .env.example for leaked internal credentials..."
-          if grep -iE "akrapassword|akra_flowops" .env.example docker-compose.yml; then
-            echo "::error::Leaked legacy credentials found in public templates!"
+          echo "Checking production compose template for insecure fallback passwords..."
+          if grep -iE "password|changeme|selixes_dev_password" docker-compose.prod.yml; then
+            echo "::error::Insecure credentials found in production template!"
             exit 1
           fi
-          echo "✅ No legacy credentials found in templates"
+          echo "✅ Production templates require explicit secrets"

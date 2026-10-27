@@ -77,7 +77,7 @@ export function CostArbitrageAdvisor() {
           fontWeight: 600,
           letterSpacing: '0.05em',
         }}>
-          API SHIELD GATEWAY SHIELD ACTIVE
+          SELIXES GATEWAY ACTIVE
         </span>
       </div>
 
@@ -92,7 +92,7 @@ export function CostArbitrageAdvisor() {
           gap: '0.5rem',
           margin: 0,
         }}>
-          <span style={{ color: 'var(--accent)' }}>✦</span> API Shield Continuity & Failover Monitor
+          <span style={{ color: 'var(--accent)' }}>✦</span> Selixes Continuity & Failover Monitor
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginTop: '0.25rem', maxWidth: '600px' }}>
           Orchestrates production completions through primary (OpenAI) and standby (Anthropic) networks with graceful degraded Continuity Mode (local Llama-3 via Ollama) fail-safes.

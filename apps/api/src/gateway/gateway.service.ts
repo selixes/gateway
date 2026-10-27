@@ -46,21 +46,21 @@ const DEFAULT_CHAIN = process.env.DEFAULT_PROVIDER_CHAIN
   : ['openai', 'anthropic'];
 const DEFAULT_TIMEOUT = 10000;
 
-function getHeader(headers: Record<string, any>, currentName: string, legacyName: string): any {
-  return headers[currentName] ?? headers[legacyName];
+function getHeader(headers: Record<string, any>, currentName: string, legacyName?: string): any {
+  return headers[currentName] ?? (legacyName ? headers[legacyName] : undefined);
 }
 
 function parseOverrides(headers: Record<string, any>): GatewayOverrides {
   const isTestMode = process.env.NODE_ENV === 'test' || process.env.GATEWAY_TEST_MODE === 'true';
 
-  // Parse x-selixes-timeout, accepting legacy x-apishield-timeout during migration.
-  const rawTimeout = parseInt(getHeader(headers, 'x-selixes-timeout', 'x-apishield-timeout') ?? '');
+  // Parse x-selixes-timeout.
+  const rawTimeout = parseInt(getHeader(headers, 'x-selixes-timeout') ?? '');
   const timeoutMs = Number.isFinite(rawTimeout) && rawTimeout > 0
     ? rawTimeout : DEFAULT_TIMEOUT;
 
-  // Parse x-selixes-failover-policy, accepting legacy x-apishield-failover-policy.
+  // Parse x-selixes-failover-policy.
   let failoverPolicy = DEFAULT_CHAIN;
-  const rawPolicy = getHeader(headers, 'x-selixes-failover-policy', 'x-apishield-failover-policy') ?? '';
+  const rawPolicy = getHeader(headers, 'x-selixes-failover-policy') ?? '';
   if (rawPolicy) {
     const parts = rawPolicy.split('->').map((s: string) => s.trim().toLowerCase());
     if (parts.length > 0 && parts.every((p: string) => VALID_PROVIDERS.has(p))) {
@@ -68,8 +68,8 @@ function parseOverrides(headers: Record<string, any>): GatewayOverrides {
     }
   }
 
-  // Parse x-selixes-continuity, accepting legacy x-apishield-continuity.
-  const rawContinuity = getHeader(headers, 'x-selixes-continuity', 'x-apishield-continuity') ?? 'true';
+  // Parse x-selixes-continuity.
+  const rawContinuity = getHeader(headers, 'x-selixes-continuity') ?? 'true';
   const continuity = rawContinuity.toLowerCase() !== 'false';
 
   // x-simulate-outage — only in test mode
@@ -78,12 +78,12 @@ function parseOverrides(headers: Record<string, any>): GatewayOverrides {
     : undefined;
 
   // Parse cache headers
-  const cacheEnabled = getHeader(headers, 'x-selixes-cache-enabled', 'x-apishield-cache-enabled') === 'true';
-  const rawTtl = parseInt(getHeader(headers, 'x-selixes-cache-ttl', 'x-apishield-cache-ttl') ?? '3600', 10);
+  const cacheEnabled = getHeader(headers, 'x-selixes-cache-enabled') === 'true';
+  const rawTtl = parseInt(getHeader(headers, 'x-selixes-cache-ttl') ?? '3600', 10);
   const cacheTtl = Number.isFinite(rawTtl) && rawTtl > 0 ? rawTtl : 3600;
 
   // Parse semantic cache headers
-  const rawSemanticHeader = getHeader(headers, 'x-selixes-semantic-cache', 'x-apishield-semantic-cache');
+  const rawSemanticHeader = getHeader(headers, 'x-selixes-semantic-cache');
   let semanticCache: boolean;
   if (rawSemanticHeader !== undefined) {
     semanticCache = rawSemanticHeader === 'true';
@@ -91,7 +91,7 @@ function parseOverrides(headers: Record<string, any>): GatewayOverrides {
     // Default false unless explicitly enabled in environment
     semanticCache = process.env.SEMANTIC_CACHE_DEFAULT_ENABLED === 'true' || process.env.SEMANTIC_CACHE_ENABLED === 'true';
   }
-  const rawThreshold = parseFloat(getHeader(headers, 'x-selixes-semantic-threshold', 'x-apishield-semantic-threshold') ?? (process.env.SEMANTIC_CACHE_THRESHOLD || '0.95'));
+  const rawThreshold = parseFloat(getHeader(headers, 'x-selixes-semantic-threshold') ?? (process.env.SEMANTIC_CACHE_THRESHOLD || '0.95'));
   const semanticThreshold = Number.isFinite(rawThreshold) && rawThreshold >= 0 && rawThreshold <= 1 ? rawThreshold : 0.95;
 
   return { timeoutMs, failoverPolicy, continuity, simulateOutage, cacheEnabled, cacheTtl, semanticCache, semanticThreshold };
@@ -352,7 +352,7 @@ export class GatewayService {
       }
     }
 
-    const sessionId = getHeader(headers, 'x-selixes-session-id', 'x-apishield-session-id')?.toString() || null;
+    const sessionId = getHeader(headers, 'x-selixes-session-id')?.toString() || null;
     if (sessionId && !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
       throw new HttpException('Invalid session ID format.', 400);
     }
@@ -365,10 +365,10 @@ export class GatewayService {
         this.prometheus.incrementFallbackMetric();
       }
 
-      const budgetCostRaw = getHeader(headers, 'x-selixes-max-session-cost', 'x-apishield-max-session-cost');
-      const budgetCallsRaw = getHeader(headers, 'x-selixes-max-calls', 'x-apishield-max-calls');
-      const budgetConcurRaw = getHeader(headers, 'x-selixes-max-concurrent-calls', 'x-apishield-max-concurrent-calls');
-      const budgetDurationRaw = getHeader(headers, 'x-selixes-max-session-duration-ms', 'x-apishield-max-session-duration-ms');
+      const budgetCostRaw = getHeader(headers, 'x-selixes-max-session-cost');
+      const budgetCallsRaw = getHeader(headers, 'x-selixes-max-calls');
+      const budgetConcurRaw = getHeader(headers, 'x-selixes-max-concurrent-calls');
+      const budgetDurationRaw = getHeader(headers, 'x-selixes-max-session-duration-ms');
 
       let maxCost = budgetCostRaw ? parseFloat(budgetCostRaw.toString()) : null;
       if (maxCost !== null && (!Number.isFinite(maxCost) || maxCost <= 0)) {
@@ -403,8 +403,8 @@ export class GatewayService {
         await this.redis.expire(redisKey, 86400).catch(() => {}); // 24hr TTL
       }
 
-      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept', 'x-apishield-cognitive-intercept') !== 'false';
-      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold', 'x-apishield-cognitive-intercept-threshold') || '3', 10);
+      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept') !== 'false';
+      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold') || '3', 10);
 
       // Security: Strip any spoofed intercept messages injected by the client
       if (body.messages) {
@@ -1873,7 +1873,7 @@ export class GatewayService {
       }
     }
 
-    const sessionId = getHeader(headers, 'x-selixes-session-id', 'x-apishield-session-id')?.toString() || null;
+    const sessionId = getHeader(headers, 'x-selixes-session-id')?.toString() || null;
     if (sessionId && !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
       throw new HttpException('Invalid session ID format.', 400);
     }
@@ -1886,10 +1886,10 @@ export class GatewayService {
         this.prometheus.incrementFallbackMetric();
       }
 
-      const budgetCostRaw = getHeader(headers, 'x-selixes-max-session-cost', 'x-apishield-max-session-cost');
-      const budgetCallsRaw = getHeader(headers, 'x-selixes-max-calls', 'x-apishield-max-calls');
-      const budgetConcurRaw = getHeader(headers, 'x-selixes-max-concurrent-calls', 'x-apishield-max-concurrent-calls');
-      const budgetDurationRaw = getHeader(headers, 'x-selixes-max-session-duration-ms', 'x-apishield-max-session-duration-ms');
+      const budgetCostRaw = getHeader(headers, 'x-selixes-max-session-cost');
+      const budgetCallsRaw = getHeader(headers, 'x-selixes-max-calls');
+      const budgetConcurRaw = getHeader(headers, 'x-selixes-max-concurrent-calls');
+      const budgetDurationRaw = getHeader(headers, 'x-selixes-max-session-duration-ms');
 
       let maxCost = budgetCostRaw ? parseFloat(budgetCostRaw.toString()) : null;
       if (maxCost !== null && (!Number.isFinite(maxCost) || maxCost <= 0)) {
@@ -1924,8 +1924,8 @@ export class GatewayService {
         await this.redis.expire(redisKey, 86400).catch(() => {}); // 24hr TTL
       }
 
-      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept', 'x-apishield-cognitive-intercept') !== 'false';
-      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold', 'x-apishield-cognitive-intercept-threshold') || '3', 10);
+      const cognitiveInterceptEnabled = getHeader(headers, 'x-selixes-cognitive-intercept') !== 'false';
+      const cognitiveInterceptThreshold = parseInt(getHeader(headers, 'x-selixes-cognitive-intercept-threshold') || '3', 10);
 
       // Security: Strip any spoofed intercept messages injected by the client
       if (body.messages) {

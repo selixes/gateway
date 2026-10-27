@@ -123,7 +123,7 @@ export class TracesService {
 
     const reportMarkdown = `
 ========================================================================
-             API SHIELD RELIABILITY & COST SAVINGS REPORT
+             SELIXES RELIABILITY & COST SAVINGS REPORT
 ========================================================================
 Generated At: ${now.toLocaleString()}
 Reporting Period: ${oneWeekAgo.toLocaleDateString()} - ${now.toLocaleDateString()}

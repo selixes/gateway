@@ -129,7 +129,7 @@ Every feature listed below is fully implemented and tested in this repository:
   *Source:* [`apps/api/src/gateway/gateway.service.ts:498`](./apps/api/src/gateway/gateway.service.ts#L498), [`apps/api/src/gateway/immune-system.service.ts`](./apps/api/src/gateway/immune-system.service.ts) | Test: [`apps/api/src/gateway/agent-loop-halted-422.spec.ts`](./apps/api/src/gateway/agent-loop-halted-422.spec.ts)
 
 * **Request Idempotency & Replay:** Inspects `Idempotency-Key` or `X-Idempotency-Key` headers, fingerprints payloads into Redis for 24 hours, and replays cached responses on identical requests with `X-Idempotency-Cache: HIT`.  
-  *Source:* [`apps/api/src/gateway/idempotency.interceptor.ts`](./apps/api/src/gateway/idempotency.interceptor.ts)
+  *Source:* [`apps/api/src/gateway/idempotency.interceptor.ts`](./apps/api/src/gateway/idempotency.interceptor.ts) | Test: [`apps/api/src/gateway/idempotency.interceptor.spec.ts`](./apps/api/src/gateway/idempotency.interceptor.spec.ts)
 
 * **Local In-Process ONNX Semantic Caching:** Embeds incoming prompts using local `Xenova/all-MiniLM-L6-v2` ONNX models without cloud embedding API egress. Supports LRU memory, Redis, and Pinecone backends with a 0.95 similarity threshold and opt-in cross-encoder reranking.  
   *Source:* [`apps/api/src/gateway/semantic-cache.service.ts`](./apps/api/src/gateway/semantic-cache.service.ts) | Test: [`apps/api/src/gateway/semantic-cache.service.spec.ts`](./apps/api/src/gateway/semantic-cache.service.spec.ts)
@@ -189,12 +189,15 @@ For full test setup, hardware details, and latency breakdown, see [`BENCHMARK_RE
 
 When deploying Selixes in production (`NODE_ENV=production`), the gateway enforces strict security boundaries:
 
-1. **Startup Secrets Validator:** On boot, [`apps/api/src/main.ts`](./apps/api/src/main.ts) executes `validateProductionSecrets()`. The application will throw an unhandled exception and halt startup if:
-   - `DATABASE_URL` contains known default development passwords.
-   - `REPLAY_CRYPTO_SECRET` is unset, uses the default key, or contains `REPLACE`.
-   - `GATEWAY_TEST_MODE=true` (outage simulation is strictly forbidden in production).
+1. **Startup Secrets Validator:** On boot, [`apps/api/src/common/config/production-secrets.validator.ts`](./apps/api/src/common/config/production-secrets.validator.ts) executes `validateProductionSecrets()`. The application will throw an unhandled exception and halt startup if:
+   - `DATABASE_URL` contains known default development passwords (e.g. `password`, `dev`, `changeme`, `selixes`, `akra`) or is shorter than 16 characters.
+   - `REPLAY_CRYPTO_SECRET` is unset, shorter than 32 characters, or contains placeholders (`REPLACE`, `default`, `selixes-vault`).
+   - `REDIS_PASSWORD` is unset in production.
+   - `GATEWAY_TEST_MODE=true` (outage simulation is strictly forbidden in production).  
+   *Source:* [`apps/api/src/common/config/production-secrets.validator.ts`](./apps/api/src/common/config/production-secrets.validator.ts) | Test: [`apps/api/src/common/config/production-secrets.validator.spec.ts`](./apps/api/src/common/config/production-secrets.validator.spec.ts)
 2. **Authenticated Redis:** Production compose enforces password authentication via `redis-server --requirepass ${REDIS_PASSWORD:?err}`.
-3. **Production Exception Filter:** Suppresses internal stack traces and database error reflections, returning clean structured error codes.
+3. **Production Exception Filter:** Suppresses internal stack traces and database error reflections, returning clean structured error codes.  
+   *Source:* [`apps/api/src/common/filters/production-exception.filter.ts`](./apps/api/src/common/filters/production-exception.filter.ts) | Test: [`apps/api/src/common/filters/production-exception.filter.spec.ts`](./apps/api/src/common/filters/production-exception.filter.spec.ts)
 
 ---
 

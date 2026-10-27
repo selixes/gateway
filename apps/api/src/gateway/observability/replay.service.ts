@@ -16,18 +16,23 @@ export class ReplayService implements OnModuleInit {
   private readonly KEY_VERSION = 'v1';
 
   constructor(private readonly prisma: PrismaService) {
-    const secret = process.env.REPLAY_CRYPTO_SECRET || 'akra-shield-default-secure-vault-key-32b';
     const isProd = process.env.NODE_ENV === 'production';
+    const envSecret = process.env.REPLAY_CRYPTO_SECRET;
     
-    if (isProd && (!process.env.REPLAY_CRYPTO_SECRET || secret === 'akra-shield-default-secure-vault-key-32b' || secret.includes('REPLACE'))) {
+    if (isProd && (!envSecret || envSecret.length < 32 || envSecret.includes('REPLACE'))) {
       throw new Error(
-        'FATAL: REPLAY_CRYPTO_SECRET environment variable is not set, is using the insecure default, or contains REPLACE. A secure, custom 32-byte minimum secret key is required for the Replay Vault in production.',
+        'FATAL: REPLAY_CRYPTO_SECRET environment variable is not set, is shorter than 32 characters, or contains REPLACE. A secure, custom 32-byte minimum secret key is required for the Replay Vault in production.',
       );
-    } else if (!isProd && (!process.env.REPLAY_CRYPTO_SECRET || secret === 'akra-shield-default-secure-vault-key-32b' || secret.includes('REPLACE'))) {
-      this.logger.warn('⚠️  REPLAY_CRYPTO_SECRET is not configured or using default. This is allowed in development, but WILL fail to boot in production.');
     }
     
-    this.encryptionKey = crypto.createHash('sha256').update(secret).digest();
+    if (envSecret && envSecret.trim().length >= 32 && !envSecret.includes('REPLACE')) {
+      this.encryptionKey = crypto.createHash('sha256').update(envSecret).digest();
+    } else {
+      this.logger.warn(
+        '⚠️  REPLAY_CRYPTO_SECRET is not configured. Generated ephemeral in-memory 32-byte key for development. Replay payloads will not survive process restarts.',
+      );
+      this.encryptionKey = crypto.randomBytes(32);
+    }
   }
 
   onModuleInit() {
