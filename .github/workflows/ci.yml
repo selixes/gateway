@@ -1,0 +1,45 @@
+name: CI Build & Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build & Test Gateway
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Database Layer
+        run: |
+          cd packages/database
+          npx prisma generate
+          cd ../..
+
+      - name: Build NestJS API Gateway
+        run: |
+          cd apps/api
+          npx nest build
+
+      - name: Run Unit Tests (Jest)
+        run: |
+          cd apps/api
+          npm test

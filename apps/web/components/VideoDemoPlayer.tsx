@@ -270,7 +270,7 @@ export default function VideoDemoPlayer({ isMobile }: { isMobile: boolean }) {
             {/* The Video Element */}
             <video
               ref={videoRef}
-              src="/demo/api_shield_complete_platform_demo.mp4"
+              src="/demo/selixes_platform_demo.mp4"
               playsInline
               preload="metadata"
               muted={isMuted}

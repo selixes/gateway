@@ -6,8 +6,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
-    "deploy:client": "node scripts/automations/deploy-client.js"
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
     "prettier": "^3.9.6",
@@ -29,5 +28,23 @@
     "pg": "^8.23.0",
     "puppeteer": "^25.7.0",
     "puppeteer-screen-recorder": "^3.0.6"
-  }
+  },
+  "description": "Self-hosted AI reliability gateway for multi-agent loops with resilient mid-flight stream splicing, microsecond loop interception, and local semantic caching.",
+  "keywords": [
+    "ai-gateway",
+    "llm-proxy",
+    "agent-reliability",
+    "stream-splicing",
+    "semantic-cache",
+    "openai-sdk",
+    "multi-agent",
+    "self-hosted",
+    "in-vpc"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/selixes/gateway.git"
+  },
+  "homepage": "https://github.com/selixes/gateway#readme"
 }
