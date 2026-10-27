@@ -5,14 +5,6 @@ useDefault = true
 
 [allowlist]
 description = "Permit safe documentation placeholders and synthetic UI client examples"
-paths = [
-  '''apps/web/components/QuickstartSDKPlayground\.tsx''',
-  '''apps/web/app/docs/api-reference/page\.tsx''',
-  '''apps/web/public/llms(-full)?\.txt''',
-  '''apps/web/app/blog/posts\.ts''',
-  '''apps/api/README\.md''',
-  '''examples/.*'''
-]
 regexes = [
   '''selixes_live_prodkey982''',
   '''selixes_placeholder_key''',

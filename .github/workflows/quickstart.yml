@@ -1,0 +1,46 @@
+name: Quickstart Verification
+
+on:
+  push:
+    branches: [main, 'docs/**', 'release/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  quickstart:
+    name: Docker Compose Quickstart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare environment configuration
+        run: cp .env.example .env
+
+      - name: Start services via Docker Compose
+        run: docker compose up -d --build
+
+      - name: Wait for Gateway API health
+        run: |
+          echo "Waiting for Selixes Gateway API to become healthy..."
+          for i in {1..30}; do
+            if curl -s -f http://localhost:4000/health; then
+              echo -e "\nGateway API is responsive!"
+              exit 0
+            fi
+            echo "Waiting for health endpoint (attempt $i/30)..."
+            sleep 2
+          done
+          echo "Gateway API failed to become healthy within 60s"
+          docker compose logs
+          exit 1
+
+      - name: Verify health endpoint response
+        run: |
+          RESPONSE=$(curl -s -S http://localhost:4000/health)
+          echo "Health response: $RESPONSE"
+          echo "$RESPONSE" | grep -q '"status":"ok"'
+
+      - name: Tear down services
+        if: always()
+        run: docker compose down -v
