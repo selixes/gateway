@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN npm install -g turbo
@@ -6,7 +6,7 @@ COPY . .
 RUN turbo prune web --docker
 
 # Installer stage
-FROM node:20-alpine AS installer
+FROM node:22-alpine AS installer
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
@@ -19,7 +19,7 @@ COPY --from=builder /app/out/full/ .
 RUN npx turbo run build --filter=web...
 
 # Runner stage
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 

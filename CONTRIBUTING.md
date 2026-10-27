@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Selixes! We welcome community con
 ## Local Development Setup
 
 ### 1. Prerequisites
-- **Node.js:** v18 or v20+ (`node --version`)
+- **Node.js:** v22+ (`node --version`)
 - **Docker & Docker Compose:** For running local PostgreSQL and Redis services
 - **npm:** v9+
 

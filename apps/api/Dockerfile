@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 RUN npm install -g turbo
@@ -6,7 +6,7 @@ COPY . .
 RUN turbo prune api --docker
 
 # Installer stage
-FROM node:20-alpine AS installer
+FROM node:22-alpine AS installer
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
@@ -28,7 +28,7 @@ RUN npx turbo run build --filter=api...
 RUN node -e "import('@xenova/transformers').then(({ pipeline }) => pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2')).catch(() => {});" || true
 
 # Production runner stage
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 RUN apk add --no-cache openssl curl
 WORKDIR /app
 ENV NODE_ENV=production
