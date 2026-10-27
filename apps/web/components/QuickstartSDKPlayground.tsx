@@ -35,7 +35,7 @@ export default function QuickstartSDKPlayground({
     const cost = budgetCap.toFixed(2);
     if (docsTab === 'curl') {
       return `curl http://localhost:4000/v1/chat/completions \\
-  -H "Authorization: Bearer selixes_live_prodkey982" \\
+  -H "Authorization: Bearer selixes_placeholder_key" \\
   -H "Content-Type: application/json" \\
   -H "x-selixes-session-id: session_agent_crm_820" \\
   -H "x-selixes-max-session-cost: ${cost}" \\
@@ -51,7 +51,7 @@ export default function QuickstartSDKPlayground({
       return `import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: "selixes_live_prodkey982",
+  apiKey: "selixes_placeholder_key",
   baseURL: 'http://localhost:4000/v1', // Point directly to gateway
   defaultHeaders: {
     'x-selixes-session-id': 'session_agent_crm_820',
@@ -70,7 +70,7 @@ const response = await openai.chat.completions.create({
     return `from openai import OpenAI
 
 client = OpenAI(
-    api_key="selixes_live_prodkey982",
+    api_key="selixes_placeholder_key",
     base_url="http://localhost:4000/v1", # Route through local gateway
     default_headers={
         "x-selixes-session-id": "session_agent_crm_820",

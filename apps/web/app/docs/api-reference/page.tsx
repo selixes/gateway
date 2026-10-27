@@ -95,7 +95,7 @@ export default function ApiReferencePage() {
           padding: '1rem 1.25rem', fontSize: '0.8rem', color: '#cbd5e1', fontFamily: 'monospace',
           overflowX: 'auto', margin: '0 0 1rem 0'
         }}>
-          <code>Authorization: Bearer selixes_live_prodkey982</code>
+          <code>Authorization: Bearer selixes_placeholder_key</code>
         </pre>
         <p style={{ fontSize: '0.8rem', color: '#8e8e9f', lineHeight: 1.5, margin: 0 }}>
           💡 <strong>Legacy Support:</strong> The gateway is fully backwards-compatible. You can continue to authenticate using your existing keys (prefixed with <code>apishield_live_</code>) during the migration phase.

@@ -267,7 +267,7 @@ async function routeLLMRequest(prompt) {
 <p>By routing traffic through a proxy like Selixes, you can assign strict token or USD budgets to specific sessions or API keys. The gateway uses Redis to atomically track cumulative spend across distributed nodes.</p>
 <pre><code>// Example HTTP Headers for Budgeting
 curl http://selixes.internal/v1/chat/completions \\
-  -H "Authorization: Bearer client_key_123" \\
+  -H "Authorization: Bearer selixes_placeholder_key" \\
   -H "x-selixes-session-budget: 2.50" \\
   -d '{ "model": "gpt-4o", "messages": [...] }'
 </code></pre>

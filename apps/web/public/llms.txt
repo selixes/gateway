@@ -76,7 +76,7 @@ Enforce active session budgets, connection timeouts, and failover overrides dire
 
 ```bash
 curl http://localhost:4000/v1/chat/completions \
-  -H "Authorization: Bearer selixes_live_prodkey982" \
+  -H "Authorization: Bearer selixes_placeholder_key" \
   -H "Content-Type: application/json" \
   -H "x-selixes-session-id: agent_workflow_crm_102" \
   -H "x-selixes-max-session-cost: 0.15" \
