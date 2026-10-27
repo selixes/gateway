@@ -14,8 +14,6 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
     "useUnknownInCatchVariables": false,
     "incremental": true,
     "skipLibCheck": true,

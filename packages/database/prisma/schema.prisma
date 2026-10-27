@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -53,12 +52,14 @@ model Organization {
   plan        String     @default("FREE")
   stripeCustomerId     String? @unique
   stripeSubscriptionId String? @unique
+  paymentFailureCount  Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   users       User[]
   workflows   Workflow[]
   apiKeys     ApiKey[]
   auditLogs   AuditLog[]
+  followUps   FollowUp[]
 
   @@index([clerkOrgId])
 }
@@ -231,4 +232,44 @@ model BudgetReservation {
 
   @@index([status, createdAt])
   @@index([requestId])
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  company   String
+  interest  String
+  message   String   @db.Text
+  status    String   @default("NEW") // NEW, CONTACTED, CONVERTED, ARCHIVED
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([email])
+}
+
+model FollowUp {
+  id              String       @id @default(uuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
+  reason          String       // e.g., "First Successful Integration"
+  timeToFirstReq  String?      // e.g., "3m 47s"
+  status          String       @default("PENDING") // PENDING, CONTACTED, RESOLVED
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([status])
+  @@index([organizationId])
+}
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  eventType String
+  payload   Json
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([eventType])
+  @@index([processed])
 }
